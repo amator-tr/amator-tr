@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware) — amator.tr</title>
+<meta name="description" content="Quansheng UV-K5&#39;i F4HWN custom firmware ile flashlemek, armel&#39;in özel CHIRP driver&#39;ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.">
+<meta name="keywords" content="uv-k5, programlama, chirp, quansheng, f4hwn, firmware">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<link rel="canonical" href="https://amator.tr/tutorials/uv-k5-programlama">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)">
+<meta property="og:description" content="Quansheng UV-K5&#39;i F4HWN custom firmware ile flashlemek, armel&#39;in özel CHIRP driver&#39;ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.">
+<meta property="og:url" content="https://amator.tr/tutorials/uv-k5-programlama">
+<meta property="og:image" content="https://amator.tr/og/uv-k5-programlama.png">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="amator.tr">
+<meta property="article:author" content="Kaan Dikeç">
+<meta property="article:published_time" content="2026-04-25T00:00:00+03:00">
+<meta property="article:modified_time" content="2026-04-25T00:00:00+03:00">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="amator.tr Tutorials" href="/feed.xml">
+<style>:root { --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1c1c; --accent: #e94560; --text: #f5f5f5; --text-muted: #888; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #262626; } [data-theme="dark-navy"] { --bg: #1a1a2e; --surface: #16213e; --surface-2: #0f3460; --accent: #e94560; --text: #eee; --text-muted: #999; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #2a2a4a; } [data-theme="dark-charcoal"] { --bg: #15151a; --surface: #1f1f27; --surface-2: #2a2a33; --accent: #e94560; --text: #e8e8e8; --text-muted: #9090a0; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #33333d; } [data-theme="light"] { --bg: #f0f2f5; --surface: #ffffff; --surface-2: #e8ecf1; --accent: #d63031; --text: #2d3436; --text-muted: #636e72; --success: #00b894; --warning: #e17055; --error: #d63031; --border: #dfe6e9; } [data-theme="vanta-black"] { --bg: #000000; --surface: #080808; --surface-2: #101010; --accent: #e94560; --text: #c8c8c8; --text-muted: #787878; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #1a1a1a; } [data-theme="contrast"] { --bg: #000000; --surface: #000000; --surface-2: #0a0a0a; --accent: #ffff00; --text: #ffffff; --text-muted: #ffffff; --success: #00ff00; --warning: #ffff00; --error: #ff6060; --border: #ffffff; } [data-theme="contrast"] a { text-decoration: underline; } [data-theme="contrast"] :focus-visible { outline: 3px solid #ffff00; outline-offset: 2px; } :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; } * { box-sizing: border-box; } html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; } html, body { overflow-x: clip; } body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px; } a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; } .container { max-width: 880px; margin: 0 auto; padding: 0 16px; } .site-nav { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); z-index: 50; } .site-nav-inner { display: flex; align-items: center; gap: 16px; padding: 12px 16px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; } .site-nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text); } .site-nav-links { display: flex; gap: 14px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; } .site-nav-links a { color: var(--text-muted); font-size: 0.95rem; } .site-nav-links a:hover, .site-nav-links a.active { color: var(--accent); } .site-nav-cta { margin-left: auto; padding: 6px 14px; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); font-size: 0.9rem; } .site-nav-cta:hover { background: var(--accent); color: #fff; text-decoration: none; } main { padding: 32px 16px; } .breadcrumb { max-width: 720px; margin: 0 auto 12px; font-size: 0.82rem; color: var(--text-muted); } .breadcrumb a { color: var(--text-muted); text-decoration: none; } .breadcrumb a:hover { color: var(--accent); } .breadcrumb span { color: var(--text); } .prose { max-width: 720px; margin: 0 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; } .prose h1 { font-size: 2rem; line-height: 1.25; margin: 0 0 8px; } .prose h2 { font-size: 1.5rem; margin-top: 2em; } .prose h3 { font-size: 1.2rem; margin-top: 1.5em; } .prose p { margin: 1em 0; } .prose code { background: var(--surface-2); padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; } .prose pre { background: var(--surface-2); border: 1px solid var(--border); padding: 12px; border-radius: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; } .prose pre code { white-space: pre; word-break: normal; overflow-wrap: normal; background: none; padding: 0; } .prose blockquote { border-left: 3px solid var(--accent); padding-left: 12px; margin-left: 0; color: var(--text-muted); } .prose img { max-width: 100%; height: auto; } .prose .meta { color: var(--text-muted); font-size: 0.9rem; } .prose .table-wrap, .prose table { display: block; width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1em 0; } .prose table { border-collapse: collapse; min-width: 100%; } .prose th, .prose td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; word-break: normal; } .prose th { background: var(--surface-2); } .prose a { word-break: break-word; overflow-wrap: anywhere; } .tutorials-list { display: grid; gap: 16px; max-width: 720px; margin: 0 auto; } .tutorial-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; } .tutorial-card h2 { margin: 0 0 6px; font-size: 1.25rem; } .tutorial-card .meta { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 8px; } .tutorial-card .tag { display: inline-block; background: var(--surface-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-right: 4px; } .hero { text-align: center; padding: 60px 16px; background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%); border-bottom: 1px solid var(--border); } .hero h1 { font-size: 2.4rem; margin: 0 0 12px; } .hero p { color: var(--text-muted); font-size: 1.1rem; margin: 0 auto; max-width: 600px; } .hero-cta { margin-top: 24px; display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; } .hero h1 span { white-space: nowrap; } .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 1100px; margin: 0 auto; } .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px 20px; text-decoration: none; color: var(--text); transition: border-color 0.15s, transform 0.15s; display: block; } .cat-card:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-2px); } .cat-card .cat-icon { font-size: 1.6rem; margin-bottom: 10px; } .cat-card h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--accent); } .cat-card p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; } .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; max-width: 1100px; margin: 0 auto; } .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; text-decoration: none; color: var(--text); transition: border-color 0.15s; display: block; } .feat-card:hover { border-color: var(--accent); text-decoration: none; } .feat-card h3 { margin: 0 0 6px; font-size: 1rem; color: var(--accent); } .feat-card p { margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; } .btn { display: inline-block; padding: 10px 20px; border-radius: 6px; font-weight: 600; border: 1px solid var(--border); background: var(--surface); color: var(--text); } .btn:hover { background: var(--surface-2); text-decoration: none; } .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; } .btn-primary:hover { opacity: 0.9; background: var(--accent); } .site-footer { border-top: 1px solid var(--border); padding: 40px 16px 24px; margin-top: 64px; color: var(--text-muted); font-size: 0.88rem; background: var(--surface); } .footer-grid { max-width: 1200px; margin: 0 auto 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; } .footer-grid h4 { margin: 0 0 10px; font-size: 0.95rem; color: var(--text); font-weight: 700; } .footer-grid ul { list-style: none; margin: 0; padding: 0; } .footer-grid li { margin-bottom: 5px; line-height: 1.5; } .footer-grid a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; } .footer-grid a:hover { color: var(--accent); } .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.8rem; } .footer-bottom em { color: var(--text-muted); font-style: normal; } .theme-fab { position: fixed; right: 20px; bottom: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); transition: transform 0.15s, box-shadow 0.15s; z-index: 1000; font-size: 1.2rem; } .theme-fab:hover { transform: scale(1.08); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45); } .theme-fab:active { transform: scale(0.96); } .theme-menu { position: fixed; right: 20px; bottom: 80px; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 2px; z-index: 1000; } .theme-menu[hidden] { display: none; } .theme-option { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: none; border: 1px solid transparent; border-radius: 8px; color: var(--text); font-size: 0.9rem; text-align: left; cursor: pointer; font-family: inherit; } .theme-option:hover { background: var(--surface-2); } .theme-option.active { border-color: var(--accent); color: var(--accent); font-weight: 600; } .theme-swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; } .page-header { max-width: 720px; margin: 0 auto 32px; } .page-header h1 { margin: 0 0 8px; } .reading-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 100; transition: width 0.08s linear; pointer-events: none; } .prose h2, .prose h3, .prose h4 { position: relative; scroll-margin-top: 64px; } .prose .anchor-link { position: absolute; left: -1.2em; top: 0; padding-right: 0.3em; color: var(--text-muted); opacity: 0; text-decoration: none; font-weight: 400; transition: opacity 0.15s; } .prose h2:hover .anchor-link, .prose h3:hover .anchor-link, .prose h4:hover .anchor-link, .prose .anchor-link:focus { opacity: 1; } .prose .anchor-link:hover { color: var(--accent); } .tutorial-search { max-width: 720px; margin: 16px auto 0; } .tutorial-search input[type="search"] { width: 100%; padding: 10px 14px; font-size: 1rem; font-family: inherit; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; } .tutorial-search input[type="search"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); } .tutorial-search .search-hint { margin: 12px 0 0; color: var(--text-muted); font-size: 0.9rem; text-align: center; } .tutorial-card.hidden { display: none; } .section-pad { padding: 32px 0; } .list-plain { list-style: none; padding: 0; } .error-page { padding: 64px 0; text-align: center; } .error-page h1 { font-size: 4rem; margin: 0; } .error-page p { color: var(--text-muted); } @media (max-width: 600px) { .site-nav-inner { flex-direction: column; align-items: flex-start; gap: 8px; } .site-nav-cta { margin-left: 0; } .hero h1 { font-size: 1.8rem; } main { padding: 24px 12px; } .prose table { font-size: 0.82rem; } .prose th, .prose td { padding: 5px 7px; word-break: break-word; overflow-wrap: anywhere; } .prose pre { font-size: 0.82rem; padding: 10px; } .prose pre code { font-size: 0.82rem; } } .skip-link { position: absolute; top: -40px; left: 0; background: var(--accent); color: #fff; padding: 8px 16px; z-index: 10000; text-decoration: none; border-radius: 0 0 6px 0; font-weight: 600; } .skip-link:focus { top: 0; text-decoration: none; color: #fff; outline: 2px solid var(--text); outline-offset: 2px; } .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 1100px; margin: 0 auto; gap: 32px; } @media (min-width: 1000px) { .article-layout { grid-template-columns: minmax(0, 720px) 240px; align-items: start; } } .article-layout > * { min-width: 0; } .article-layout .prose { margin: 0; } .toc { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto; font-size: 0.85rem; border-left: 2px solid var(--border); padding-left: 14px; display: none; } @media (min-width: 1000px) { .toc { display: block; } } .toc-title { font-weight: 700; color: var(--text); margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; } .toc ul { list-style: none; padding: 0; margin: 0; } .toc li { margin: 4px 0; line-height: 1.4; } .toc li.toc-h3 { padding-left: 14px; } .toc a { color: var(--text-muted); text-decoration: none; display: block; padding: 2px 0; border-left: 2px solid transparent; margin-left: -16px; padding-left: 14px; transition: color 0.12s, border-color 0.12s; } .toc a:hover { color: var(--accent); text-decoration: none; } .toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; } .prose pre { position: relative; } .code-copy-btn { position: absolute; top: 8px; right: 8px; background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; font-size: 0.75rem; font-family: inherit; cursor: pointer; opacity: 0; transition: opacity 0.15s, color 0.15s, border-color 0.15s; } .prose pre:hover .code-copy-btn, .code-copy-btn:focus { opacity: 1; } .code-copy-btn:hover { color: var(--accent); border-color: var(--accent); } .code-copy-btn.copied { color: var(--accent); border-color: var(--accent); } .prose img { cursor: zoom-in; } .lightbox-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; } .lightbox-overlay[hidden] { display: none; } .lightbox-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6); } .lightbox-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; padding: 4px 12px; font-family: inherit; } .lightbox-close:hover { color: var(--accent); } .helpful { margin: 40px auto 0; max-width: 720px; padding: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); text-align: center; } .helpful-question { margin: 0 0 12px; font-weight: 600; color: var(--text); } .helpful-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.95rem; cursor: pointer; transition: border-color 0.15s, color 0.15s; } .helpful-btn:hover { border-color: var(--accent); color: var(--accent); } .helpful-btn:disabled { cursor: default; opacity: 0.7; } .helpful-btn.voted { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); } .helpful-count { margin: 12px 0 0; color: var(--text-muted); font-size: 0.85rem; } .helpful-thanks { margin: 12px 0 0; color: var(--accent); font-size: 0.9rem; font-weight: 600; } .prev-next { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; max-width: 720px; margin: 40px auto 0; } .prev-next > * { min-width: 0; } @media (max-width: 600px) { .prev-next { grid-template-columns: minmax(0, 1fr); } } .prev-next a { display: block; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); text-decoration: none; transition: border-color 0.15s; } .prev-next a:hover { border-color: var(--accent); text-decoration: none; } .prev-next .pn-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .prev-next .pn-title { font-weight: 600; color: var(--accent); font-size: 0.95rem; line-height: 1.35; } .prev-next .pn-next { text-align: right; } .prev-next .pn-prev:only-child { grid-column: 1; } @media print { .site-nav, .site-footer, .theme-fab, .theme-menu, .reading-progress, .toc, .code-copy-btn, .helpful, .prev-next, .skip-link, .tutorial-search { display: none !important; } body { background: #fff; color: #000; font-size: 11pt; } .article-layout { grid-template-columns: 1fr !important; } .prose { max-width: 100%; margin: 0; } .prose a { color: #000; text-decoration: underline; } .prose a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; } .prose pre, .prose code { background: #f4f4f4 !important; border: 1px solid #ddd; color: #000; } .prose h1, .prose h2, .prose h3 { page-break-after: avoid; } .prose img, .prose pre, .prose blockquote { page-break-inside: avoid; } }</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)","description":"Quansheng UV-K5'i F4HWN custom firmware ile flashlemek, armel'in özel CHIRP driver'ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.","url":"https://amator.tr/tutorials/uv-k5-programlama","datePublished":"2026-04-25T00:00:00+03:00","dateModified":"2026-04-25T00:00:00+03:00","inLanguage":"tr-TR","author":{"@type":"Person","name":"Kaan Dikeç","url":"https://amator.tr/iletisim","identifier":"TB2KKD"},"publisher":{"@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":{"@type":"ImageObject","url":"https://amator.tr/og/default.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://amator.tr/tutorials/uv-k5-programlama"},"articleSection":"uv-k5","keywords":"uv-k5, programlama, chirp, quansheng, f4hwn, firmware","wordCount":1454,"image":"https://amator.tr/og/uv-k5-programlama.png"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Ana Sayfa","item":"https://amator.tr/"},{"@type":"ListItem","position":2,"name":"Tutorial'lar","item":"https://amator.tr/tutorials/"},{"@type":"ListItem","position":3,"name":"Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)","description":"Quansheng UV-K5'i F4HWN custom firmware ile flashlemek, armel'in özel CHIRP driver'ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.","inLanguage":"tr-TR","totalTime":"PT40M","step":[{"@type":"HowToStep","position":1,"name":"EEPROM yedeği al (atlamayın)","text":"F4HWN'i flashlamadan **stock EEPROM'u yedekle** — geri dönmek istediğinizde gerekecek (kalibrasyon değerleri, fabrika frekans ofsetleri).\n\n```bash\n# k5prog'u build ettikten sonra:\n./k5prog -f -r -B uv-k5-stock-eeprom-backup.bin\n```\n\n(`-f` = full read, `-r` = read mode, `-B` = bin dosyası.) Yaklaşık 2-3 dakika sürer, 64 KB dosya çıkar. Bu dosyayı **kaybetme** — bulutta yedekle.","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-1-eeprom-yedegi-al-atlamayin"},{"@type":"HowToStep","position":2,"name":"F4HWN firmware'i flashla","text":"### Yöntem A: Web flasher (en kolay, Chrome/Edge)\n\n1. Telsizi **kapat → PTT basılı tutarak aç** → ekranda \"Bootloader Mode\" görünür.\n2. Programlama kablosunu USB'ye tak.\n3. [whosmatt.github.io/uvmod](https://whosmatt.github.io/uvmod/) → **\"Connect\"** → portu seç.\n4. **\"Choose firmware\"** → armel repo'sunun [Releases](https://github.com/armel/uv-k5-firmware-custom/releases) sayfasından en yeni `.bin` dosyasını seç (örn. `f4hwn_v5.2.0.bin`).\n5. **\"Flash\"** → ~30 sn → tamamlandığında telsiz kendili","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-2-f4hwn-firmware-i-flashla"},{"@type":"HowToStep","position":3,"name":"armel'in özel CHIRP driver'ını yükle","text":"Stock CHIRP-next F4HWN'i tanımaz. Driver'ı manuel eklemek gerek:\n\n1. [armel/uv-k5-chirp-driver](https://github.com/armel/uv-k5-chirp-driver) → **Download ZIP** veya `git clone`.\n2. ZIP içindeki `uvk5_egzumer_f4hwn_v4_x.py` dosyasını CHIRP'in modül dizinine kopyala:\n   - **Windows:** `%APPDATA%\\CHIRP\\stock_configs\\`\n   - **macOS:** `~/Library/Application Support/CHIRP/stock_configs/`\n   - **Linux:** `~/.local/share/CHIRP/stock_configs/`\n   - Veya CHIRP içinden: `Help` → `Load Module...` → `.py` d","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-3-armel-in-ozel-chirp-driver-ini-yukle"},{"@type":"HowToStep","position":4,"name":"Telsizden mevcut konfigürasyonu indir","text":"1. Programlama kablosunu bağla (telsiz açık, normal modda — bootloader değil).\n2. CHIRP → **Radio → Download from radio**.\n3. Port: `/dev/cu.usbserial-XXXX` veya `COMx`.\n4. Vendor: **Quansheng** → Model: **UV-K5 (egzumer + f4hwn)**.\n5. **OK** → 60-90 sn → 999-satırlık kanal tablosu yüklenir.\n\n> **İndir başarısızsa:** Cihazda menüden `Settings → Reset` yapma — bu kalibrasyonu siler. Önce kabloyu çıkar/tak, sürücüyü kontrol et, USB hub yerine doğrudan bilgisayara bağla.","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-4-telsizden-mevcut-konfigurasyonu-indir"},{"@type":"HowToStep","position":5,"name":"Röle CSV'sini hazırla","text":"[amator.tr/role-export/](/role-export/) sayfasında:\n\n1. **Cihaz**: \"Quansheng UV-K5 (F4HWN v4.3+)\" veya \"UV-K1 / K5 v3 (Fusion v5+, 1000 kanal)\"\n2. **TA bölgesi**: ikamet ettiğiniz ile uygun bölge (TA1, TA2, ...)\n3. **Bant**: VHF + UHF\n4. **Mod**: Analog FM (DMR rölelerinizi ayrı tutun, kanal slotu kabarmaz)\n5. **Aktif**: ✓ (yalnızca aktif onaylı röleler)\n6. **Korunan veriler** (ops): Airband / Marine / PMR — parolayla\n7. **CSV indir** → `roleler.csv` (UTF-8, virgül-ayraçlı)","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-5-role-csv-sini-hazirla"},{"@type":"HowToStep","position":6,"name":"CSV'yi CHIRP'e yükle","text":"1. CHIRP'te **File → Import** (yeni image gerekirse: New → Quansheng UV-K5 model'i).\n2. `roleler.csv` seç.\n3. CHIRP sütun eşleştirmesi sorabilir; röle export'umuz CHIRP standart sütunlarını kullandığı için otomatik tanır:\n   - `Frequency` → RX\n   - `Duplex`/`Offset` → shift yön + miktar\n   - `Tone Mode`, `rToneFreq`, `cToneFreq` → CTCSS TX/RX\n   - `Mode` → FM/NFM (12.5 kHz dar bant)\n4. Hangi kanal aralığını import edeceğinizi seçin (1-300 vb.).\n5. **OK** → kanallar tabloya yüklenir.","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-6-csv-yi-chirp-e-yukle"},{"@type":"HowToStep","position":7,"name":"Manuel ince ayar","text":"CSV hazır olsa da kişisel tercihler için:\n\n| Ayar | Önerilen |\n|---|---|\n| **Tone Squelch** (RX ton filtresi) | OFF — röleden gelen her şeyi duymak için |\n| **DTMF/PTT-ID** | OFF — yanlışlıkla DTMF kod göndermeyi engeller |\n| **TX Power** | 1W default; mesafe gerektikçe 5W'a çıkar (pil ömrü 2× fark eder) |\n| **Bandwidth** | NFM (12.5 kHz) amatör standardı; AM kanallarında AM |\n| **Skip** | Acil/zayıf röleleri `Skip = S` yaparak taramada hızlanırsınız |\n| **Squelch** | 3-5 (10 = en sıkı, 0 = süre","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-7-manuel-ince-ayar"},{"@type":"HowToStep","position":8,"name":"Telsize geri yükle","text":"1. **Radio → Upload to radio**.\n2. Onay → 60-90 sn → telsiz kendiliğinden yeniden başlar.\n\n> **Yarıda kesilirse:** Pil seviyesi düşük olabilir; şarj edip tekrar deneyin. Yarım yüklemeden sonra cihaz garip davranabilir — yeniden tam upload yapın, kalıcı hasar olası değil.","url":"https://amator.tr/tutorials/uv-k5-programlama#adim-8-telsize-geri-yukle"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"`Failed to communicate with radio`","acceptedAnswer":{"@type":"Answer","text":"Sürücü, port, kablo"}},{"@type":"Question","name":"Yarıda kesildi","acceptedAnswer":{"@type":"Answer","text":"Pil zayıf, kablo gevşek"}},{"@type":"Question","name":"Bazı kanallar boş","acceptedAnswer":{"@type":"Answer","text":"CSV ayraç hatası"}},{"@type":"Question","name":"`Module load failed` (CHIRP'te)","acceptedAnswer":{"@type":"Answer","text":"Yanlış driver dosyası"}},{"@type":"Question","name":"Telsiz F4HWN açıyor ama kanal yok","acceptedAnswer":{"@type":"Answer","text":"İlk yüklemeden sonra fabrika reset gerekiyor"}},{"@type":"Question","name":"AM kanalı çatırdıyor","acceptedAnswer":{"@type":"Answer","text":"Stock RX yetersiz"}},{"@type":"Question","name":"Spektrum donuk","acceptedAnswer":{"@type":"Answer","text":"Spectrum mode buggy"}}]}</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+
+<main id="main" tabindex="-1">
+<div class="article-layout">
+<article class="prose">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Ana Sayfa</a> › <a href="/tutorials/">Tutorial'lar</a> › <span>Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)</span></nav>
+<header><h1>Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)</h1>
+<p class="meta"><time datetime="2026-04-25">2026-04-25</time> · 7 dk okuma · 1454 kelime</p>
+</header>
+<h2 id="uv-k5-nedir-neden-bu-kadar-populer"><a class="anchor-link" href="#uv-k5-nedir-neden-bu-kadar-populer" aria-label="Bu basliga link">#</a>UV-K5 nedir, neden bu kadar popüler?</h2>
+<p>Quansheng UV-K5, 2023&#39;te piyasaya çıkan <strong>VHF/UHF dual-band</strong>, ~700-1200 TL bandında satılan ucuz bir Çin amatör el telsizidir. Donanımı (BK4819 RF SoC) &quot;açılabilir&quot; — DualTachyon adlı geliştirici 2023 sonunda <strong>firmware&#39;in tam reverse-engineered + open-source bir uygulamasını</strong> yayınladı: <a href="https://github.com/DualTachyon/uv-k5-firmware">DualTachyon/uv-k5-firmware</a> (Apache 2.0).</p>
+<p>Bu açılış sayesinde topluluk birkaç ay içinde stock cihazda olmayan onlarca özelliği eklemiş custom firmware&#39;ler yayımladı:</p>
+<ul>
+<li><strong>Geniş bant alıcı</strong> (15-1300 MHz, ham bantlar dışı dinleme)</li>
+<li><strong>AM modülasyon düzeltmesi</strong> (AM-fix — orijinal stock&#39;ta AM resepsiyonu kötüydü)</li>
+<li><strong>Spektrum analizci</strong> (<a href="https://github.com/fagci/uv-k5-firmware-fagci-mod">fagci</a> tarafından)</li>
+<li><strong>SSB demodülasyonu</strong> (Single Sideband — donanım sınırlarıyla ama çalışır)</li>
+<li><strong>999 kanal kapasitesi</strong> (stock 200)</li>
+<li><strong>Daha iyi kanal arama</strong> (LiveSeek, dual-watch)</li>
+<li><strong>Ek modülasyon modları</strong> (USB/LSB)</li>
+</ul>
+<h2 id="hangi-firmware-39-i-secmeliyim"><a class="anchor-link" href="#hangi-firmware-39-i-secmeliyim" aria-label="Bu basliga link">#</a>Hangi firmware&#39;i seçmeliyim?</h2>
+<p>Bu rehber <strong>F4HWN</strong> (callsign&#39;ı F4HWN olan <strong>Armel</strong> isimli geliştirici tarafından maintain edilen) varyantı temel alır. F4HWN, Egzumer fork&#39;unun üzerine OneOfEleven&#39;ın modlarını + fagci spektrum analizcisini + kendi iyileştirmelerini ekleyen, <strong>tam kapsamlı topluluk firmware&#39;i</strong>dir.</p>
+<h3 id="resmi-repolar"><a class="anchor-link" href="#resmi-repolar" aria-label="Bu basliga link">#</a>Resmi repolar</h3>
+<ul>
+<li><strong>UV-K5 / UV-K5(8) / UV-5R Plus (BK4819 + DP32G030 MCU):</strong>
+→ <a href="https://github.com/armel/uv-k5-firmware-custom">github.com/armel/uv-k5-firmware-custom</a></li>
+<li><strong>UV-K1 / UV-K5 v3 (yeni nesil PY32F071 MCU, 2025+ üretim):</strong>
+→ <a href="https://github.com/armel/uv-k1-k5v3-firmware-custom">github.com/armel/uv-k1-k5v3-firmware-custom</a>
+(&quot;F4HWN Fusion Edition&quot; — 2026&#39;da v5.2.0 yayımlandı)</li>
+<li><strong>CHIRP driver (programlama için zorunlu):</strong>
+→ <a href="https://github.com/armel/uv-k5-chirp-driver">github.com/armel/uv-k5-chirp-driver</a></li>
+</ul>
+<blockquote>
+<p><strong>Önemli:</strong> Stock CHIRP-next&#39;in &quot;Quansheng UV-K5&quot; sürücüsü <strong>F4HWN ile UYUMSUZ</strong> — F4HWN&#39;in genişletilmiş hafıza haritasını okuyamaz. Aşağıdaki adımlarda armel&#39;in özel sürücüsünü manuel ekleyeceğiz.</p>
+</blockquote>
+<h3 id="hangi-cihazim-var-nereden-anlarim"><a class="anchor-link" href="#hangi-cihazim-var-nereden-anlarim" aria-label="Bu basliga link">#</a>Hangi cihazım var nereden anlarım?</h3>
+<p>Telsizi <strong>kapat → PTT + Side-1 (üst yan tuş)</strong> basılı tutarak aç. LCD&#39;de seri numara + chip kimliği görünür:</p>
+<table>
+<thead>
+<tr>
+<th>Görünen MCU</th>
+<th>Cihaz</th>
+<th>Firmware repo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>K5 V2</code> veya <code>K5(8)</code> (DP32G030)</td>
+<td>UV-K5, UV-K5(8), UV-5R Plus, UV-G6</td>
+<td><code>armel/uv-k5-firmware-custom</code></td>
+</tr>
+<tr>
+<td><code>K5 V3</code> veya <code>UV-K1</code> (PY32F071)</td>
+<td>UV-K1, UV-K5 v3 (1000 kanal)</td>
+<td><code>armel/uv-k1-k5v3-firmware-custom</code> (Fusion)</td>
+</tr>
+</tbody></table>
+<p>Yanlış firmware&#39;i flashlamak cihazı bricklemez (her iki MCU&#39;da bootloader var) ama <strong>çalışmaz</strong> ve geri stock&#39;a almanız gerekir.</p>
+<h2 id="hazirliklar"><a class="anchor-link" href="#hazirliklar" aria-label="Bu basliga link">#</a>Hazırlıklar</h2>
+<table>
+<thead>
+<tr>
+<th>İhtiyaç</th>
+<th>Açıklama</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Programlama kablosu</td>
+<td>Quansheng K5 special pinout (3.5mm 4-segment + 2.5mm). <strong>TYT/Baofeng kabloları uyumsuz.</strong> ~80-150 TL</td>
+</tr>
+<tr>
+<td>USB sürücü</td>
+<td>CH340 / PL2303 / FTDI — Windows için manuel kurulum gerek; macOS Big Sur+ ve Linux&#39;ta in-tree. <code>dmesg</code> veya <code>ioreg</code> ile cihaz adını görebilirsiniz (<code>/dev/cu.usbserial-XXXX</code>)</td>
+</tr>
+<tr>
+<td><strong>k5prog</strong></td>
+<td>EEPROM backup/restore tool. Repo: <a href="https://github.com/sq5bpf/k5prog">sq5bpf/k5prog</a> — <code>git clone &amp;&amp; make</code>. Mac&#39;te <code>brew install</code> yok, manuel build</td>
+</tr>
+<tr>
+<td>Web flasher (opsiyonel)</td>
+<td>Tarayıcıdan flash: <a href="https://whosmatt.github.io/uvmod/">whosmatt.github.io/uvmod</a> — Chrome/Edge gerek (Web Serial API)</td>
+</tr>
+<tr>
+<td><strong>CHIRP-next</strong></td>
+<td><a href="https://chirpmyradio.com">chirpmyradio.com</a> — &quot;next&quot; sürümü</td>
+</tr>
+<tr>
+<td><strong>armel CHIRP driver</strong></td>
+<td><a href="https://github.com/armel/uv-k5-chirp-driver">armel/uv-k5-chirp-driver</a> → ZIP indir</td>
+</tr>
+<tr>
+<td>Röle CSV&#39;si</td>
+<td><a href="/role-export/">amator.tr/role-export/</a> → cihaza özel hazır profil</td>
+</tr>
+</tbody></table>
+<h2 id="adim-1-eeprom-yedegi-al-atlamayin"><a class="anchor-link" href="#adim-1-eeprom-yedegi-al-atlamayin" aria-label="Bu basliga link">#</a>Adım 1: EEPROM yedeği al (atlamayın)</h2>
+<p>F4HWN&#39;i flashlamadan <strong>stock EEPROM&#39;u yedekle</strong> — geri dönmek istediğinizde gerekecek (kalibrasyon değerleri, fabrika frekans ofsetleri).</p>
+<pre><code class="language-bash"># k5prog&#39;u build ettikten sonra:
+./k5prog -f -r -B uv-k5-stock-eeprom-backup.bin
+</code></pre>
+<p>(<code>-f</code> = full read, <code>-r</code> = read mode, <code>-B</code> = bin dosyası.) Yaklaşık 2-3 dakika sürer, 64 KB dosya çıkar. Bu dosyayı <strong>kaybetme</strong> — bulutta yedekle.</p>
+<h2 id="adim-2-f4hwn-firmware-39-i-flashla"><a class="anchor-link" href="#adim-2-f4hwn-firmware-39-i-flashla" aria-label="Bu basliga link">#</a>Adım 2: F4HWN firmware&#39;i flashla</h2>
+<h3 id="yontem-a-web-flasher-en-kolay-chrome-edge"><a class="anchor-link" href="#yontem-a-web-flasher-en-kolay-chrome-edge" aria-label="Bu basliga link">#</a>Yöntem A: Web flasher (en kolay, Chrome/Edge)</h3>
+<ol>
+<li>Telsizi <strong>kapat → PTT basılı tutarak aç</strong> → ekranda &quot;Bootloader Mode&quot; görünür.</li>
+<li>Programlama kablosunu USB&#39;ye tak.</li>
+<li><a href="https://whosmatt.github.io/uvmod/">whosmatt.github.io/uvmod</a> → <strong>&quot;Connect&quot;</strong> → portu seç.</li>
+<li><strong>&quot;Choose firmware&quot;</strong> → armel repo&#39;sunun <a href="https://github.com/armel/uv-k5-firmware-custom/releases">Releases</a> sayfasından en yeni <code>.bin</code> dosyasını seç (örn. <code>f4hwn_v5.2.0.bin</code>).</li>
+<li><strong>&quot;Flash&quot;</strong> → ~30 sn → tamamlandığında telsiz kendiliğinden başlar.</li>
+</ol>
+<h3 id="yontem-b-k5prog-cli-gelismis-mac-linux"><a class="anchor-link" href="#yontem-b-k5prog-cli-gelismis-mac-linux" aria-label="Bu basliga link">#</a>Yöntem B: k5prog CLI (gelişmiş, Mac/Linux)</h3>
+<pre><code class="language-bash">./k5prog -f -w -F f4hwn_v5.2.0.bin
+</code></pre>
+<p>(<code>-w</code> = write, <code>-F</code> = firmware bin.)</p>
+<p>Flash sonrası ekran F4HWN açılışı + version bilgisi gösterir.</p>
+<h2 id="adim-3-armel-39-in-ozel-chirp-driver-39-ini-yukle"><a class="anchor-link" href="#adim-3-armel-39-in-ozel-chirp-driver-39-ini-yukle" aria-label="Bu basliga link">#</a>Adım 3: armel&#39;in özel CHIRP driver&#39;ını yükle</h2>
+<p>Stock CHIRP-next F4HWN&#39;i tanımaz. Driver&#39;ı manuel eklemek gerek:</p>
+<ol>
+<li><a href="https://github.com/armel/uv-k5-chirp-driver">armel/uv-k5-chirp-driver</a> → <strong>Download ZIP</strong> veya <code>git clone</code>.</li>
+<li>ZIP içindeki <code>uvk5_egzumer_f4hwn_v4_x.py</code> dosyasını CHIRP&#39;in modül dizinine kopyala:<ul>
+<li><strong>Windows:</strong> <code>%APPDATA%\CHIRP\stock_configs\</code></li>
+<li><strong>macOS:</strong> <code>~/Library/Application Support/CHIRP/stock_configs/</code></li>
+<li><strong>Linux:</strong> <code>~/.local/share/CHIRP/stock_configs/</code></li>
+<li>Veya CHIRP içinden: <code>Help</code> → <code>Load Module...</code> → <code>.py</code> dosyasını seç (sadece o oturum için)</li>
+</ul>
+</li>
+<li>CHIRP&#39;i kapat &amp; aç. <strong>Radio → Download from radio</strong> menüsünde artık &quot;Quansheng UV-K5 (egzumer + f4hwn)&quot; seçeneği görünür.</li>
+</ol>
+<h2 id="adim-4-telsizden-mevcut-konfigurasyonu-indir"><a class="anchor-link" href="#adim-4-telsizden-mevcut-konfigurasyonu-indir" aria-label="Bu basliga link">#</a>Adım 4: Telsizden mevcut konfigürasyonu indir</h2>
+<ol>
+<li>Programlama kablosunu bağla (telsiz açık, normal modda — bootloader değil).</li>
+<li>CHIRP → <strong>Radio → Download from radio</strong>.</li>
+<li>Port: <code>/dev/cu.usbserial-XXXX</code> veya <code>COMx</code>.</li>
+<li>Vendor: <strong>Quansheng</strong> → Model: <strong>UV-K5 (egzumer + f4hwn)</strong>.</li>
+<li><strong>OK</strong> → 60-90 sn → 999-satırlık kanal tablosu yüklenir.</li>
+</ol>
+<blockquote>
+<p><strong>İndir başarısızsa:</strong> Cihazda menüden <code>Settings → Reset</code> yapma — bu kalibrasyonu siler. Önce kabloyu çıkar/tak, sürücüyü kontrol et, USB hub yerine doğrudan bilgisayara bağla.</p>
+</blockquote>
+<h2 id="adim-5-role-csv-39-sini-hazirla"><a class="anchor-link" href="#adim-5-role-csv-39-sini-hazirla" aria-label="Bu basliga link">#</a>Adım 5: Röle CSV&#39;sini hazırla</h2>
+<p><a href="/role-export/">amator.tr/role-export/</a> sayfasında:</p>
+<ol>
+<li><strong>Cihaz</strong>: &quot;Quansheng UV-K5 (F4HWN v4.3+)&quot; veya &quot;UV-K1 / K5 v3 (Fusion v5+, 1000 kanal)&quot;</li>
+<li><strong>TA bölgesi</strong>: ikamet ettiğiniz ile uygun bölge (TA1, TA2, ...)</li>
+<li><strong>Bant</strong>: VHF + UHF</li>
+<li><strong>Mod</strong>: Analog FM (DMR rölelerinizi ayrı tutun, kanal slotu kabarmaz)</li>
+<li><strong>Aktif</strong>: ✓ (yalnızca aktif onaylı röleler)</li>
+<li><strong>Korunan veriler</strong> (ops): Airband / Marine / PMR — parolayla</li>
+<li><strong>CSV indir</strong> → <code>roleler.csv</code> (UTF-8, virgül-ayraçlı)</li>
+</ol>
+<h2 id="adim-6-csv-39-yi-chirp-39-e-yukle"><a class="anchor-link" href="#adim-6-csv-39-yi-chirp-39-e-yukle" aria-label="Bu basliga link">#</a>Adım 6: CSV&#39;yi CHIRP&#39;e yükle</h2>
+<ol>
+<li>CHIRP&#39;te <strong>File → Import</strong> (yeni image gerekirse: New → Quansheng UV-K5 model&#39;i).</li>
+<li><code>roleler.csv</code> seç.</li>
+<li>CHIRP sütun eşleştirmesi sorabilir; röle export&#39;umuz CHIRP standart sütunlarını kullandığı için otomatik tanır:<ul>
+<li><code>Frequency</code> → RX</li>
+<li><code>Duplex</code>/<code>Offset</code> → shift yön + miktar</li>
+<li><code>Tone Mode</code>, <code>rToneFreq</code>, <code>cToneFreq</code> → CTCSS TX/RX</li>
+<li><code>Mode</code> → FM/NFM (12.5 kHz dar bant)</li>
+</ul>
+</li>
+<li>Hangi kanal aralığını import edeceğinizi seçin (1-300 vb.).</li>
+<li><strong>OK</strong> → kanallar tabloya yüklenir.</li>
+</ol>
+<h2 id="adim-7-manuel-ince-ayar"><a class="anchor-link" href="#adim-7-manuel-ince-ayar" aria-label="Bu basliga link">#</a>Adım 7: Manuel ince ayar</h2>
+<p>CSV hazır olsa da kişisel tercihler için:</p>
+<table>
+<thead>
+<tr>
+<th>Ayar</th>
+<th>Önerilen</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tone Squelch</strong> (RX ton filtresi)</td>
+<td>OFF — röleden gelen her şeyi duymak için</td>
+</tr>
+<tr>
+<td><strong>DTMF/PTT-ID</strong></td>
+<td>OFF — yanlışlıkla DTMF kod göndermeyi engeller</td>
+</tr>
+<tr>
+<td><strong>TX Power</strong></td>
+<td>1W default; mesafe gerektikçe 5W&#39;a çıkar (pil ömrü 2× fark eder)</td>
+</tr>
+<tr>
+<td><strong>Bandwidth</strong></td>
+<td>NFM (12.5 kHz) amatör standardı; AM kanallarında AM</td>
+</tr>
+<tr>
+<td><strong>Skip</strong></td>
+<td>Acil/zayıf röleleri <code>Skip = S</code> yaparak taramada hızlanırsınız</td>
+</tr>
+<tr>
+<td><strong>Squelch</strong></td>
+<td>3-5 (10 = en sıkı, 0 = sürekli açık)</td>
+</tr>
+</tbody></table>
+<p><strong>F4HWN&#39;e özel menüler:</strong></p>
+<ul>
+<li><strong>Battery save</strong>: dinleme-açma çevriminde pil tasarrufu (1:4 oranı tipik)</li>
+<li><strong>Compander</strong>: ses dinamiklerini sıkıştırır, gürültülü kanallarda anlaşılırlık artar</li>
+<li><strong>Roger beep / Voice prompt</strong>: kapatabilirsiniz (etrafa duyulan beep&#39;ler nötrleşir)</li>
+<li><strong>Spectrum analyzer</strong>: Menü → spektrum → freq aralığını gez, aktif sinyalleri gör</li>
+</ul>
+<h2 id="adim-8-telsize-geri-yukle"><a class="anchor-link" href="#adim-8-telsize-geri-yukle" aria-label="Bu basliga link">#</a>Adım 8: Telsize geri yükle</h2>
+<ol>
+<li><strong>Radio → Upload to radio</strong>.</li>
+<li>Onay → 60-90 sn → telsiz kendiliğinden yeniden başlar.</li>
+</ol>
+<blockquote>
+<p><strong>Yarıda kesilirse:</strong> Pil seviyesi düşük olabilir; şarj edip tekrar deneyin. Yarım yüklemeden sonra cihaz garip davranabilir — yeniden tam upload yapın, kalıcı hasar olası değil.</p>
+</blockquote>
+<h2 id="stock-39-a-geri-donmek"><a class="anchor-link" href="#stock-39-a-geri-donmek" aria-label="Bu basliga link">#</a>Stock&#39;a geri dönmek</h2>
+<p>Stock firmware&#39;e dönmek isterseniz:</p>
+<ol>
+<li><a href="https://github.com/DualTachyon/uv-k5-firmware/releases">github.com/DualTachyon/uv-k5-firmware/releases</a> → &quot;stock&quot; <code>.bin</code> indir</li>
+<li>Web flasher veya k5prog ile flashla</li>
+<li>EEPROM&#39;u yedek aldığınız <code>.bin</code>&#39;den restore edin (kalibrasyon geri gelir):<pre><code class="language-bash">./k5prog -f -w -B uv-k5-stock-eeprom-backup.bin
+</code></pre>
+</li>
+</ol>
+<h2 id="sik-sorunlar-ve-cozumleri"><a class="anchor-link" href="#sik-sorunlar-ve-cozumleri" aria-label="Bu basliga link">#</a>Sık sorunlar ve çözümleri</h2>
+<table>
+<thead>
+<tr>
+<th>Belirti</th>
+<th>Sebep</th>
+<th>Çözüm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Failed to communicate with radio</code></td>
+<td>Sürücü, port, kablo</td>
+<td>CH340/PL2303/FTDI sürücüsü kurulu mu? Başka USB porta tak. macOS Sequoia&#39;da sistemden &quot;İzin Ver&quot; gerekebilir</td>
+</tr>
+<tr>
+<td>Yarıda kesildi</td>
+<td>Pil zayıf, kablo gevşek</td>
+<td>Pil ≥%50 olmalı, kabloyu sıkı bağla, USB hub&#39;ı atla</td>
+</tr>
+<tr>
+<td>Bazı kanallar boş</td>
+<td>CSV ayraç hatası</td>
+<td>UTF-8 + virgül kontrol et; Excel &quot;Save as CSV&quot; sometimes ; ayraç yapar</td>
+</tr>
+<tr>
+<td><code>Module load failed</code> (CHIRP&#39;te)</td>
+<td>Yanlış driver dosyası</td>
+<td>Doğru <code>.py</code>&#39;yi indirip stock_configs altına koy</td>
+</tr>
+<tr>
+<td>Telsiz F4HWN açıyor ama kanal yok</td>
+<td>İlk yüklemeden sonra fabrika reset gerekiyor</td>
+<td>Menü → Reset → &quot;All&quot; değil sadece &quot;Channels&quot;</td>
+</tr>
+<tr>
+<td>AM kanalı çatırdıyor</td>
+<td>Stock RX yetersiz</td>
+<td>F4HWN&#39;in <strong>AM-fix</strong> menüsünü ON yap (Settings → Modulation)</td>
+</tr>
+<tr>
+<td>Spektrum donuk</td>
+<td>Spectrum mode buggy</td>
+<td>Bekleme süresini düşür (Spectrum → DwellTime → Min)</td>
+</tr>
+</tbody></table>
+<h2 id="diger-kullanisli-f4hwn-ozellikleri"><a class="anchor-link" href="#diger-kullanisli-f4hwn-ozellikleri" aria-label="Bu basliga link">#</a>Diğer kullanışlı F4HWN özellikleri</h2>
+<ul>
+<li><strong>Memory Recall (Ch + 1-9)</strong>: hızlı kanal kısayolları</li>
+<li><strong>VFO scan / Memory scan / Range scan</strong>: 3 farklı tarama modu</li>
+<li><strong>DTMF live decode</strong>: PTT ile DTMF kod yakalar (acil iletişimde yararlı)</li>
+<li><strong>Battery percentage</strong>: stock 4 bar yerine % gösterimi</li>
+<li><strong>NOAA / weather alert</strong>: ABD bantlarına özgü, TR&#39;de işlevsiz ama bypass için açık tutabilirsiniz</li>
+</ul>
+<h2 id="siradaki-adimlar"><a class="anchor-link" href="#siradaki-adimlar" aria-label="Bu basliga link">#</a>Sıradaki adımlar</h2>
+<p>İlk QSO&#39;nuza hazırsınız. Anten, ton ve röle kullanım pratiklerini iyileştirmek için:</p>
+<ul>
+<li><a href="/tutorials/role-nedir">Amatör Telsiz Rölesi Nedir?</a> — duplex shift, CTCSS pratikleri</li>
+<li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS Tonları Açıklaması</a> — F4HWN menüsünde Tone Mode = Tone vs TSQL ayrımı</li>
+<li><a href="/tutorials/anten-yapimi-temel">J-Pole ve Slim Jim Anten Yapımı</a> — stock kauçuk antenden 6-9 dB iyileştirme</li>
+</ul>
+<h2 id="kaynaklar-ve-tesekkur"><a class="anchor-link" href="#kaynaklar-ve-tesekkur" aria-label="Bu basliga link">#</a>Kaynaklar ve teşekkür</h2>
+<ul>
+<li><strong>Armel (F4HWN)</strong> — F4HWN custom firmware maintainer&#39;ı, ana kaynağımız</li>
+<li><strong>Egzumer</strong>, <strong>OneOfEleven</strong>, <strong>fagci</strong> — daha önceki fork&#39;ların geliştiricileri</li>
+<li><strong>DualTachyon</strong> — orijinal açık firmware</li>
+<li><strong>sq5bpf</strong> — k5prog</li>
+<li><strong>whosmatt</strong> — web flasher</li>
+<li><strong>CHIRP topluluğu</strong> — radyo programlama yazılımı</li>
+</ul>
+<p>Tümü gönüllü çalışma + Apache 2.0/GPL açık lisans. Donanım çinli ucuz, yazılım Avrupalı topluluk — alternatif open-hardware/software örneği.</p>
+<p>73, iyi QSO&#39;lar!</p>
+
+</article>
+</div>
+<nav class="prev-next" aria-label="Diğer kılavuzlar"><a class="pn-next" href="/tutorials/rtl-sdr-ile-telsiz-dinleme" rel="next"><div class="pn-label">Sonraki →</div><div class="pn-title">RTL-SDR ile Telsiz Dinleme — Lisanssız Başlangıç Rehberi</div></a></nav>
+<script type="module" src="/shared/js/reading-progress.js" defer></script>
+<script type="module" src="/shared/js/toc.js" defer></script>
+<script type="module" src="/shared/js/code-copy.js" defer></script>
+<script type="module" src="/shared/js/lightbox.js" defer></script>
+<script type="module" src="/shared/js/helpful.js" defer></script>
+</main>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+
+</body>
+</html>

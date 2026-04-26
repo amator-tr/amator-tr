@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTCSS / DCS Ton Bulucu — amator.tr</title>
+<meta name="description" content="Amatör telsiz CTCSS (38 ton) ve DCS (104 kod) interaktif tablo. Web Audio API ile ton preview, telsiz menü numarası eşleştirme, frekans araması.">
+<meta name="keywords" content="CTCSS, DCS, ton kodu, sub-audible, PL tone, röle açma tonu, UV-K5, Baofeng, amatör telsiz">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/ctcss-ton-bulucu/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CTCSS / DCS Ton Bulucu — amator.tr">
+<meta property="og:description" content="38 CTCSS frekansı + 104 DCS kodu, Web Audio preview ve telsiz menü numarası eşleştirme.">
+<meta property="og:url" content="https://amator.tr/araclar/ctcss-ton-bulucu/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  .tool-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .tone-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .tone-table th, .tone-table td {
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    text-align: left;
+  }
+  .tone-table th {
+    background: var(--surface-2);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .tone-table tr:hover { background: var(--surface-2); }
+  .tone-list-wrap {
+    max-height: 480px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .play-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+  }
+  .play-btn:hover { opacity: 0.9; }
+  .play-btn.playing { background: var(--warning); }
+  .search-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  .search-input:focus { outline: none; border-color: var(--accent); }
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+  }
+  .tab-btn {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    margin-right: 6px;
+    font-size: 0.95rem;
+  }
+  .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<!-- @shared-nav-start -->
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+<!-- @shared-nav-end -->
+<main id="main" tabindex="-1">
+<div class="tool-wrap">
+  <header class="page-header">
+    <h1>CTCSS / DCS Ton Bulucu</h1>
+    <p class="meta">Sub-audible ton kodları — röle açma, çoklu kanal paylaşımı için.</p>
+  </header>
+
+  <div class="info-banner">
+    <strong>Nedir?</strong> CTCSS (Continuous Tone-Coded Squelch System, "PL tone") ve DCS (Digital Coded Squelch),
+    aynı frekansı kullanan farklı grupların birbirini engellemeden iletişim kurmasını sağlayan alt-ses sinyalleridir.
+    Türkiye röle frekanslarının çoğu CTCSS <strong>88.5 Hz</strong> veya <strong>123.0 Hz</strong> kullanır.
+    <a href="/tutorials/ctcss-dcs-nedir">Detaylı tutorial →</a>
+  </div>
+
+  <div style="margin: 16px 0;">
+    <button class="tab-btn active" id="tab-ctcss" type="button">CTCSS (38 ton)</button>
+    <button class="tab-btn" id="tab-dcs" type="button">DCS (104 kod)</button>
+    <button class="tab-btn" id="tab-tr" type="button">TR Röle Tonları</button>
+  </div>
+
+  <input type="search" class="search-input" id="search" placeholder="Ara: 88.5, 023, hz, kod..." aria-label="Ton ara">
+
+  <div id="ctcss-section">
+    <div class="tone-list-wrap">
+      <table class="tone-table" id="ctcss-table">
+        <thead><tr><th>#</th><th>Frekans (Hz)</th><th>EIA Kodu</th><th>Preview</th></tr></thead>
+        <tbody id="ctcss-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="dcs-section" class="hidden">
+    <div class="tone-list-wrap">
+      <table class="tone-table" id="dcs-table">
+        <thead><tr><th>#</th><th>Octal Kod</th><th>Normal/Inverted</th></tr></thead>
+        <tbody id="dcs-tbody"></tbody>
+      </table>
+    </div>
+    <p class="meta" style="margin-top: 12px;">DCS önyazımları: D023N (normal), D023I (inverted/reverse). Telsiz menüsünde "D" prefix'i ile gösterilir.</p>
+  </div>
+
+  <div id="tr-section" class="hidden">
+    <div class="tone-list-wrap">
+      <table class="tone-table">
+        <thead><tr><th>Bölge / Röle</th><th>RX Frekans</th><th>Shift</th><th>CTCSS</th></tr></thead>
+        <tbody id="tr-tbody"></tbody>
+      </table>
+    </div>
+    <p class="meta" style="margin-top: 12px;">Türkiye'deki yaygın röle ton kodları. Detaylı liste için
+      <a href="/role-export/">röle CSV exporter</a>.</p>
+  </div>
+
+  <div class="info-banner" style="margin-top: 24px;">
+    <strong>Web Audio Preview:</strong> "▶" butonuna bas → 2 saniye boyunca o frekansta sinüs dalga çalar.
+    Hoparlöründen duyamayabilirsin (67 Hz çoğu cep hoparlöründe duyulmaz). Kulaklıkla daha iyi.
+  </div>
+</div>
+</main>
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+const CTCSS_TONES = [
+  { num: 1, freq: 67.0, eia: "XZ" },   { num: 2, freq: 71.9, eia: "XA" },
+  { num: 3, freq: 74.4, eia: "WA" },   { num: 4, freq: 77.0, eia: "XB" },
+  { num: 5, freq: 79.7, eia: "WB" },   { num: 6, freq: 82.5, eia: "YZ" },
+  { num: 7, freq: 85.4, eia: "YA" },   { num: 8, freq: 88.5, eia: "YB" },
+  { num: 9, freq: 91.5, eia: "ZZ" },   { num: 10, freq: 94.8, eia: "ZA" },
+  { num: 11, freq: 97.4, eia: "ZB" },  { num: 12, freq: 100.0, eia: "1Z" },
+  { num: 13, freq: 103.5, eia: "1A" }, { num: 14, freq: 107.2, eia: "1B" },
+  { num: 15, freq: 110.9, eia: "2Z" }, { num: 16, freq: 114.8, eia: "2A" },
+  { num: 17, freq: 118.8, eia: "2B" }, { num: 18, freq: 123.0, eia: "3Z" },
+  { num: 19, freq: 127.3, eia: "3A" }, { num: 20, freq: 131.8, eia: "3B" },
+  { num: 21, freq: 136.5, eia: "4Z" }, { num: 22, freq: 141.3, eia: "4A" },
+  { num: 23, freq: 146.2, eia: "4B" }, { num: 24, freq: 151.4, eia: "5Z" },
+  { num: 25, freq: 156.7, eia: "5A" }, { num: 26, freq: 162.2, eia: "5B" },
+  { num: 27, freq: 167.9, eia: "6Z" }, { num: 28, freq: 173.8, eia: "6A" },
+  { num: 29, freq: 179.9, eia: "6B" }, { num: 30, freq: 186.2, eia: "7Z" },
+  { num: 31, freq: 192.8, eia: "7A" }, { num: 32, freq: 203.5, eia: "M1" },
+  { num: 33, freq: 210.7, eia: "M2" }, { num: 34, freq: 218.1, eia: "M3" },
+  { num: 35, freq: 225.7, eia: "M4" }, { num: 36, freq: 233.6, eia: "M5" },
+  { num: 37, freq: 241.8, eia: "M6" }, { num: 38, freq: 250.3, eia: "M7" }
+];
+
+const DCS_CODES = [
+  "023","025","026","031","032","036","043","047","051","053","054","065","071","072","073","074",
+  "114","115","116","122","125","131","132","134","143","145","152","155","156","162","165","172","174",
+  "205","212","223","225","226","243","244","245","246","251","252","255","261","263","265","266",
+  "271","274","306","311","315","325","331","332","343","346","351","356","364","365","371","411",
+  "412","413","423","431","432","445","446","452","454","455","462","464","465","466","503","506",
+  "516","523","526","532","546","565","606","612","624","627","631","632","654","662","664","703",
+  "712","723","731","732","734","743","754"
+];
+
+const TR_ROLES = [
+  { konum: "Istanbul Camlica", rx: "145.6125", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Istanbul Aydos", rx: "145.6500", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Ankara Elmadag", rx: "145.6000", shift: "-0.6", ctcss: "123.0" },
+  { konum: "Izmir Yamanlar", rx: "145.7000", shift: "-0.6", ctcss: "123.0" },
+  { konum: "Bursa Uludag", rx: "145.7500", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Antalya Tahtali", rx: "145.6250", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Trabzon Boztepe", rx: "145.7625", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Samsun Nebiyan", rx: "145.6750", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Konya Loras", rx: "145.7875", shift: "-0.6", ctcss: "100.0" },
+  { konum: "Eskisehir Turkmen", rx: "145.7000", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Adana Kanlidivane", rx: "145.6125", shift: "-0.6", ctcss: "88.5" },
+  { konum: "Mersin Toros", rx: "145.7375", shift: "-0.6", ctcss: "88.5" }
+];
+
+let audioCtx = null;
+let activeOsc = null;
+let activeBtn = null;
+
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+}
+
+function stopTone() {
+  if (activeOsc) {
+    try { activeOsc.stop(); } catch (e) {}
+    activeOsc.disconnect();
+    activeOsc = null;
+  }
+  if (activeBtn) {
+    activeBtn.classList.remove("playing");
+    activeBtn.textContent = "▶";
+    activeBtn = null;
+  }
+}
+
+function playTone(freq, btn) {
+  if (activeBtn === btn) { stopTone(); return; }
+  stopTone();
+  ensureAudio();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = "sine";
+  osc.frequency.value = freq;
+  gain.gain.value = 0.15;
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start();
+  activeOsc = osc;
+  activeBtn = btn;
+  btn.classList.add("playing");
+  btn.textContent = "■";
+  setTimeout(function () { if (activeBtn === btn) stopTone(); }, 2500);
+}
+
+function makeCell(text) {
+  const td = document.createElement("td");
+  td.textContent = text;
+  return td;
+}
+
+function renderCtcss(filter) {
+  const tbody = document.getElementById("ctcss-tbody");
+  tbody.textContent = "";
+  const f = (filter || "").toLowerCase().trim();
+  for (const t of CTCSS_TONES) {
+    const blob = (t.num + " " + t.freq + " " + t.eia).toLowerCase();
+    if (f && blob.indexOf(f) === -1) continue;
+    const tr = document.createElement("tr");
+    tr.appendChild(makeCell(String(t.num)));
+    tr.appendChild(makeCell(t.freq.toFixed(1) + " Hz"));
+    tr.appendChild(makeCell(t.eia));
+    const tdBtn = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.className = "play-btn";
+    btn.type = "button";
+    btn.dataset.freq = String(t.freq);
+    btn.setAttribute("aria-label", t.freq + " Hz cal");
+    btn.textContent = "▶";
+    tdBtn.appendChild(btn);
+    tr.appendChild(tdBtn);
+    tbody.appendChild(tr);
+  }
+}
+
+function renderDcs(filter) {
+  const tbody = document.getElementById("dcs-tbody");
+  tbody.textContent = "";
+  const f = (filter || "").toLowerCase().trim().replace(/^d/, "");
+  let n = 1;
+  for (const code of DCS_CODES) {
+    if (f && code.indexOf(f) === -1) { n++; continue; }
+    const tr = document.createElement("tr");
+    tr.appendChild(makeCell(String(n)));
+    tr.appendChild(makeCell("D" + code));
+    tr.appendChild(makeCell("D" + code + "N / D" + code + "I"));
+    tbody.appendChild(tr);
+    n++;
+  }
+}
+
+function renderTr(filter) {
+  const tbody = document.getElementById("tr-tbody");
+  tbody.textContent = "";
+  const f = (filter || "").toLowerCase().trim();
+  for (const r of TR_ROLES) {
+    const blob = (r.konum + " " + r.rx + " " + r.ctcss).toLowerCase();
+    if (f && blob.indexOf(f) === -1) continue;
+    const tr = document.createElement("tr");
+    tr.appendChild(makeCell(r.konum));
+    tr.appendChild(makeCell(r.rx));
+    tr.appendChild(makeCell(r.shift));
+    tr.appendChild(makeCell(r.ctcss + " Hz"));
+    tbody.appendChild(tr);
+  }
+}
+
+let activeTab = "ctcss";
+function setTab(tab) {
+  activeTab = tab;
+  ["ctcss", "dcs", "tr"].forEach(function (id) {
+    document.getElementById("tab-" + id).classList.toggle("active", id === tab);
+    document.getElementById(id + "-section").classList.toggle("hidden", id !== tab);
+  });
+  renderActive();
+}
+
+function renderActive() {
+  const filter = document.getElementById("search").value;
+  if (activeTab === "ctcss") renderCtcss(filter);
+  else if (activeTab === "dcs") renderDcs(filter);
+  else renderTr(filter);
+}
+
+document.getElementById("tab-ctcss").addEventListener("click", function () { setTab("ctcss"); });
+document.getElementById("tab-dcs").addEventListener("click", function () { setTab("dcs"); });
+document.getElementById("tab-tr").addEventListener("click", function () { setTab("tr"); });
+document.getElementById("search").addEventListener("input", renderActive);
+
+document.addEventListener("click", function (e) {
+  const btn = e.target.closest && e.target.closest(".play-btn");
+  if (btn) playTone(parseFloat(btn.dataset.freq), btn);
+});
+
+setTab("ctcss");
+</script>
+</body>
+</html>

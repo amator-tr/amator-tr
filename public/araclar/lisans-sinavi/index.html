@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amatör Telsiz Lisans Sınavı Simülatörü (KEGM/BTK Hazırlık) — amator.tr</title>
+<meta name="description" content="KEGM amatör telsiz sınavı için interaktif örnek soru bankası. 35+ çoktan seçmeli soru, anlık geri bildirim, geçme notu 70/100. Yönetmelik, elektrik, radyo, anten, propagasyon konularında.">
+<meta name="keywords" content="amatör telsiz sınavı, BTK lisans sınavı, KEGM amatör radyo, sınav soruları, B sınıfı sınavı, A sınıfı, çağrı işareti sınavı, ham radio license Turkey">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/lisans-sinavi/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Amatör Telsiz Lisans Sınavı Simülatörü — amator.tr">
+<meta property="og:description" content="35+ örnek soru bankası ile KEGM amatör telsiz sınavına hazırlık. Anlık geri bildirim.">
+<meta property="og:url" content="https://amator.tr/araclar/lisans-sinavi/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  .quiz-wrap { max-width: 800px; margin: 0 auto; padding: 24px 16px; }
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    min-width: 0;
+  }
+  .quiz-progress {
+    width: 100%;
+    height: 6px;
+    background: var(--surface-2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .quiz-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .quiz-q {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 12px 0 20px;
+    line-height: 1.5;
+  }
+  .quiz-cat {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+  }
+  .quiz-options { display: grid; gap: 10px; }
+  .quiz-option {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.4;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--accent); }
+  .quiz-option:disabled { cursor: default; }
+  .quiz-option.correct {
+    border-color: var(--success);
+    background: color-mix(in srgb, var(--success) 18%, transparent);
+  }
+  .quiz-option.wrong {
+    border-color: var(--error);
+    background: color-mix(in srgb, var(--error) 18%, transparent);
+  }
+  .quiz-option .opt-letter {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-right: 10px;
+  }
+  .quiz-explanation {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin-top: 16px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .quiz-explanation[hidden] { display: none; }
+  .quiz-actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-quiz {
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .btn-quiz-primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .btn-quiz-primary:hover { opacity: 0.92; }
+  .btn-quiz:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-result {
+    text-align: center;
+    padding: 32px 16px;
+  }
+  .quiz-result h2 { margin: 0 0 12px; font-size: 1.8rem; }
+  .quiz-score {
+    font-size: 4rem;
+    font-weight: 800;
+    margin: 16px 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .quiz-score.passed { color: var(--success); }
+  .quiz-score.failed { color: var(--error); }
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<!-- @shared-nav-start -->
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+<!-- @shared-nav-end -->
+<main id="main" tabindex="-1">
+<div class="quiz-wrap">
+  <header class="page-header">
+    <h1>Lisans Sınavı Simülatörü</h1>
+    <p class="meta">KEGM/BTK amatör telsiz sınavına hazırlık — 35+ örnek soru</p>
+  </header>
+
+  <div class="info-banner">
+    <strong>📚 İki soru bankası, dilediğini seç:</strong>
+    <a href="https://telsizcilik.com/test" rel="noopener noreferrer">telsizcilik.com</a> (661, görselli) ·
+    <a href="https://ates.m5bilisim.com/soru-calismasi" rel="noopener noreferrer">ATES — M5 Bilişim</a> (661).
+    Resmi BTK/KEGM sınav konularından kategorize.
+    Resmi sınav: <a href="https://kegm.gov.tr/" rel="noopener noreferrer">KEGM</a>,
+    <a href="/tutorials/cagri-isareti-nasil-alinir">başvuru süreci →</a>
+  </div>
+
+  <div class="quiz-card" id="quiz-card">
+    <!-- Quiz dinamik render edilir -->
+  </div>
+</div>
+</main>
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+const PASS = 70;
+const SOURCES = {
+  telsizcilik: { url: "/data/lisans-sorulari-telsizcilik.json", label: "telsizcilik.com", credit: "https://telsizcilik.com/test" },
+  ates: { url: "/data/lisans-sorulari-ates.json", label: "ATES (M5 Bilişim)", credit: "https://ates.m5bilisim.com/soru-calismasi" },
+};
+
+let CACHE = {}; // src -> { count, questions }
+let MERGED = null; // dedupe edilmiş hepsi
+let state = null;
+let filters = { src: "telsizcilik", cls: "ab", cat: "all", count: 20 };
+
+function dedupeKey(q) {
+  return String(q.q || "").replace(/\s+/g, " ").trim().toLowerCase().slice(0, 80);
+}
+
+function tagSrc(questions, srcLabel) {
+  return questions.map((q) => Object.assign({}, q, { _src: srcLabel }));
+}
+
+function getQuestionsForSource(src) {
+  if (src === "all") {
+    if (MERGED) return MERGED;
+    const seen = new Map();
+    // Telsizcilik öncelikli (görselli sorular var)
+    if (CACHE.telsizcilik) {
+      for (const q of tagSrc(CACHE.telsizcilik.questions, "telsizcilik.com")) {
+        const k = dedupeKey(q);
+        if (!seen.has(k)) seen.set(k, q);
+      }
+    }
+    if (CACHE.ates) {
+      for (const q of tagSrc(CACHE.ates.questions, "ATES")) {
+        const k = dedupeKey(q);
+        if (!seen.has(k)) seen.set(k, q);
+      }
+    }
+    MERGED = Array.from(seen.values());
+    return MERGED;
+  }
+  if (!CACHE[src]) return [];
+  return tagSrc(CACHE[src].questions, SOURCES[src].label);
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function clearChildren(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+
+function makeBtn(text, cls, onClick) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = cls;
+  btn.textContent = text;
+  btn.addEventListener("click", onClick);
+  return btn;
+}
+
+function makeRadioGroup(label, name, options, current, onChange) {
+  const wrap = document.createElement("div");
+  wrap.style.marginBottom = "16px";
+  const lbl = document.createElement("p");
+  lbl.style.margin = "0 0 6px";
+  lbl.style.fontSize = "0.9rem";
+  lbl.style.fontWeight = "600";
+  lbl.textContent = label;
+  wrap.appendChild(lbl);
+  const grp = document.createElement("div");
+  grp.style.display = "flex";
+  grp.style.flexWrap = "wrap";
+  grp.style.gap = "6px";
+  for (const opt of options) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn-quiz";
+    if (String(opt.value) === String(current)) {
+      btn.classList.add("btn-quiz-primary");
+    }
+    btn.textContent = opt.label;
+    btn.dataset.value = String(opt.value);
+    if (opt.disabled) {
+      btn.disabled = true;
+      btn.title = opt.title || "Yüklenemedi";
+      btn.style.opacity = "0.5";
+      btn.style.cursor = "not-allowed";
+    } else {
+      btn.addEventListener("click", () => {
+        onChange(opt.value);
+      });
+    }
+    grp.appendChild(btn);
+  }
+  wrap.appendChild(grp);
+  return wrap;
+}
+
+function filteredQuestions() {
+  const pool = getQuestionsForSource(filters.src);
+  return pool.filter(q => {
+    if (filters.cls !== "all" && q.cls !== filters.cls) return false;
+    if (filters.cat !== "all" && q.cat !== filters.cat) return false;
+    return true;
+  });
+}
+
+function shuffleOptions(question) {
+  // Şıklarla birlikte doğru cevap index'ini yeniden eşle
+  const order = question.options.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = order[i]; order[i] = order[j]; order[j] = t;
+  }
+  return Object.assign({}, question, {
+    options: order.map((i) => question.options[i]),
+    correct: order.indexOf(question.correct),
+  });
+}
+
+function startQuiz() {
+  const pool = filteredQuestions();
+  if (pool.length === 0) return;
+  const n = filters.count === -1 ? pool.length : Math.min(filters.count, pool.length);
+  // Hem soruları hem her sorunun şıklarını karıştır
+  const questions = shuffle(pool).slice(0, n).map(shuffleOptions);
+  state = { questions, idx: 0, correct: 0, answered: [] };
+  render();
+}
+
+function render() {
+  const card = document.getElementById("quiz-card");
+  clearChildren(card);
+
+  if (!CACHE.telsizcilik && !CACHE.ates) {
+    const p = document.createElement("p");
+    p.className = "meta";
+    p.textContent = "Soru bankası yükleniyor...";
+    card.appendChild(p);
+    return;
+  }
+
+  // Welcome / setup screen
+  if (!state) {
+    const h2 = document.createElement("h2");
+    h2.textContent = "Sınav Ayarları";
+    h2.style.marginTop = "0";
+    card.appendChild(h2);
+
+    const total = getQuestionsForSource(filters.src).length;
+    const intro = document.createElement("p");
+    intro.className = "meta";
+    intro.textContent = total + " soruluk havuzdan filtrele, başlat. Geçme notu " + PASS + "/100. Süre sınırı yok.";
+    card.appendChild(intro);
+
+    const counts = countsByFilters();
+    const cur = document.createElement("p");
+    cur.style.fontSize = "0.95rem";
+    cur.style.margin = "12px 0";
+    const strong = document.createElement("strong");
+    strong.textContent = counts.matching + " ";
+    cur.appendChild(strong);
+    cur.appendChild(document.createTextNode("eşleşen soru bu filtrelerle."));
+    card.appendChild(cur);
+
+    const tLoaded = !!CACHE.telsizcilik;
+    const aLoaded = !!CACHE.ates;
+    const tCount = CACHE.telsizcilik?.count ?? 0;
+    const aCount = CACHE.ates?.count ?? 0;
+    card.appendChild(makeRadioGroup("Soru kaynağı", "src", [
+      {
+        label: tLoaded ? "telsizcilik.com (" + tCount + ")" : "telsizcilik.com ✗",
+        value: "telsizcilik",
+        disabled: !tLoaded,
+        title: !tLoaded ? "Bu kaynak yüklenemedi, ATES'e geçildi" : null,
+      },
+      {
+        label: aLoaded ? "ATES — M5 Bilişim (" + aCount + ")" : "ATES ✗",
+        value: "ates",
+        disabled: !aLoaded,
+        title: !aLoaded ? "Bu kaynak yüklenemedi, telsizcilik'e geçildi" : null,
+      },
+    ], filters.src, v => { filters.src = v; render(); }));
+
+    card.appendChild(makeRadioGroup("Sınıf", "cls", [
+      { label: "A-B Sınıfı", value: "ab" },
+      { label: "C Sınıfı", value: "c" },
+      { label: "Hepsi", value: "all" },
+    ], filters.cls, v => { filters.cls = v; render(); }));
+
+    card.appendChild(makeRadioGroup("Kategori", "cat", [
+      { label: "Hepsi", value: "all" },
+      { label: "Teknik", value: "Teknik" },
+      { label: "İşletme", value: "İşletme" },
+      { label: "Düzenleme", value: "Düzenleme" },
+    ], filters.cat, v => { filters.cat = v; render(); }));
+
+    card.appendChild(makeRadioGroup("Soru sayısı", "count", [
+      { label: "10", value: 10 },
+      { label: "20", value: 20 },
+      { label: "30", value: 30 },
+      { label: "50", value: 50 },
+      { label: "100", value: 100 },
+      { label: "Hepsi (" + counts.matching + ")", value: -1 },
+    ], filters.count, v => { filters.count = v; render(); }));
+
+    const actions = document.createElement("div");
+    actions.className = "quiz-actions";
+    const startBtn = makeBtn("Sınavı Başlat", "btn-quiz btn-quiz-primary", startQuiz);
+    if (counts.matching === 0) startBtn.disabled = true;
+    actions.appendChild(startBtn);
+    card.appendChild(actions);
+
+    const credit = document.createElement("p");
+    credit.className = "meta";
+    credit.style.marginTop = "20px";
+    credit.style.fontSize = "0.8rem";
+    credit.appendChild(document.createTextNode("Kaynaklar: "));
+    const t = document.createElement("a");
+    t.href = SOURCES.telsizcilik.credit;
+    t.rel = "noopener noreferrer";
+    t.textContent = "telsizcilik.com";
+    credit.appendChild(t);
+    credit.appendChild(document.createTextNode(" + "));
+    const at = document.createElement("a");
+    at.href = SOURCES.ates.credit;
+    at.rel = "noopener noreferrer";
+    at.textContent = "ATES";
+    credit.appendChild(at);
+    credit.appendChild(document.createTextNode(" — KEGM/BTK kamuya açık sınav konuları, sahiplerine atfen."));
+    card.appendChild(credit);
+    return;
+  }
+
+  // Result screen
+  if (state.idx >= state.questions.length) {
+    const score = Math.round((state.correct / state.questions.length) * 100);
+    const passed = score >= PASS;
+    const wrap = document.createElement("div");
+    wrap.className = "quiz-result";
+    const h2 = document.createElement("h2");
+    h2.textContent = passed ? "🎉 Tebrikler, geçtin!" : "📚 Tekrar dene";
+    wrap.appendChild(h2);
+    const scoreDiv = document.createElement("div");
+    scoreDiv.className = "quiz-score " + (passed ? "passed" : "failed");
+    scoreDiv.textContent = score + "/100";
+    wrap.appendChild(scoreDiv);
+    const summary = document.createElement("p");
+    summary.textContent = state.correct + " / " + state.questions.length + " doğru cevap";
+    wrap.appendChild(summary);
+    const advice = document.createElement("p");
+    advice.className = "meta";
+    advice.style.marginTop = "16px";
+    advice.textContent = passed
+      ? "Bu performansı resmi sınavda da yakalarsan lisansın senin olur. Farklı kategorilerle pratiğe devam et."
+      : "Yanlış konuları tekrar gözden geçir. Aşağıdaki Sözlük linki yardımcı olur.";
+    wrap.appendChild(advice);
+    const actions = document.createElement("div");
+    actions.className = "quiz-actions";
+    actions.style.justifyContent = "center";
+    actions.appendChild(makeBtn("Tekrar Dene", "btn-quiz btn-quiz-primary", () => { state = null; render(); }));
+    actions.appendChild(makeBtn("Aynı Filtreyle Yeni Tur", "btn-quiz", startQuiz));
+    const link = document.createElement("a");
+    link.href = "/sozluk";
+    link.className = "btn-quiz";
+    link.textContent = "Sözlüğe Bak";
+    link.style.textDecoration = "none";
+    actions.appendChild(link);
+    wrap.appendChild(actions);
+    card.appendChild(wrap);
+    return;
+  }
+
+  // Question screen
+  const q = state.questions[state.idx];
+  const answered = state.answered[state.idx];
+
+  const prog = document.createElement("div");
+  prog.className = "quiz-progress";
+  const fill = document.createElement("div");
+  fill.className = "quiz-progress-fill";
+  fill.style.width = ((state.idx / state.questions.length) * 100) + "%";
+  prog.appendChild(fill);
+  card.appendChild(prog);
+
+  const meta = document.createElement("div");
+  meta.className = "quiz-meta";
+  const left = document.createElement("span");
+  left.textContent = "Soru " + (state.idx + 1) + " / " + state.questions.length;
+  meta.appendChild(left);
+  const right = document.createElement("span");
+  right.textContent = "Doğru: " + state.correct;
+  meta.appendChild(right);
+  card.appendChild(meta);
+
+  const cat = document.createElement("span");
+  cat.className = "quiz-cat";
+  cat.textContent =
+    (q.cls === "ab" ? "A-B" : "C") +
+    " · " +
+    q.cat +
+    (q.n ? " · #" + q.n : "") +
+    (q._src ? " · " + q._src : "");
+  card.appendChild(cat);
+
+  const qDiv = document.createElement("div");
+  qDiv.className = "quiz-q";
+  // Çok satırlı soru metnini paragraflara böl (\n\n veya \n)
+  const lines = q.q.split(/\n/);
+  for (let i = 0; i < lines.length; i++) {
+    if (i > 0) qDiv.appendChild(document.createElement("br"));
+    qDiv.appendChild(document.createTextNode(lines[i]));
+  }
+  card.appendChild(qDiv);
+
+  // qImgs (yeni format) — soru üstünde 1+ görsel
+  if (Array.isArray(q.qImgs) && q.qImgs.length > 0) {
+    for (const src of q.qImgs) {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "Soru görseli";
+      img.loading = "lazy";
+      img.style.maxWidth = "100%";
+      img.style.borderRadius = "6px";
+      img.style.margin = "0 0 12px";
+      img.style.background = "#fff";
+      img.style.padding = "8px";
+      img.onerror = function () { img.style.display = "none"; };
+      card.appendChild(img);
+    }
+  }
+  // Eski format backward-compat (q.img tek string)
+  if (q.img && (!q.qImgs || q.qImgs.length === 0)) {
+    const img = document.createElement("img");
+    img.src = q.img;
+    img.alt = "Soru görseli";
+    img.loading = "lazy";
+    img.style.maxWidth = "100%";
+    img.style.borderRadius = "6px";
+    img.style.margin = "0 0 16px";
+    img.style.background = "#fff";
+    card.appendChild(img);
+  }
+
+  const opts = document.createElement("div");
+  opts.className = "quiz-options";
+  q.options.forEach(function (opt, i) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "quiz-option";
+    const letter = document.createElement("span");
+    letter.className = "opt-letter";
+    letter.textContent = String.fromCharCode(65 + i);
+    btn.appendChild(letter);
+    // opt artık iki formatta: string (eski) veya {text, img} (yeni)
+    if (typeof opt === "string") {
+      btn.appendChild(document.createTextNode(opt));
+    } else {
+      if (opt.text) btn.appendChild(document.createTextNode(opt.text + " "));
+      if (opt.img) {
+        const im = document.createElement("img");
+        im.src = opt.img;
+        im.alt = "Şık " + String.fromCharCode(65 + i);
+        im.loading = "lazy";
+        im.style.maxHeight = "80px";
+        im.style.maxWidth = "100%";
+        im.style.verticalAlign = "middle";
+        im.style.background = "#fff";
+        im.style.padding = "4px";
+        im.style.borderRadius = "4px";
+        im.onerror = function () { im.alt = "(görsel yüklenemedi)"; im.style.display = "none"; };
+        btn.appendChild(im);
+      }
+    }
+    if (answered !== undefined) {
+      btn.disabled = true;
+      if (i === q.correct) btn.classList.add("correct");
+      else if (i === answered) btn.classList.add("wrong");
+    } else {
+      btn.addEventListener("click", function () {
+        state.answered[state.idx] = i;
+        if (i === q.correct) state.correct++;
+        render();
+      });
+    }
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+
+  if (answered !== undefined) {
+    const exp = document.createElement("div");
+    exp.className = "quiz-explanation";
+    const strong = document.createElement("strong");
+    strong.textContent = answered === q.correct ? "✓ Doğru" : "✗ Yanlış — Doğru cevap: " + String.fromCharCode(65 + q.correct);
+    exp.appendChild(strong);
+    card.appendChild(exp);
+
+    const actions = document.createElement("div");
+    actions.className = "quiz-actions";
+    const isLast = state.idx === state.questions.length - 1;
+    actions.appendChild(makeBtn(isLast ? "Sonucu Gör" : "Sonraki Soru", "btn-quiz btn-quiz-primary", function () {
+      state.idx++;
+      render();
+    }));
+    actions.appendChild(makeBtn("Sınavı Bitir", "btn-quiz", function () {
+      state.idx = state.questions.length;
+      render();
+    }));
+    card.appendChild(actions);
+  }
+}
+
+function countsByFilters() {
+  if (!CACHE.telsizcilik && !CACHE.ates) return { matching: 0 };
+  return { matching: filteredQuestions().length };
+}
+
+async function loadOne(src) {
+  const cfg = SOURCES[src];
+  const r = await fetch(cfg.url, { cache: "force-cache" });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  CACHE[src] = await r.json();
+}
+
+async function loadData() {
+  // İki kaynak paralel — biri başarısız olursa diğeriyle devam
+  const results = await Promise.allSettled([loadOne("telsizcilik"), loadOne("ates")]);
+  if (!CACHE.telsizcilik && !CACHE.ates) {
+    const card = document.getElementById("quiz-card");
+    clearChildren(card);
+    const p = document.createElement("p");
+    p.className = "meta";
+    p.textContent = "Soru bankası yüklenemedi: " + results.map(r => r.reason?.message || "?").join(", ");
+    card.appendChild(p);
+    return;
+  }
+  // Default kaynak yüklenmediyse mevcut olana fallback
+  if (!CACHE[filters.src]) {
+    filters.src = CACHE.telsizcilik ? "telsizcilik" : "ates";
+  }
+  render();
+}
+
+loadData();
+</script>
+</body>
+</html>

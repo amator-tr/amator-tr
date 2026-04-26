@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Röle Export — amator.tr</title>
+  <meta name="description" content="Türkiye amatör telsiz rölelerini CHIRP/CPS uyumlu CSV formatında indirin. Filtre, harita, preset desteğiyle.">
+  <link rel="canonical" href="https://amator.tr/role-export/">
+  <link rel="stylesheet" href="/shared/css/themes.css">
+  <link rel="stylesheet" href="/shared/css/base.css">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/role-export.css">
+</head>
+<body>
+  <script src="vendor/leaflet/leaflet.js"></script>
+
+  <a class="skip-link" href="#main-content">Ana içeriğe atla</a>
+<!-- @shared-nav-start -->
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+<!-- @shared-nav-end -->
+
+  <div class="container">
+    <!-- Banner -->
+    <div id="banner-container" role="alert" aria-live="polite"></div>
+
+    <!-- Header -->
+    <div class="header">
+      <h1>Röle Export</h1>
+      <p>Türkiye amatör telsiz rölelerini CPS/CHIRP uyumlu CSV formatında indirin</p>
+    </div>
+
+    <!-- Cihaz Secici -->
+    <div class="section" id="main-content">
+      <div class="section-title">Cihaz Secimi</div>
+      <select id="cihaz-select"></select>
+      <div id="cihaz-bilgi" class="device-info-card" style="display:none;">
+        <div class="device-info-header">
+          <span class="device-info-name" id="cihaz-bilgi-ad"></span>
+          <span class="device-info-format" id="cihaz-bilgi-format"></span>
+        </div>
+        <p class="device-info-desc" id="cihaz-bilgi-aciklama"></p>
+        <div class="device-info-specs" id="cihaz-bilgi-ozellikler"></div>
+      </div>
+    </div>
+
+    <!-- Istatistik Paneli -->
+    <div class="section">
+      <div class="section-title">Istatistikler</div>
+      <div class="stats-panel">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-toplam">0</div>
+          <div class="stat-label">Toplam</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-aktif">0</div>
+          <div class="stat-label">Aktif</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-pasif">0</div>
+          <div class="stat-label">Pasif</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-vhf">0</div>
+          <div class="stat-label">VHF</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-uhf">0</div>
+          <div class="stat-label">UHF</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-aprs">0</div>
+          <div class="stat-label">APRS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-dijital">0</div>
+          <div class="stat-label">Dijital</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-tarole">0</div>
+          <div class="stat-label">ta-role</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-filtrelenmis">0</div>
+          <div class="stat-label">Filtrelenmis</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ziyaretci Istatistikleri -->
+    <div class="section">
+      <div class="section-title">Ziyaretci Istatistikleri</div>
+      <div id="ziyaretci-stats"></div>
+    </div>
+
+    <!-- Veri Kaynaklari -->
+    <div class="section">
+      <div class="section-title">Veri Kaynaklari</div>
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="kaynak-telsizcilik" class="toggle" checked>
+            telsizcilik.com
+          </label>
+          <small class="device-note">Ana veri kaynagi — koordinatli, Supabase</small>
+          <div id="kaynak-telsizcilik-durum" class="kaynak-durum"></div>
+          <div id="cache-bilgi-telsizcilik" class="cache-bilgi"></div>
+          <div class="progress-bar" id="kaynak-telsizcilik-progress" style="display:none;">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="kaynak-amatortelsizcilik" class="toggle" checked>
+            amatortelsizcilik.com.tr
+          </label>
+          <small class="device-note">Ek kaynak — JSON API</small>
+          <div id="kaynak-amatortelsizcilik-durum" class="kaynak-durum"></div>
+          <div id="cache-bilgi-amatortelsizcilik" class="cache-bilgi"></div>
+          <div class="progress-bar" id="kaynak-amatortelsizcilik-progress" style="display:none;">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="kaynak-tarole" class="toggle">
+            ta-role.com
+          </label>
+          <small class="device-note">Ek kaynak — HTML scraping (yavas olabilir)</small>
+          <div id="kaynak-tarole-durum" class="kaynak-durum"></div>
+          <div id="cache-bilgi-tarole" class="cache-bilgi"></div>
+          <div class="progress-bar" id="kaynak-tarole-progress" style="display:none;">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Harita -->
+    <div class="section">
+      <div class="section-title">Harita</div>
+      <div id="harita" class="map-container"></div>
+    </div>
+
+    <!-- Filtreler -->
+    <div class="section">
+      <div class="section-title">Filtreler</div>
+      <div class="filters-grid">
+        <!-- Durum -->
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="filtre-aktif" class="toggle" checked>
+            Sadece Aktif Roleler
+          </label>
+        </div>
+
+        <!-- Ruhsat -->
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="filtre-ruhsat" class="toggle">
+            Sadece Ruhsatli Roleler
+          </label>
+        </div>
+
+        <!-- Topluluk Puani -->
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="filtre-puan" class="toggle">
+            Dusuk Puanlilari Gizle (&lt;%40)
+          </label>
+        </div>
+
+        <!-- Bant -->
+        <div class="filter-group">
+          <label>Bant</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" data-bant="VHF" checked> VHF</label>
+            <label><input type="checkbox" data-bant="UHF" checked> UHF</label>
+            <label><input type="checkbox" data-bant="APRS" checked> APRS</label>
+          </div>
+        </div>
+
+        <!-- Mod -->
+        <div class="filter-group">
+          <label for="mod-select">Mod</label>
+          <select id="mod-select">
+            <option value="hepsi">Hepsi</option>
+            <option value="sadece-analog">Sadece Analog</option>
+            <option value="sadece-dijital">Sadece Dijital</option>
+            <option value="dijital-oncelikli">Dijital Oncelikli</option>
+          </select>
+        </div>
+
+        <!-- TA Bolgesi -->
+        <div class="filter-group">
+          <label>TA Bolgesi</label>
+          <div id="ta-bolge-listesi" class="checkbox-group"></div>
+        </div>
+
+        <!-- Sehir -->
+        <div class="filter-group">
+          <label>Sehir</label>
+          <input type="text" id="sehir-arama" class="search-input" placeholder="Sehir ara...">
+          <div class="multi-select-controls">
+            <button type="button" id="sehir-tumunu-sec" class="btn-secondary btn-sm">Tumunu Sec</button>
+            <button type="button" id="sehir-temizle" class="btn-secondary btn-sm">Temizle</button>
+          </div>
+          <div id="sehir-listesi" class="multi-select"></div>
+        </div>
+
+        <!-- Ilce -->
+        <div class="filter-group">
+          <label>Ilce</label>
+          <div id="ilce-listesi" class="multi-select"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kanal Opsiyonlari -->
+    <div class="section">
+      <div class="section-title">Kanal Opsiyonlari</div>
+      <div class="filters-grid">
+        <div class="filter-group protected-group" id="opsiyon-pmr-group">
+          <div class="protected-overlay" id="pmr-overlay">
+            <div class="protected-lock-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <span class="protected-label-text">Sifre Korumali Kanallar 3</span>
+            <span class="protected-badge">Sifre Gerekli</span>
+          </div>
+          <div id="pmr-unlocked" style="display:none;">
+            <label>
+              <input type="checkbox" id="opsiyon-pmr" class="toggle">
+              PMR Kanallari Ekle
+            </label>
+            <label class="sub-option" id="opsiyon-pmr-rxonly-label" style="display:none;">
+              <input type="checkbox" id="opsiyon-pmr-rxonly" class="toggle">
+              RX Only
+            </label>
+          </div>
+        </div>
+        <div class="filter-group protected-group" id="opsiyon-dpmr-group">
+          <div class="protected-overlay" id="dpmr-overlay">
+            <div class="protected-lock-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <span class="protected-label-text">Sifre Korumali Kanallar 4</span>
+            <span class="protected-badge">Sifre Gerekli</span>
+          </div>
+          <div id="dpmr-unlocked" style="display:none;">
+            <label>
+              <input type="checkbox" id="opsiyon-dpmr" class="toggle">
+              dPMR Kanallari Ekle
+            </label>
+            <label class="sub-option" id="opsiyon-dpmr-rxonly-label" style="display:none;">
+              <input type="checkbox" id="opsiyon-dpmr-rxonly" class="toggle">
+              RX Only
+            </label>
+          </div>
+        </div>
+        <div class="filter-group" id="opsiyon-fmradyo-group" style="display:none;">
+          <label>
+            <input type="checkbox" id="opsiyon-fmradyo" class="toggle">
+            FM Radyo Kanallari Ekle
+          </label>
+          <small id="fm-sehir-bilgi" class="device-note"></small>
+        </div>
+        <div class="filter-group protected-group" id="opsiyon-airband-group" style="display:none;">
+          <div class="protected-overlay" id="airband-overlay">
+            <div class="protected-lock-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <span class="protected-label-text">Sifre Korumali Kanallar 1</span>
+            <span class="protected-badge">Sifre Gerekli</span>
+          </div>
+          <label class="protected-unlocked-label" id="airband-unlocked" style="display:none;">
+            <input type="checkbox" id="opsiyon-airband" class="toggle">
+            Havacilik (Air Band) Kanallari Ekle
+            <span class="protected-badge protected-unlocked">Acik</span>
+          </label>
+          <div id="airband-panel" class="protected-panel" style="display:none;"></div>
+        </div>
+        <div class="filter-group protected-group" id="opsiyon-marine-group" style="display:none;">
+          <div class="protected-overlay" id="marine-overlay">
+            <div class="protected-lock-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <span class="protected-label-text">Sifre Korumali Kanallar 2</span>
+            <span class="protected-badge">Sifre Gerekli</span>
+          </div>
+          <label class="protected-unlocked-label" id="marine-unlocked" style="display:none;">
+            <input type="checkbox" id="opsiyon-marine" class="toggle">
+            Denizcilik (Marine Band) Kanallari Ekle
+            <span class="protected-badge protected-unlocked">Acik</span>
+          </label>
+          <div id="marine-panel" class="protected-panel" style="display:none;"></div>
+        </div>
+        <div class="filter-group" id="opsiyon-fm-simplex-group">
+          <label>
+            <input type="checkbox" id="opsiyon-fm-simplex" class="toggle">
+            FM Simplex Kanallari Ekle
+          </label>
+          <div id="fm-simplex-panel" style="display:none;"></div>
+        </div>
+        <div class="filter-group" id="opsiyon-dijital-simplex-group">
+          <label>
+            <input type="checkbox" id="opsiyon-dijital-simplex" class="toggle">
+            Dijital Simplex Kanallari Ekle
+          </label>
+          <div id="dijital-simplex-panel" style="display:none;"></div>
+        </div>
+        <!-- Bos Kanal -->
+        <div class="filter-group" id="opsiyon-boskanal-group">
+          <label>Bos Kanal Ekle</label>
+          <div class="bos-kanal-ayarlar">
+            <div class="bos-kanal-satir">
+              <span class="bos-kanal-etiket">Analog</span>
+              <input type="number" id="bos-analog-adet" min="0" max="200" value="0" class="small-input">
+              <span>adet</span>
+              <input type="text" id="bos-analog-frekans" placeholder="145.500" class="small-input frekans-input">
+              <span>MHz</span>
+            </div>
+            <div class="bos-kanal-satir" id="bos-dijital-satir">
+              <span class="bos-kanal-etiket">Dijital</span>
+              <input type="number" id="bos-dijital-adet" min="0" max="200" value="0" class="small-input">
+              <span>adet</span>
+              <input type="text" id="bos-dijital-frekans" placeholder="438.500" class="small-input frekans-input">
+              <span>MHz</span>
+            </div>
+          </div>
+          <small class="device-note">Programlama icin bos kanal rezerve eder</small>
+        </div>
+
+        <div class="filter-group">
+          <label>
+            <input type="checkbox" id="opsiyon-rxonly" class="toggle" checked>
+            Tum Roleleri RX Only Yap
+          </label>
+        </div>
+        <div class="filter-group">
+          <label for="guc-select">Guc Seviyesi</label>
+          <select id="guc-select"></select>
+        </div>
+        <div class="filter-group">
+          <label for="kanal-format-select">Kanal Adi Formati</label>
+          <select id="kanal-format-select">
+            <option value="plaka-konum-bant">Plaka + Konum + Bant</option>
+            <option value="plaka-bant-konum">Plaka + Bant + Konum (16 hane)</option>
+            <option value="plaka-bant-konum-kisa">Plaka + Bant + Konum (10 hane)</option>
+            <option value="sehir-konum">Sehir + Konum</option>
+            <option value="plaka-konum">Plaka + Konum</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="dosya-adi">Dosya Adi</label>
+          <input type="text" id="dosya-adi" value="roleler_programlama.csv">
+        </div>
+        <div class="filter-group">
+          <label>Preset'ler</label>
+          <div id="preset-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indir / Import -->
+    <div class="section">
+      <div class="download-section">
+        <div class="channel-count">
+          Toplam Kanal: <span class="count-value" id="kanal-sayisi" aria-live="polite">0</span>
+        </div>
+        <div id="max-kanal-uyari" class="max-kanal-uyari"></div>
+        <select id="export-format" aria-label="Export formati" style="width:auto;padding:8px 12px;">
+          <option value="csv">CSV</option>
+          <option value="json">JSON</option>
+        </select>
+        <button type="button" id="csv-indir-btn" class="btn-primary">Indir</button>
+        <label class="btn-secondary csv-import-label" for="csv-import-input">CSV Yukle</label>
+        <input type="file" id="csv-import-input" accept=".csv" style="display:none;">
+      </div>
+      <div id="import-bilgi" class="import-bilgi" style="display:none;"></div>
+    </div>
+
+    <!-- Onizleme Tablosu -->
+    <div class="section">
+      <div class="section-title">Onizleme
+        <span class="section-subtitle" id="onizleme-bilgi" aria-live="polite"></span>
+      </div>
+      <div id="format-uyari" class="format-uyari" style="display:none;"></div>
+      <div id="undo-redo-container" style="display:flex;gap:8px;margin-bottom:10px;"></div>
+      <input type="text" id="tablo-arama" class="search-input" placeholder="Tabloda ara...">
+      <div class="table-container">
+        <table id="onizleme-tablosu">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sifre Modali -->
+  <div id="sifre-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sifre-modal-baslik" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="sifre-modal-baslik">Sifre Gerekli</h3>
+        <button type="button" id="sifre-modal-kapat" class="modal-close">&times;</button>
+      </div>
+      <p class="modal-desc">Air Band ve Marine Band kanallarina erismek icin sifre girin.</p>
+      <div class="modal-body">
+        <input type="password" id="sifre-input" placeholder="Sifre" autocomplete="off">
+        <div id="sifre-hata" class="modal-error"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="sifre-iptal" class="btn-secondary">Iptal</button>
+        <button type="button" id="sifre-onayla" class="btn-primary">Giris</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

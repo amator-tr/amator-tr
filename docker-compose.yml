@@ -1,0 +1,50 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "4541:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/robots.txt"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  web:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./public:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "4540:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/robots.txt"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  proxy:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./proxy.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      app:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+
+  backup:
+    build: .
+    restart: "no"
+    volumes:
+      - ./data:/app/data
+    entrypoint: ["node", "scripts/backup.js"]
+    profiles:
+      - tools

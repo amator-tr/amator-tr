@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HF Propagasyon Durumu (NOAA Live) — amator.tr</title>
+<meta name="description" content="Canlı HF propagasyon durumu — NOAA SWPC verisinden Solar Flux (SFI), K-index, A-index, sunspot, band durumları. DX hunting için anlık güneş koşulları.">
+<meta name="keywords" content="HF propagasyon, solar flux, SFI, K-index, A-index, sunspot, NOAA SWPC, ham radio bands, DX conditions, propagation TR">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/propagasyon-durumu/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="HF Propagasyon Durumu — amator.tr">
+<meta property="og:description" content="Canlı NOAA SWPC verisinden HF propagasyon, K-index, sunspot ve band durumları.">
+<meta property="og:url" content="https://amator.tr/araclar/propagasyon-durumu/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  .prop-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  .prop-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .prop-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    min-width: 0;
+  }
+  .prop-card h3 {
+    margin: 0 0 6px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+  .prop-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    line-height: 1.1;
+  }
+  .prop-sub { margin: 4px 0 0; font-size: 0.85rem; color: var(--text-muted); }
+  .prop-status-good { color: var(--success); }
+  .prop-status-mid  { color: var(--warning); }
+  .prop-status-poor { color: var(--error); }
+  .prop-status-quiet { color: var(--success); }
+  .prop-status-unsettled { color: var(--warning); }
+  .prop-status-storm { color: var(--error); }
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+  }
+  .band-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.92rem; }
+  .band-table th, .band-table td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  .band-table th { background: var(--surface-2); }
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .badge-good { background: var(--success); }
+  .badge-fair { background: var(--warning); color: #000; }
+  .badge-poor { background: var(--error); }
+  .last-update {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 16px;
+  }
+  .reload-btn {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+  .reload-btn:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<!-- @shared-nav-start -->
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+<!-- @shared-nav-end -->
+<main id="main" tabindex="-1">
+<div class="prop-wrap">
+  <header class="page-header">
+    <h1>HF Propagasyon Durumu</h1>
+    <p class="meta">Canlı NOAA SWPC verisi · Solar Flux · K-index · Bant durumları</p>
+  </header>
+
+  <div class="info-banner">
+    <strong>Nedir?</strong> HF bantlarının (3-30 MHz) iyonosferden yansıyarak dünya çapında menzil kazanması
+    güneş aktivitesine bağlıdır. <strong>Yüksek SFI</strong> + <strong>düşük K-index</strong> = altın koşullar.
+    Bu sayfa <a href="https://www.swpc.noaa.gov/" rel="noopener noreferrer">NOAA SWPC</a> resmi verisini canlı çeker.
+    <a href="/tutorials/hf-propagasyon-temelleri">HF propagasyon tutorial →</a>
+  </div>
+
+  <div class="prop-grid" id="prop-stats" aria-live="polite">
+    <div class="prop-card">
+      <h3>Solar Flux (SFI)</h3>
+      <p class="prop-value" id="sfi-val">--</p>
+      <p class="prop-sub" id="sfi-status">Yükleniyor...</p>
+    </div>
+    <div class="prop-card">
+      <h3>K-index (3-saat)</h3>
+      <p class="prop-value" id="k-val">--</p>
+      <p class="prop-sub" id="k-status">Yükleniyor...</p>
+    </div>
+    <div class="prop-card">
+      <h3>A-index (24-saat)</h3>
+      <p class="prop-value" id="a-val">--</p>
+      <p class="prop-sub" id="a-status">Yükleniyor...</p>
+    </div>
+    <div class="prop-card">
+      <h3>Sunspot Sayısı</h3>
+      <p class="prop-value" id="ssn-val">--</p>
+      <p class="prop-sub" id="ssn-status">Yükleniyor...</p>
+    </div>
+  </div>
+
+  <h2 style="margin: 32px 0 8px;">Bant Durumu Tahmini</h2>
+  <p class="meta" style="margin: 0 0 12px;">SFI ve K-index'e göre tahmini bant koşulu — gerçek koşullar gözleme bağlı.</p>
+  <table class="band-table" id="band-table">
+    <thead><tr><th>Bant</th><th>Frekans</th><th>Gündüz</th><th>Gece</th></tr></thead>
+    <tbody id="band-tbody">
+      <tr><td colspan="4" class="meta">Yükleniyor...</td></tr>
+    </tbody>
+  </table>
+
+  <p class="last-update" id="last-update">
+    <button class="reload-btn" id="reload-btn" type="button">Yenile</button>
+    <span id="update-time"></span>
+  </p>
+
+  <div class="info-banner" style="margin-top: 32px;">
+    <strong>Yorum:</strong>
+    <ul style="margin: 8px 0 0; padding-left: 20px;">
+      <li><strong>SFI &gt; 150</strong>: 10m/15m sürekli açık, dünya çapında DX. Solar maksimum dönemi.</li>
+      <li><strong>SFI 100-150</strong>: 20m/15m gündüz dx, 80m/40m gece güzel. Genel iyi koşullar.</li>
+      <li><strong>SFI &lt; 80</strong>: HF zor, sadece 80m/40m. Solar minimum dönemi.</li>
+      <li><strong>K &gt; 5</strong>: Geomanyetik fırtına, HF'de absorpsiyon, aurora. CW/dijital tek şans.</li>
+      <li><strong>K = 0-2</strong>: Sakin manyetik, en iyi DX koşulları.</li>
+    </ul>
+  </div>
+
+  <div class="info-banner" style="margin-top: 16px;">
+    <strong>Veri kaynağı:</strong>
+    <a href="https://services.swpc.noaa.gov/" rel="noopener noreferrer">NOAA Space Weather Prediction Center</a>
+    (resmi ABD verisi, açık kaynak). Cache 5 dakika. Sayfayı kapatıp açmadan da Yenile butonuyla taze veri.
+  </div>
+</div>
+</main>
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+const NOAA_K = "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json";
+const NOAA_SOLAR = "https://services.swpc.noaa.gov/json/solar-cycle/observed-solar-cycle-indices.json";
+
+function setText(id, text) { document.getElementById(id).textContent = text; }
+
+function setStatus(statusId, value, thresholds) {
+  const el = document.getElementById(statusId);
+  el.classList.remove("prop-status-good", "prop-status-mid", "prop-status-poor", "prop-status-quiet", "prop-status-unsettled", "prop-status-storm");
+  let label = "", cls = "";
+  for (const t of thresholds) {
+    if (value <= t.max) { label = t.label; cls = t.cls; break; }
+  }
+  el.textContent = label;
+  if (cls) el.classList.add(cls);
+}
+
+function bandConditions(sfi, kidx) {
+  const veryHigh = sfi >= 150;
+  const high = sfi >= 100;
+  const mid = sfi >= 80;
+  const stormy = kidx >= 5;
+  const unsettled = kidx >= 4;
+
+  function rate(condition) {
+    if (stormy) return condition === "good" ? "fair" : condition === "fair" ? "poor" : "poor";
+    if (unsettled && condition === "good") return "fair";
+    return condition;
+  }
+
+  return [
+    { band: "80m", freq: "3.5 MHz", day: rate("poor"), night: rate(mid ? "good" : "fair") },
+    { band: "40m", freq: "7.0 MHz", day: rate(mid ? "fair" : "poor"), night: rate(mid ? "good" : "fair") },
+    { band: "30m", freq: "10.1 MHz", day: rate(high ? "good" : "fair"), night: rate("good") },
+    { band: "20m", freq: "14.0 MHz", day: rate(mid ? "good" : "fair"), night: rate(high ? "good" : "fair") },
+    { band: "17m", freq: "18.0 MHz", day: rate(high ? "good" : "fair"), night: rate(mid ? "fair" : "poor") },
+    { band: "15m", freq: "21.0 MHz", day: rate(high ? "good" : "poor"), night: rate("poor") },
+    { band: "12m", freq: "24.9 MHz", day: rate(veryHigh ? "good" : high ? "fair" : "poor"), night: rate("poor") },
+    { band: "10m", freq: "28.0 MHz", day: rate(veryHigh ? "good" : high ? "fair" : "poor"), night: rate("poor") },
+  ];
+}
+
+function badgeFor(condition) {
+  const span = document.createElement("span");
+  span.className = "badge badge-" + condition;
+  span.textContent = condition === "good" ? "Iyi" : condition === "fair" ? "Orta" : "Zayif";
+  return span;
+}
+
+function clearChildren(node) {
+  while (node.firstChild) node.removeChild(node.firstChild);
+}
+
+function makeCell(content) {
+  const td = document.createElement("td");
+  if (typeof content === "string") td.textContent = content;
+  else td.appendChild(content);
+  return td;
+}
+
+function renderBands(bands) {
+  const tbody = document.getElementById("band-tbody");
+  clearChildren(tbody);
+  for (const b of bands) {
+    const tr = document.createElement("tr");
+    const strong = document.createElement("strong");
+    strong.textContent = b.band;
+    tr.appendChild(makeCell(strong));
+    tr.appendChild(makeCell(b.freq));
+    tr.appendChild(makeCell(badgeFor(b.day)));
+    tr.appendChild(makeCell(badgeFor(b.night)));
+    tbody.appendChild(tr);
+  }
+}
+
+function renderBandsError(msg) {
+  const tbody = document.getElementById("band-tbody");
+  clearChildren(tbody);
+  const tr = document.createElement("tr");
+  const td = document.createElement("td");
+  td.colSpan = 4;
+  td.className = "meta";
+  td.textContent = msg;
+  tr.appendChild(td);
+  tbody.appendChild(tr);
+}
+
+async function loadData() {
+  setText("update-time", " Yenileniyor...");
+  let kidx = null, sfi = null, ssn = null, aIdx = null;
+
+  try {
+    const r = await fetch(NOAA_K, { cache: "no-store" });
+    const d = await r.json();
+    if (Array.isArray(d) && d.length > 0) {
+      const last = d[d.length - 1];
+      kidx = parseFloat(last.kp_index ?? last.estimated_kp ?? last.kp);
+    }
+  } catch (e) {
+    console.warn("K-index fetch failed", e);
+  }
+
+  try {
+    const r = await fetch(NOAA_SOLAR, { cache: "no-store" });
+    const d = await r.json();
+    if (Array.isArray(d) && d.length > 0) {
+      const last = d[d.length - 1];
+      sfi = parseFloat(last["f10.7"] ?? last.f107);
+      ssn = parseFloat(last.ssn);
+    }
+  } catch (e) {
+    console.warn("Solar cycle fetch failed", e);
+  }
+
+  if (kidx !== null && !isNaN(kidx)) {
+    aIdx = Math.round(Math.pow(2, kidx / 1.5) * 2);
+  }
+
+  if (sfi !== null && !isNaN(sfi)) {
+    setText("sfi-val", String(Math.round(sfi)));
+    setStatus("sfi-status", sfi, [
+      { max: 80, label: "Dusuk (zorlu HF)", cls: "prop-status-poor" },
+      { max: 120, label: "Orta", cls: "prop-status-mid" },
+      { max: 200, label: "Yuksek (DX altin)", cls: "prop-status-good" },
+      { max: 9999, label: "Cok Yuksek", cls: "prop-status-good" },
+    ]);
+  } else {
+    setText("sfi-val", "?");
+    setText("sfi-status", "Veri alinamadi");
+  }
+
+  if (kidx !== null && !isNaN(kidx)) {
+    setText("k-val", kidx.toFixed(1));
+    setStatus("k-status", kidx, [
+      { max: 2, label: "Sakin (mukemmel)", cls: "prop-status-quiet" },
+      { max: 4, label: "Dusuk (iyi)", cls: "prop-status-quiet" },
+      { max: 4.99, label: "Hafif yuksek", cls: "prop-status-unsettled" },
+      { max: 6, label: "Firtinali (HF zor)", cls: "prop-status-storm" },
+      { max: 9, label: "Siddetli firtina", cls: "prop-status-storm" },
+    ]);
+  } else {
+    setText("k-val", "?");
+    setText("k-status", "Veri alinamadi");
+  }
+
+  if (aIdx !== null) {
+    setText("a-val", String(aIdx));
+    setStatus("a-status", aIdx, [
+      { max: 7, label: "Sakin", cls: "prop-status-quiet" },
+      { max: 15, label: "Hafif unsettled", cls: "prop-status-unsettled" },
+      { max: 30, label: "Aktif", cls: "prop-status-unsettled" },
+      { max: 50, label: "Firtinali", cls: "prop-status-storm" },
+      { max: 9999, label: "Siddetli", cls: "prop-status-storm" },
+    ]);
+  } else {
+    setText("a-val", "?");
+    setText("a-status", "Hesaplanamadi");
+  }
+
+  if (ssn !== null && !isNaN(ssn)) {
+    setText("ssn-val", String(Math.round(ssn)));
+    setStatus("ssn-status", ssn, [
+      { max: 30, label: "Dusuk (solar min)", cls: "prop-status-poor" },
+      { max: 80, label: "Orta", cls: "prop-status-mid" },
+      { max: 200, label: "Yuksek (solar max)", cls: "prop-status-good" },
+      { max: 9999, label: "Cok Yuksek", cls: "prop-status-good" },
+    ]);
+  } else {
+    setText("ssn-val", "?");
+    setText("ssn-status", "Veri alinamadi");
+  }
+
+  if (sfi !== null && kidx !== null) {
+    renderBands(bandConditions(sfi, kidx));
+  } else {
+    renderBandsError("Veri eksik — bant tahmini yapilamadi.");
+  }
+
+  setText("update-time", " Son guncelleme: " + new Date().toLocaleString("tr-TR"));
+}
+
+document.getElementById("reload-btn").addEventListener("click", loadData);
+loadData();
+setInterval(loadData, 5 * 60 * 1000);
+</script>
+</body>
+</html>

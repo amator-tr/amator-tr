@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>amator.tr — Amatör Telsiz Tutorial'ları</title>
+    <link>https://amator.tr/</link>
+    <atom:link href="https://amator.tr/feed.xml" rel="self" type="application/rss+xml" />
+    <description>Türkiye amatör telsiz topluluğu için tutorial'lar, kılavuzlar ve röle araçları.</description>
+    <language>tr-TR</language>
+    <item>
+      <title>Afet ve Acil Durum Haberleşmesi (EmComm) — Amatör Radyonun En Kritik Görevi</title>
+      <link>https://amator.tr/tutorials/afet-acil-durum-haberlesmesi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/afet-acil-durum-haberlesmesi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Deprem / sel / orman yangını gibi afetlerde amatör telsiz iletişimi. AFAD-TRAC protokolü, NVIS, WinLink, APRS, hazırlık çantası, tactical callsign, frekans planları.</description>
+    </item>
+    <item>
+      <title>Amatör Radyoda Kadın Operatörler (YL) — Türkiye ve Dünya</title>
+      <link>https://amator.tr/tutorials/amator-radyo-kadin-operatorler</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/amator-radyo-kadin-operatorler</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör radyoda Young Lady (YL) operatörler — tarihçe, Türkiye&#39;de ilk YL&#39;ler, YL contests, kadın amatör organizasyonları, çocuk amatör topluluğu, ailem hobisine alır mı?</description>
+    </item>
+    <item>
+      <title>Yapay Zeka ve Amatör Radyo — AI Destekli Operasyon Geleceği</title>
+      <link>https://amator.tr/tutorials/amator-radyo-yapay-zeka</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/amator-radyo-yapay-zeka</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>AI / makine öğrenmesi amatör radyoda — weak signal decode, propagasyon tahmin, otomatik QSO, ChatGPT ham radyo asistanı, derin öğrenme + RF.</description>
+    </item>
+    <item>
+      <title>Amatör Telsizcilik Nedir? Tarihçe, Lisans, Yapılan Şeyler</title>
+      <link>https://amator.tr/tutorials/amator-telsizcilik-nedir</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/amator-telsizcilik-nedir</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsizcilik (ham radio) nedir, nasıl başlandı, ITU/IARU/TRAC ile düzenleniyor. Lisans sınıfları, yapılan aktiviteler (DX, contest, EmComm, dijital), Türkiye&#39;de durum.</description>
+    </item>
+    <item>
+      <title>Anten Polarizasyonu — Yatay, Dikey, Çapraz, Dairesel Detayı</title>
+      <link>https://amator.tr/tutorials/anten-polarizasyonu-detay</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/anten-polarizasyonu-detay</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Anten polarizasyonu detayı — yatay (horizontal), dikey (vertical), çapraz, dairesel (RHCP/LHCP), eliptik. Polarizasyon karşı uyumu, satellite RHCP, HF dipole geleneği, fading.</description>
+    </item>
+    <item>
+      <title>Anten Radyasyon Patterni ve NEC Simülasyon</title>
+      <link>https://amator.tr/tutorials/anten-radyasyon-pateni-nec</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/anten-radyasyon-pateni-nec</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Anten radyasyon patterni — azimuth + elevation lobu, ön/arka oran (F/B), null açıları. NEC (4nec2, MMANA-GAL) ile simülasyon, dipole/Yagi/vertical pattern karşılaştırma.</description>
+    </item>
+    <item>
+      <title>Anten Tuner ve Empedans Eşleştirme — Internal vs External, Manual vs Auto</title>
+      <link>https://amator.tr/tutorials/anten-tuner-empedans-eslestirme</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/anten-tuner-empedans-eslestirme</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Anten tuner ne işe yarar, ne işe yaramaz. Internal (telsiz dahili) vs external, manual T-network vs Auto Tuner (LDG, MFJ), Smith Chart matching, balanced vs unbalanced output.</description>
+    </item>
+    <item>
+      <title>Apartmanda Amatör Telsizcilik — Anten, RFI ve Komşu Sorunları</title>
+      <link>https://amator.tr/tutorials/apartmanda-amator-telsizcilik</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/apartmanda-amator-telsizcilik</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Apartman dairesinde amatör telsizcilik nasıl yapılır. Manyetik loop, balkon vertical, attic dipole, gizli antenler. RFI önleme, komşu şikayeti, yönetici izni.</description>
+    </item>
+    <item>
+      <title>Araç Telsiz Anteni Seçim Rehberi — Mıknatıslı mı, NMO mu?</title>
+      <link>https://amator.tr/tutorials/arac-telsiz-anteni-secimi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/arac-telsiz-anteni-secimi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Araç telsiz anteni seçimi — mıknatıslı (mag mount) vs vidalı (NMO), kapasitif kuplaj farkı, RF feedback sorunları (ECU/ABS parazit), topraklama, kablo geçişi, mobile kurulum.</description>
+    </item>
+    <item>
+      <title>ARES, RACES ve EmComm Organizasyonları — Türkiye AFAD-TRAC Modeli</title>
+      <link>https://amator.tr/tutorials/ares-races-emcomm-organizasyon</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/ares-races-emcomm-organizasyon</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>ARES (Amateur Radio Emergency Service), RACES (Radio Amateur Civil Emergency Service), MARS, Türkiye AFAD-TRAC protokolü. EmComm organizasyon yapısı, eğitim, kayıt.</description>
+    </item>
+    <item>
+      <title>Balun Yapımı (1:1, 4:1, 9:1, 49:1) — Ferrit Toroid DIY Rehberi</title>
+      <link>https://amator.tr/tutorials/balun-yapimi-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/balun-yapimi-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör radyo balun (Bal-Un) ve unun (Un-Un) yapımı. 1:1 current choke, 4:1 voltage balun, 9:1 random wire, 49:1 EFHW. FT-240-43 toroid, sarım hesabı, lehim teknikleri.</description>
+    </item>
+    <item>
+      <title>IARU Bant Planı — Hangi Frekansta Hangi Mod Kullanılır?</title>
+      <link>https://amator.tr/tutorials/bant-plani-iaru-detay</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/bant-plani-iaru-detay</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>IARU Region 1 bant planı detayı — HF/VHF/UHF bantlarında CW, SSB, dijital, beacon, satellite bölümleri. Türkiye spesifik frekanslar, çağrı frekansları, acil bantlar.</description>
+    </item>
+    <item>
+      <title>Çağrı İşareti Prefiksleri ve Uluslararası Sistem</title>
+      <link>https://amator.tr/tutorials/callsign-prefiks-dunya-sistemi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/callsign-prefiks-dunya-sistemi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>ITU çağrı işareti prefiks sistemi, ülke kodları (TA Türkiye, K USA, JA Japonya), DXCC entity, özel etkinlik çağrı işaretleri, Türkiye prefiks tarihi.</description>
+    </item>
+    <item>
+      <title>Çocuk Amatör Radyo Topluluğu — Genç Operatör Yetiştirme</title>
+      <link>https://amator.tr/tutorials/cocuk-amator-radyo-topluluk</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/cocuk-amator-radyo-topluluk</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Çocukları amatör radyoya katma rehberi. Yaşa göre lisans (12+ Türkiye), STEM eğitimi, mors kodu çocuklarla, okul kulüpleri, ABD ARES Youth, Türkiye gelişimi.</description>
+    </item>
+    <item>
+      <title>Contesting (Amatör Telsiz Yarışmaları) Rehberi — CQ WW, ARRL DX, Türkiye</title>
+      <link>https://amator.tr/tutorials/contesting-yarisma-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/contesting-yarisma-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsiz yarışmaları (contest) rehberi. CQ WW DX, ARRL Sweepstakes, IARU HF Championship. Logging yazılımı, multiplier, exchange, Türkiye contestleri.</description>
+    </item>
+    <item>
+      <title>CubeSat ve Amatör Uzay Haberleşmesi — Gelecek Ham Radio</title>
+      <link>https://amator.tr/tutorials/cubesat-amator-uzay-gelecek</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/cubesat-amator-uzay-gelecek</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>CubeSat amatör uyduları, AMSAT-DL Phase 4B (geosynkron), Mars Cube One, üniversite kulüpleri uzaya gönderme. Yapay zeka + uzay + amatör radyo geleceği.</description>
+    </item>
+    <item>
+      <title>dB, dBi, dBd ve Anten Kazancı — &quot;9 dBi&quot; ne anlama gelir?</title>
+      <link>https://amator.tr/tutorials/db-dbi-dbd-anten-kazanci</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/db-dbi-dbd-anten-kazanci</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Decibel (dB), dBi, dBd, dBm farklılıkları. Anten kazancının fiziksel anlamı, ERP/EIRP hesabı, &quot;9 dBi anten&quot; gerçekten ne kadar güç kazandırır?</description>
+    </item>
+    <item>
+      <title>Amatör Telsiz Derneklerine Katılım — Tek Tabanca mı, Topluluk mu?</title>
+      <link>https://amator.tr/tutorials/derneklere-katilim-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/derneklere-katilim-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Neden amatör telsiz derneğine üye olmalısınız? TRAC, bölge dernekleri, usta-çırak ilişkisi, laboratuvar erişimi, QSL büro, EmComm, contest takımı, sosyal ağ.</description>
+    </item>
+    <item>
+      <title>Dikey (Vertical) Anten Detaylı Rehber — Radyaller, Multi-Band, GP</title>
+      <link>https://amator.tr/tutorials/dikey-vertical-anten-detay</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/dikey-vertical-anten-detay</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Vertical anten tasarımı + ground plane radyalleri, multi-band vertical (Hustler 6BTV, Hy-Gain AV-640), DX vertical, monoband çeyrek dalga vs 5/8 dalga, NEC simülasyon ipuçları.</description>
+    </item>
+    <item>
+      <title>DMR Brandmeister Network ve Talkgroup Sistemi — Türkiye TG214</title>
+      <link>https://amator.tr/tutorials/dmr-brandmeister-talkgrouplar</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/dmr-brandmeister-talkgrouplar</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>DMR Brandmeister network nedir, talkgroup yapısı (TG214 Türkiye, TG223 İstanbul), TGIF, hotspot, Pi-Star kurulumu, Anytone D878UV codeplug. Internet köprüsü ile dünya çapında DMR.</description>
+    </item>
+    <item>
+      <title>DSP (Dijital Sinyal İşleme) ve Modern Telsizcilik</title>
+      <link>https://amator.tr/tutorials/dsp-dijital-sinyal-isleme</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/dsp-dijital-sinyal-isleme</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>DSP temelleri — ADC, DAC, Fourier transform, brick-wall filtre, dijital gürültü azaltma (DNR), auto-notch. IC-7300 SDR mimarisi, DSP vs analog filtre farkı.</description>
+    </item>
+    <item>
+      <title>DXCC ve DX Hunting — 100 Ülke Diplomasından Beyond</title>
+      <link>https://amator.tr/tutorials/dxcc-dx-hunting</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/dxcc-dx-hunting</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>DXCC — DX Century Club, ARRL&#39;nin amatör telsiz uzun mesafe diploması. 100 entity koleksiyonu, mode/band kategorileri, LoTW + QSL kart süreci, DX cluster&#39;lar ve avlanma teknikleri.</description>
+    </item>
+    <item>
+      <title>Echolink ve Allstar Link — VoIP ile Amatör Radyo (PC + Telefon)</title>
+      <link>https://amator.tr/tutorials/echolink-allstar-voip</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/echolink-allstar-voip</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Echolink, Allstar Link ve IRLP — internet üzerinden global röle bağlantısı, kayıt + lisans doğrulama, mobil app kurulumu, telsizsiz amatör radyo deneyimi.</description>
+    </item>
+    <item>
+      <title>EFHW (End-Fed Half-Wave) Anten Detaylı Yapım — POTA / SOTA Favorisi</title>
+      <link>https://amator.tr/tutorials/efhw-anten-detay-pota</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/efhw-anten-detay-pota</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>End-Fed Half-Wave anten DIY rehberi. 49:1 unun, multi-band çalışması (40-10m), tek tel besleme, yapım maliyeti $20-50, POTA aktivasyonunda neden lider.</description>
+    </item>
+    <item>
+      <title>Empedans Eşleştirme Matematiği — Smith Chart, L-Network, Stub</title>
+      <link>https://amator.tr/tutorials/empedans-matching-matematik</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/empedans-matching-matematik</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>RF empedans eşleştirme matematik temeli — kompleks empedans Z = R + jX, Smith Chart, L-network, stub matching, transmission line transformation.</description>
+    </item>
+    <item>
+      <title>Fonetik Alfabe — ITU, NATO, Türkçe ve Tarihsel Standartlar</title>
+      <link>https://amator.tr/tutorials/fonetik-alfabe-tarih-standartlar</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/fonetik-alfabe-tarih-standartlar</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Fonetik alfabe tarihi ve standartları — NATO/ICAO (Alpha, Bravo), ITU/Maritime, Türkçe il adları, askeri (US Joint Army-Navy), pratik kullanım amatör radyoda.</description>
+    </item>
+    <item>
+      <title>FreeDV — Açık Kaynak Dijital Ses Modu (HF Üzerinden)</title>
+      <link>https://amator.tr/tutorials/freedv-dijital-ses-modu</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/freedv-dijital-ses-modu</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>FreeDV açık kaynak dijital ses modu, HF üzerinden codec2 ile düşük bitrate ses. SSB yerine kullan, 1500 Hz BW, daha temiz ses, encryption yok.</description>
+    </item>
+    <item>
+      <title>FT4 — FT8&#39;in Hızlı Kuzeni, Contest İçin Optimize Dijital Mod</title>
+      <link>https://amator.tr/tutorials/ft4-hizli-dijital-mod</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/ft4-hizli-dijital-mod</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>FT4 dijital mod rehberi. FT8&#39;den 2x hızlı (7.5 sn slot), contest için optimize, weak signal performansı, frekanslar, WSJT-X kurulumu, ne zaman FT4 ne zaman FT8.</description>
+    </item>
+    <item>
+      <title>HF Propagasyon Temelleri — Sky Wave, Sporadic E, Güneş Döngüsü</title>
+      <link>https://amator.tr/tutorials/hf-propagasyon-temelleri</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/hf-propagasyon-temelleri</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>HF radyo dalgaları nasıl uzak mesafelere ulaşır — iyonosfer katmanları (D, E, F), MUF/LUF, sky wave atlamaları, sporadic E, güneş döngüsü ve günlük propagasyon tahmini.</description>
+    </item>
+    <item>
+      <title>Homebrew — Kendi Telsiz Ekipmanını İnşa Etmenin Sanatı</title>
+      <link>https://amator.tr/tutorials/homebrew-ekipman-yapimi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/homebrew-ekipman-yapimi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör radyo homebrew (kendi ekipmanını yap) kültürü. Pixie CW transmitter, uBITX SSB, (tr)uSDX kit, balun sarım, anten yapım, PCB tasarım, Arduino/ESP32 entegrasyon.</description>
+    </item>
+    <item>
+      <title>İlk QSO Adım Adım — Lisans Sonrası İlk Kontağın Pratik Rehberi</title>
+      <link>https://amator.tr/tutorials/ilk-qso-adim-adim</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/ilk-qso-adim-adim</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Yeni amatör operatör için ilk QSO yapma rehberi. Frekans seçimi, çağrı işareti telaffuzu, RST verme, log tutma, korkulardan kurtulma, klasik hatalar.</description>
+    </item>
+    <item>
+      <title>İlk Telsiz Satın Alma Rehberi — Bütçe ve Kullanıma Göre Seçim</title>
+      <link>https://amator.tr/tutorials/ilk-telsiz-satin-alma-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/ilk-telsiz-satin-alma-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>İlk amatör telsiz alacaklara bütçe, kullanım, bant, mod ve marka rehberi. Baofeng UV-5R, Quansheng UV-K5, Yaesu FT-65R, Icom ID-52, FT-818 — hangisi senin için?</description>
+    </item>
+    <item>
+      <title>İyonosfer Katmanları ve Radyo Dalgalarının Yolculuğu (D, E, F1, F2)</title>
+      <link>https://amator.tr/tutorials/ionosfer-katmanlari-detay</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/ionosfer-katmanlari-detay</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>İyonosfer katmanlarının fiziği — D, E, F1, F2 katmanlarının özellikleri, MUF/LUF/FOT, sporadic E, gri çizgi, solar cycle etkisi. HF DX&#39;in fiziksel altyapısı.</description>
+    </item>
+    <item>
+      <title>ISS ile Kontak — Astronotlara Selam Vermek</title>
+      <link>https://amator.tr/tutorials/iss-astronot-kontak</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/iss-astronot-kontak</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Uluslararası Uzay İstasyonu (ISS) ile amatör radyo kontağı — ARISS school contact, APRS digipeater (145.825 MHz), SSTV etkinlikleri, pas takibi, el telsizi ile ISS duyma.</description>
+    </item>
+    <item>
+      <title>JS8Call — FT8 Altyapısı + Klavye Chat ile Hibrit Dijital Mod</title>
+      <link>https://amator.tr/tutorials/js8call-radyo-chat-modu</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/js8call-radyo-chat-modu</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>JS8Call dijital mod rehberi. FT8 weak-signal altyapısı + Heartbeat + Group + Direct messages. Kurulum, frekanslar, gateway / store-and-forward, RX/TX cycles.</description>
+    </item>
+    <item>
+      <title>Koaksiyel Kablo Seçim Rehberi (RG-58, RG-213, RG-8X, LMR-400)</title>
+      <link>https://amator.tr/tutorials/koaksiyel-kablo-secimi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/koaksiyel-kablo-secimi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsiz koaksiyel kablo karşılaştırma. RG-58, RG-8X, RG-213, LMR-400 frekansa göre kayıp, fiyat, kullanım alanı. PL-259 vs N konnektör, su yalıtımı.</description>
+    </item>
+    <item>
+      <title>Konnektör Su Yalıtımı ve UV Koruması — Outdoor Anten Sigortası</title>
+      <link>https://amator.tr/tutorials/konnektor-su-yalitim-uvkoruma</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/konnektor-su-yalitim-uvkoruma</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Outdoor amatör radyo konnektörlerinde su yalıtımı, UV koruma. Self-amalgamating tape, dielectric grease, drip loop, PL-259 vs N type, kış-yaz bakım.</description>
+    </item>
+    <item>
+      <title>Amatör Telsiz Lisansı Yenileme ve Yükseltme — BTK Süreçleri</title>
+      <link>https://amator.tr/tutorials/lisans-yenileme-yukseltme</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/lisans-yenileme-yukseltme</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>BTK amatör telsiz lisansı 10 yıllık yenileme süreci, online başvuru, ücret. C → B sınıfı yükseltme + B → A yükseltme. Yeni çağrı işareti vs eski koruma.</description>
+    </item>
+    <item>
+      <title>Log Tutma, QSL Kartları ve LotW — Kontaklarını Doğrula ve Sakla</title>
+      <link>https://amator.tr/tutorials/log-tutma-qsl-lotw</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/log-tutma-qsl-lotw</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsiz kontak kayıtları, QSL kartları (kağıt + eQSL + LotW), DXCC awards, ARRL Logbook of the World kayıt + kullanım, logging yazılımı önerileri.</description>
+    </item>
+    <item>
+      <title>Magnetic Loop Anten Yapımı — Apartman ve Stealth Operasyon İçin</title>
+      <link>https://amator.tr/tutorials/magnetic-loop-anten-yapimi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/magnetic-loop-anten-yapimi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Manyetik loop anten DIY rehberi. Bakır boru çapı, vacuum capacitor, coupling, SWR ayarı. Hazır model fiyatları (MFJ-1786, Alpha, Chameleon) ve kendin yap maliyeti.</description>
+    </item>
+    <item>
+      <title>Egzotik Propagasyon — Meteor Scatter, EME, Aurora, Tropo Ducting</title>
+      <link>https://amator.tr/tutorials/meteor-scatter-eme-egzotik</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/meteor-scatter-eme-egzotik</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>VHF/UHF DX egzotik propagasyon modları — meteor scatter (MS), Earth-Moon-Earth (EME), Aurora, tropospheric ducting, transequatorial propagation. Hangi koşulda hangi mod?</description>
+    </item>
+    <item>
+      <title>Modülasyon Türleri — AM, FM, SSB, CW Detaylı Karşılaştırma</title>
+      <link>https://amator.tr/tutorials/modulasyon-am-fm-ssb-detay</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/modulasyon-am-fm-ssb-detay</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör radyo modülasyon türleri — AM (genlik), FM (frekans), SSB (tek yan bant USB/LSB), CW (mors), AFSK. Bantgenişliği, verim, kullanım alanı, hangi bantta hangisi.</description>
+    </item>
+    <item>
+      <title>Müstakil Evde Anten Seçimi — Bahçe, Çatı, Direk Avantajları</title>
+      <link>https://amator.tr/tutorials/mustakil-ev-anten-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/mustakil-ev-anten-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Müstakil ev amatör radyo anten rehberi. Bahçe dipole, çatı vertical, direk Yagi, HF+VHF anten kombine. Şehir içi RFI, komşu mesafesi, topraklama, yıldırım koruma.</description>
+    </item>
+    <item>
+      <title>NBEMS — Dar Bant Acil Dijital Mesajlaşma (fldigi Tabanlı)</title>
+      <link>https://amator.tr/tutorials/nbems-acil-dijital-mesajlasma</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/nbems-acil-dijital-mesajlasma</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>NBEMS (Narrow Band Emergency Messaging Software) rehberi. fldigi + flmsg + flamp ile WinLink alternatifi, ICS-213 form gönderme, peer-to-peer veri iletimi, gateway gereksiz.</description>
+    </item>
+    <item>
+      <title>Net Control Operatörlüğü — Trafik Yönetiminin Sanatı</title>
+      <link>https://amator.tr/tutorials/net-control-operatorluk</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/net-control-operatorluk</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Net Control görevini üstlenmek — direktiv vs konuşma neti, check-in sırası, traffic priority, formal mesaj iletim, kontest net&#39;lerinde rol.</description>
+    </item>
+    <item>
+      <title>NVIS Haberleşmesi — 50-500 km Yakın Menzil HF Mucizesi</title>
+      <link>https://amator.tr/tutorials/nvis-haberlesmesi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/nvis-haberlesmesi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>NVIS (Near Vertical Incidence Skywave) ne işe yarar. Alçak HF dipol ile 50-500 km menzil, ölü bölge yok, afet/EmComm için ideal. Frekans seçimi, anten yüksekliği, MUF.</description>
+    </item>
+    <item>
+      <title>Packet Radio ve AX.25 Protokolü — APRS&#39;in Kökenleri</title>
+      <link>https://amator.tr/tutorials/packet-radio-ax25-aprs-evrim</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/packet-radio-ax25-aprs-evrim</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Packet radio tarihi, AX.25 protokolü, TNC (Terminal Node Controller), 1200/9600 baud, BBS sistemleri. APRS&#39;in 1980&#39;lerden gelişimi, Türkiye packet aktiviteleri.</description>
+    </item>
+    <item>
+      <title>POTA + SOTA Aktivasyon Rehberi — Park ve Zirvelerden Ham Radio</title>
+      <link>https://amator.tr/tutorials/pota-sota-aktivasyon-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/pota-sota-aktivasyon-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Parks On The Air (POTA) ve Summits On The Air (SOTA) aktivasyon rehberi. Kayıt, ekipman, anten kurulumu, log + spotting + 10 kontak kuralı, Türkiye parkları/zirveleri.</description>
+    </item>
+    <item>
+      <title>Q Kodları, Fonetik Alfabe ve Telsiz İşletme Adabı (Tam Liste)</title>
+      <link>https://amator.tr/tutorials/q-kodlari-isletme-adabi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/q-kodlari-isletme-adabi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsiz Q kodları (QRZ, QTH, QSY, QSO, QRP, QRO, QSL, QRM, QRN tam liste), NATO fonetik alfabesi, ITU Türkçe karşılıkları, çağrı protokolü, frekans nezaketi.</description>
+    </item>
+    <item>
+      <title>QRP (Düşük Güç) Operasyonu — 5 Watt ile Dünyaya Meydan Okuma</title>
+      <link>https://amator.tr/tutorials/qrp-dusuk-guc-operasyonu</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/qrp-dusuk-guc-operasyonu</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>QRP (≤5W) amatör radyo felsefesi. Neden düşük güç tercih edilir, anten verimliliği zorunluluğu, batarya bağımsızlığı, POTA/SOTA QRP, CW ve FT8 ile dünya kontağı.</description>
+    </item>
+    <item>
+      <title>QRZ.com Kullanım Rehberi — Amatör Telsizciliğin Dijital Kimliği</title>
+      <link>https://amator.tr/tutorials/qrz-com-kullanim-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/qrz-com-kullanim-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>QRZ.com nedir, nasıl kullanılır. Çağrı işareti arama, profil oluşturma, dijital logbook, QSL yönetimi, WSJT-X entegrasyonu, XML API, ikinci el pazar.</description>
+    </item>
+    <item>
+      <title>Radyo Dalgalarının Temeli — Frekans, Dalga Boyu, Hız</title>
+      <link>https://amator.tr/tutorials/radyo-dalgalari-temeli</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/radyo-dalgalari-temeli</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Radyo dalgaları fiziği temel — Maxwell denklemleri, Hertz deneyi, frekans, dalga boyu, ışık hızı. λ = c/f formülü, elektromanyetik spektrum, amatör radyo bantları.</description>
+    </item>
+    <item>
+      <title>Random Wire Anten + 9:1 Unun — Rastgele Uzunluk, Tüm Bantlar</title>
+      <link>https://amator.tr/tutorials/random-wire-anten-9-1-unun</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/random-wire-anten-9-1-unun</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Random wire (rastgele uzunluklu tel) anten rehberi. 9:1 unun ile tüm HF bantlarda tuner ile çalışma, EFHW farkı, avantaj/dezavantaj, pratik kurulum ipuçları.</description>
+    </item>
+    <item>
+      <title>RF Amplifier Sınıfları (Class A/B/C/D/E/F) — Verimlilik Sırları</title>
+      <link>https://amator.tr/tutorials/rf-amplifier-siniflari</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/rf-amplifier-siniflari</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>RF güç amplifier sınıfları detaylı — Class A (lineer), Class C (FM), Class D (digital switching), Class E. Verim hesabı, harmonik distortion, hangi mod hangi sınıf gerektirir?</description>
+    </item>
+    <item>
+      <title>RF Filtreler — Alçak, Yüksek, Bant Geçiren ve Notch</title>
+      <link>https://amator.tr/tutorials/rf-filter-tipleri-bilimi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/rf-filter-tipleri-bilimi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>RF filtre çeşitleri — Low-Pass (LPF), High-Pass (HPF), Band-Pass (BPF), Notch. Harmonik bastırma, RFI önleme, anten front-end filtreleme, DIY filtre yapımı.</description>
+    </item>
+    <item>
+      <title>RF Gürültü Tipleri ve Bastırma — S-meter Sürekli Yüksekse</title>
+      <link>https://amator.tr/tutorials/rf-gurultu-tipleri-bastirma</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/rf-gurultu-tipleri-bastirma</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Atmospherik gürültü, man-made (urban), thermal noise tipleri. RFI kaynakları (LED, PV solar, switching PSU), ferrit choke, common-mode filter, gürültü blanker (NB).</description>
+    </item>
+    <item>
+      <title>RF Güvenliği ve Sağlık — Amatör Operatörün Bilmesi Gerekenler</title>
+      <link>https://amator.tr/tutorials/rf-guvenligi-ve-saglik</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/rf-guvenligi-ve-saglik</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>RF maruziyeti, FCC/ICNIRP/Türkiye limitleri, anten mesafe hesabı, OET-65, kalp pili / hamilelik / çocuk önlemleri, RF burn&#39;ları, topraklama ve yıldırım koruması.</description>
+    </item>
+    <item>
+      <title>RF Topraklama ve Yıldırımdan Koruma — İstasyonunuzu Savunun</title>
+      <link>https://amator.tr/tutorials/rf-topraklama-yildirim-koruma</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/rf-topraklama-yildirim-koruma</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör radyo istasyonu topraklama sistemi — RF ground vs electrical safety ground, lightning arrestor (Polyphaser), toprak çubuğu, ground loop önleme, yıldırım sigortası.</description>
+    </item>
+    <item>
+      <title>RTTY (Radio TeleType) — 1920&#39;lerin Dijital Modu, Hâlâ Yaşıyor</title>
+      <link>https://amator.tr/tutorials/rtty-tarihce-pratik</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/rtty-tarihce-pratik</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>RTTY (Radio TeleType) tarihçesi ve pratik kullanım. 45 baud, 170 Hz shift, Baudot kod, MMTTY/fldigi yazılımı, RTTY contest&#39;leri, modern ham radio&#39;da hâlâ aktif.</description>
+    </item>
+    <item>
+      <title>Sahada Anten Seçimi — Vertical mi EFHW mi?</title>
+      <link>https://amator.tr/tutorials/sahada-vertical-vs-efhw</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/sahada-vertical-vs-efhw</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>POTA/SOTA sahada anten karşılaştırma — Vertical (dikey) vs EFHW (End-Fed Half-Wave). DX performansı, gürültü, kurulum süresi, ağırlık, ağaç gereksinimi. Hangisi daha iyi?</description>
+    </item>
+    <item>
+      <title>Amatör Telsiz Uydu Haberleşmesi — LEO, AMSAT, ISS, Pratik Rehber</title>
+      <link>https://amator.tr/tutorials/satellite-haberlesme-leo-amsat</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/satellite-haberlesme-leo-amsat</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>LEO amatör radyo uyduları (AO-91, RS-44, SO-50), ISS digipeater, AMSAT, FT8 via QO-100. Doppler shift düzeltme, anten yön ayarı, ücretsiz tracking yazılımı.</description>
+    </item>
+    <item>
+      <title>SDR (Yazılım Tabanlı Telsiz) — Donanımdan Yazılıma Geçiş</title>
+      <link>https://amator.tr/tutorials/sdr-yazilim-tabanli-telsiz</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/sdr-yazilim-tabanli-telsiz</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>SDR (Software Defined Radio) nedir, nasıl çalışır. RTL-SDR, HackRF, PlutoSDR, Icom IC-7300 SDR mimarisi. SDR# / GQRX kurulumu, waterfall display, dijital decode.</description>
+    </item>
+    <item>
+      <title>Slim Jim Anten Detaylı Yapımı — Apartman Dostu VHF Antenni</title>
+      <link>https://amator.tr/tutorials/slim-jim-anten-detay</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/slim-jim-anten-detay</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Slim Jim 2m anten DIY rehberi — 300Ω ladder line ile yapım, J-Pole karşılaştırma, gain pattern, balkon montajı, ayar prosedürü.</description>
+    </item>
+    <item>
+      <title>Solar Flux ve Güneş Çevrimi (Cycle 25) — HF Propagasyonun Anahtarı</title>
+      <link>https://amator.tr/tutorials/solar-flux-gunes-cevrimi-detay</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/solar-flux-gunes-cevrimi-detay</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Solar Flux Index (SFI), sunspot, A-index, K-index detaylı. 11 yıllık güneş çevrimi (Cycle 25 zirve 2025-2026), CME ve geomanyetik fırtına, MUF tahmini.</description>
+    </item>
+    <item>
+      <title>Spektrum Analizör ve Amatör Ölçüm Cihazları — Pratik Rehber</title>
+      <link>https://amator.tr/tutorials/spectrum-analyzer-amator-olcum</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/spectrum-analyzer-amator-olcum</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör radyo ölçüm cihazları — spektrum analizör (Tinysa, Rigol DSA), oscilloscope (Rigol, Hantek), RF wattmeter (Bird), dummy load. Hangi cihaz ne işe yarar?</description>
+    </item>
+    <item>
+      <title>SSTV (Slow Scan Television) — Radyo Üzerinden Görüntü Gönderme</title>
+      <link>https://amator.tr/tutorials/sstv-yavas-taramali-tv</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/sstv-yavas-taramali-tv</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>SSTV (Yavaş Taramalı Televizyon) rehberi. Robot36 / Scottie / Martin modları, MMSSTV yazılımı, ses kart bağlantı, ISS SSTV özel etkinlikleri.</description>
+    </item>
+    <item>
+      <title>SWL (Short-Wave Listener) — Lisanssız Dinleyici Kültürü</title>
+      <link>https://amator.tr/tutorials/swl-dinleyici-disiplini</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/swl-dinleyici-disiplini</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Short-Wave Listener (SWL) nedir, lisanssız amatör radyo dinleme. SINPO raporlama, SWL log, eQSL kart, RTL-SDR ile başlangıç, hangi bantlarda ne dinlenir.</description>
+    </item>
+    <item>
+      <title>SWR (Standing Wave Ratio) Nedir? Telsizini Korumanın Bilimi</title>
+      <link>https://amator.tr/tutorials/swr-temel-bilgisi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/swr-temel-bilgisi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>SWR (duran dalga oranı) nedir, neden önemli, nasıl ölçülür. Yansıyan güç, empedans uyumsuzluğu, SWR &lt; 1.5 hedefi, bobin/feedline hataları, çözüm stratejileri.</description>
+    </item>
+    <item>
+      <title>Telsiz Güç Kaynakları Rehberi — Lineer mi, Switching mi?</title>
+      <link>https://amator.tr/tutorials/telsiz-guc-kaynaklari-rehberi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/telsiz-guc-kaynaklari-rehberi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsiz güç kaynağı seçimi — lineer (trafolu) vs switching (anahtarlamalı). 13.8V DC, akım hesabı, RF gürültü, akü besleme, solar, araç 12V, portable QRP.</description>
+    </item>
+    <item>
+      <title>Toprak Dalgaları — Yer Yüzeyinden 7/24 Güvenilir Haberleşme</title>
+      <link>https://amator.tr/tutorials/toprak-dalgalari-haberlesme</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/toprak-dalgalari-haberlesme</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Toprak dalgası (ground wave) propagasyonu — yer yüzeyini takip eden dalga, iyonosfere bağımlı değil, 7/24 istikrar. LF/MF/HF bantları, frekans etkisi, zemin iletkenliği.</description>
+    </item>
+    <item>
+      <title>TRAC ve Türkiye&#39;de Amatör Radyo Tarihi (1962-2026)</title>
+      <link>https://amator.tr/tutorials/trac-amator-radyo-turkiye-tarihi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/trac-amator-radyo-turkiye-tarihi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Türkiye Radyo Amatörleri Cemiyeti (TRAC) 1962&#39;den günümüze. Türkiye&#39;de amatör telsizciliğin gelişimi, BTK düzenlemeleri, IARU üyeliği, ünlü TR operatörleri, kadın amatörler.</description>
+    </item>
+    <item>
+      <title>Üniversite Amatör Radyo Kulüpleri — Türkiye ve Dünya</title>
+      <link>https://amator.tr/tutorials/universite-amator-radyo-kulupleri</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/universite-amator-radyo-kulupleri</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Üniversite ham radio kulüpleri rehberi. ITUpSat, ODTÜ, Boğaziçi kulüpleri, kulüp kuruluşu, kulüp çağrı işareti, contest takımı, CubeSat projesi.</description>
+    </item>
+    <item>
+      <title>WebSDR — Tarayıcıdan Dünyayı Dinle ve Sinyalini Test Et</title>
+      <link>https://amator.tr/tutorials/websdr-uzaktan-dinleme</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/websdr-uzaktan-dinleme</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>WebSDR nedir, nasıl kullanılır. University of Twente, KiwiSDR ağı. Kendi sinyalini uzaktan test etme, propagasyon analizi, CW pratik, lisanssız dinleme.</description>
+    </item>
+    <item>
+      <title>WinLink — Radyo Üzerinden E-posta (Acil İletişim Standardı)</title>
+      <link>https://amator.tr/tutorials/winlink-email-over-radio</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/winlink-email-over-radio</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>WinLink — internet olmasa bile amatör HF/VHF radyo ile e-posta gönderme. Pat ve WinLink Express clientları, VARA HF modemi, AFAD acil iletişim, kurulum rehberi.</description>
+    </item>
+    <item>
+      <title>WSPR — Düşük Güçle Dünyaya Sinyal Yaymak ve Propagasyon Haritası</title>
+      <link>https://amator.tr/tutorials/wspr-zayif-sinyal-yayini</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/wspr-zayif-sinyal-yayini</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>WSPR (Weak Signal Propagation Reporter) ağı — 1W ile dünya çapında sinyal raporlama, otomatik propagasyon analizi. WSJT-X kurulumu, 200 mW Avustralya kontağı, beacon mod.</description>
+    </item>
+    <item>
+      <title>Yagi Anten Yapımı — DK7ZB Tasarımı 2m / 70cm DIY</title>
+      <link>https://amator.tr/tutorials/yagi-anten-yapimi</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/yagi-anten-yapimi</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>VHF/UHF amatör için yönlü Yagi-Uda anten — DK7ZB klasik tasarımları, element + boom hesaplamaları, alüminyum boru ile DIY, kazanç ve F/B oranı.</description>
+    </item>
+    <item>
+      <title>DK7ZB Yagi Tasarımı — Düşük Empedansa 50Ω Direkt Match</title>
+      <link>https://amator.tr/tutorials/yagi-dk7zb-tasarim-derin</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/yagi-dk7zb-tasarim-derin</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Martin Steyer (DK7ZB) Yagi tasarımı — 50Ω direkt match (gamma/balun gerekmez), geniş bant, robust. 3-element 7 dBd, 5-element 9 dBd, 7-element 11 dBd.</description>
+    </item>
+    <item>
+      <title>Temel Anten Yapımı: J-Pole ve Slim Jim (2m / 144 MHz)</title>
+      <link>https://amator.tr/tutorials/anten-yapimi-temel</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/anten-yapimi-temel</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>VHF amatör için pratik J-Pole ve Slim Jim anten projeleri — bakır boru ve TV ribbon kablo ile, dakik formüller, SWR ölçümü ve test, ucuz fakat fabrika antenlerinden iyi sonuç.</description>
+    </item>
+    <item>
+      <title>APRS Nedir? Konum İzleme, Mesajlaşma ve Türkiye&#39;de 144.800 MHz</title>
+      <link>https://amator.tr/tutorials/aprs-nedir-nasil-kullanilir</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/aprs-nedir-nasil-kullanilir</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>APRS (Automatic Packet Reporting System) nedir, nasıl çalışır, donanım (telsiz + TNC + GPS) gereksinimleri, aprs.fi kullanımı, Türkiye&#39;de 144.800 MHz frekansı ve iGate altyapısı.</description>
+    </item>
+    <item>
+      <title>Baofeng UV-5R Programlama Rehberi (CHIRP)</title>
+      <link>https://amator.tr/tutorials/baofeng-uv-5r-programlama</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/baofeng-uv-5r-programlama</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Baofeng UV-5R, UV-5R Plus, UV-82, BF-F8HP modelleri için CHIRP-next ile adım adım programlama, CSV import, kanal kapasitesi, sürücü kurulumu ve sık sorunlar.</description>
+    </item>
+    <item>
+      <title>Türkiye&#39;de Çağrı İşareti Nasıl Alınır? (BTK + KEGM 2026)</title>
+      <link>https://amator.tr/tutorials/cagri-isareti-nasil-alinir</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/cagri-isareti-nasil-alinir</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>BTK/KEGM amatör telsiz sınavı, A/B/C lisans sınıfları, TA/TB/TC/YM prefiks anlamları, başvuru süreci, ücretler ve kıdem sistemi — Türkiye&#39;de çağrı işareti almak için tam kılavuz.</description>
+    </item>
+    <item>
+      <title>CTCSS / DCS Tonları: Açıklama, Kullanım ve Sık Hatalar</title>
+      <link>https://amator.tr/tutorials/ctcss-dcs-nedir</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/ctcss-dcs-nedir</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>CTCSS (sub-audible ton) ve DCS (digital coded squelch) ne işe yarar, nasıl çalışır, telsiz programlamasında nasıl kullanılır, sık yapılan hatalar ve TR rölelerinde tipik tonlar.</description>
+    </item>
+    <item>
+      <title>DMR Nedir? Anytone D878UV ve Brandmeister TG 286 (Türkiye)</title>
+      <link>https://amator.tr/tutorials/dmr-nedir-anytone-d878uv</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/dmr-nedir-anytone-d878uv</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>DMR (Digital Mobile Radio) amatör telsiz dijital modu — TDMA slot, talkgroup, Brandmeister network, DMR ID nasıl alınır, Anytone AT-D878UV programlama ve TG 286 Türkiye topluluğu.</description>
+    </item>
+    <item>
+      <title>FT8 Nedir? Düşük Güçle Dünyayla Konuşma — WSJT-X Rehberi</title>
+      <link>https://amator.tr/tutorials/ft8-dijital-mod</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/ft8-dijital-mod</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>FT8 dijital modu — nasıl çalışır, neden 5W ile dünyayı açar, WSJT-X kurulumu, donanım gereksinimleri, frekanslar, zaman senkronu ve ilk QSO için tam başlangıç rehberi.</description>
+    </item>
+    <item>
+      <title>HF Dipole ve EFHW Anten Yapımı (40m / 20m / Multiband)</title>
+      <link>https://amator.tr/tutorials/hf-dipole-efhw-anten</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/hf-dipole-efhw-anten</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>HF amatör için pratik anten projeleri — klasik dipole, multiband EFHW (49:1 unun ile), boyutlandırma formülleri, malzeme listesi, kurulum ve SWR ayarı. 80m-10m bantlar.</description>
+    </item>
+    <item>
+      <title>Mors Kodu (CW) Nasıl Öğrenilir? Koch Metodu, LCWO ve Pratik Yolları</title>
+      <link>https://amator.tr/tutorials/mors-kodu-ogrenme</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/mors-kodu-ogrenme</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsiz için mors kodu (CW) öğrenme rehberi — Koch metodu, Farnsworth zamanlaması, LCWO ve G4FON araçları, gerçekçi süre tahmini ve günlük pratik düzeni.</description>
+    </item>
+    <item>
+      <title>NanoVNA ile Anten Ölçümü — SWR, Smith Chart, Kalibrasyon</title>
+      <link>https://amator.tr/tutorials/nanovna-anten-olcumu</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/nanovna-anten-olcumu</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>NanoVNA — $100&#39;lık vector network analyzer ile anten SWR ölçümü, OSL kalibrasyon, Smith chart okuma, anten ayar sürecinde adım adım pratik kullanım.</description>
+    </item>
+    <item>
+      <title>POTA Nedir? Parks On The Air — Doğada Amatör Radyo Aktivasyonu</title>
+      <link>https://amator.tr/tutorials/pota-parks-on-the-air</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/pota-parks-on-the-air</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>POTA (Parks On The Air) nedir, Türkiye milli parklarında aktivasyon nasıl yapılır, aktivatör vs avcı, kayıt, log şablonu ve portatif HF setup önerileri.</description>
+    </item>
+    <item>
+      <title>Amatör Telsiz Rölesi Nedir? Nasıl Çalışır, Nasıl Kullanılır?</title>
+      <link>https://amator.tr/tutorials/role-nedir</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/role-nedir</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Amatör telsiz röleleri ne işe yarar, simplex/duplex farkı, CTCSS/DCS kullanımı, TR bölgeleri, röle protokolleri ve sık sorunlar — yeni başlayanlar için kapsamlı rehber.</description>
+    </item>
+    <item>
+      <title>RTL-SDR ile Telsiz Dinleme — Lisanssız Başlangıç Rehberi</title>
+      <link>https://amator.tr/tutorials/rtl-sdr-ile-telsiz-dinleme</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/rtl-sdr-ile-telsiz-dinleme</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>$30&#39;lık bir USB dongle ile 500 kHz - 1.75 GHz arası tüm radyo spektrumunu dinleyin. RTL-SDR donanımı, SDR# / SDR++ / GQRX kurulumu, ilk sinyal yakalama ve uygulama alanları.</description>
+    </item>
+    <item>
+      <title>Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)</title>
+      <link>https://amator.tr/tutorials/uv-k5-programlama</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/uv-k5-programlama</guid>
+      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
+      <description>Quansheng UV-K5&#39;i F4HWN custom firmware ile flashlemek, armel&#39;in özel CHIRP driver&#39;ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>İlk QSO Adım Adım — Lisans Sonrası İlk Kontağın Pratik Rehberi — amator.tr</title>
+<meta name="description" content="Yeni amatör operatör için ilk QSO yapma rehberi. Frekans seçimi, çağrı işareti telaffuzu, RST verme, log tutma, korkulardan kurtulma, klasik hatalar.">
+<meta name="keywords" content="ilk QSO, başlangıç, çağrı, lisans, korku">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<link rel="canonical" href="https://amator.tr/tutorials/ilk-qso-adim-adim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="İlk QSO Adım Adım — Lisans Sonrası İlk Kontağın Pratik Rehberi">
+<meta property="og:description" content="Yeni amatör operatör için ilk QSO yapma rehberi. Frekans seçimi, çağrı işareti telaffuzu, RST verme, log tutma, korkulardan kurtulma, klasik hatalar.">
+<meta property="og:url" content="https://amator.tr/tutorials/ilk-qso-adim-adim">
+<meta property="og:image" content="https://amator.tr/og/ilk-qso-adim-adim.png">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="amator.tr">
+<meta property="article:author" content="Kaan Dikeç">
+<meta property="article:published_time" content="2026-04-26T00:00:00+03:00">
+<meta property="article:modified_time" content="2026-04-26T00:00:00+03:00">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="amator.tr Tutorials" href="/feed.xml">
+<style>:root { --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1c1c; --accent: #e94560; --text: #f5f5f5; --text-muted: #888; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #262626; } [data-theme="dark-navy"] { --bg: #1a1a2e; --surface: #16213e; --surface-2: #0f3460; --accent: #e94560; --text: #eee; --text-muted: #999; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #2a2a4a; } [data-theme="dark-charcoal"] { --bg: #15151a; --surface: #1f1f27; --surface-2: #2a2a33; --accent: #e94560; --text: #e8e8e8; --text-muted: #9090a0; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #33333d; } [data-theme="light"] { --bg: #f0f2f5; --surface: #ffffff; --surface-2: #e8ecf1; --accent: #d63031; --text: #2d3436; --text-muted: #636e72; --success: #00b894; --warning: #e17055; --error: #d63031; --border: #dfe6e9; } [data-theme="vanta-black"] { --bg: #000000; --surface: #080808; --surface-2: #101010; --accent: #e94560; --text: #c8c8c8; --text-muted: #787878; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #1a1a1a; } [data-theme="contrast"] { --bg: #000000; --surface: #000000; --surface-2: #0a0a0a; --accent: #ffff00; --text: #ffffff; --text-muted: #ffffff; --success: #00ff00; --warning: #ffff00; --error: #ff6060; --border: #ffffff; } [data-theme="contrast"] a { text-decoration: underline; } [data-theme="contrast"] :focus-visible { outline: 3px solid #ffff00; outline-offset: 2px; } :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; } * { box-sizing: border-box; } html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; } html, body { overflow-x: clip; } body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px; } a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; } .container { max-width: 880px; margin: 0 auto; padding: 0 16px; } .site-nav { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); z-index: 50; } .site-nav-inner { display: flex; align-items: center; gap: 16px; padding: 12px 16px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; } .site-nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text); } .site-nav-links { display: flex; gap: 14px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; } .site-nav-links a { color: var(--text-muted); font-size: 0.95rem; } .site-nav-links a:hover, .site-nav-links a.active { color: var(--accent); } .site-nav-cta { margin-left: auto; padding: 6px 14px; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); font-size: 0.9rem; } .site-nav-cta:hover { background: var(--accent); color: #fff; text-decoration: none; } main { padding: 32px 16px; } .breadcrumb { max-width: 720px; margin: 0 auto 12px; font-size: 0.82rem; color: var(--text-muted); } .breadcrumb a { color: var(--text-muted); text-decoration: none; } .breadcrumb a:hover { color: var(--accent); } .breadcrumb span { color: var(--text); } .prose { max-width: 720px; margin: 0 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; } .prose h1 { font-size: 2rem; line-height: 1.25; margin: 0 0 8px; } .prose h2 { font-size: 1.5rem; margin-top: 2em; } .prose h3 { font-size: 1.2rem; margin-top: 1.5em; } .prose p { margin: 1em 0; } .prose code { background: var(--surface-2); padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; } .prose pre { background: var(--surface-2); border: 1px solid var(--border); padding: 12px; border-radius: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; } .prose pre code { white-space: pre; word-break: normal; overflow-wrap: normal; background: none; padding: 0; } .prose blockquote { border-left: 3px solid var(--accent); padding-left: 12px; margin-left: 0; color: var(--text-muted); } .prose img { max-width: 100%; height: auto; } .prose .meta { color: var(--text-muted); font-size: 0.9rem; } .prose .table-wrap, .prose table { display: block; width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1em 0; } .prose table { border-collapse: collapse; min-width: 100%; } .prose th, .prose td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; word-break: normal; } .prose th { background: var(--surface-2); } .prose a { word-break: break-word; overflow-wrap: anywhere; } .tutorials-list { display: grid; gap: 16px; max-width: 720px; margin: 0 auto; } .tutorial-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; } .tutorial-card h2 { margin: 0 0 6px; font-size: 1.25rem; } .tutorial-card .meta { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 8px; } .tutorial-card .tag { display: inline-block; background: var(--surface-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-right: 4px; } .hero { text-align: center; padding: 60px 16px; background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%); border-bottom: 1px solid var(--border); } .hero h1 { font-size: 2.4rem; margin: 0 0 12px; } .hero p { color: var(--text-muted); font-size: 1.1rem; margin: 0 auto; max-width: 600px; } .hero-cta { margin-top: 24px; display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; } .hero h1 span { white-space: nowrap; } .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 1100px; margin: 0 auto; } .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px 20px; text-decoration: none; color: var(--text); transition: border-color 0.15s, transform 0.15s; display: block; } .cat-card:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-2px); } .cat-card .cat-icon { font-size: 1.6rem; margin-bottom: 10px; } .cat-card h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--accent); } .cat-card p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; } .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; max-width: 1100px; margin: 0 auto; } .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; text-decoration: none; color: var(--text); transition: border-color 0.15s; display: block; } .feat-card:hover { border-color: var(--accent); text-decoration: none; } .feat-card h3 { margin: 0 0 6px; font-size: 1rem; color: var(--accent); } .feat-card p { margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; } .btn { display: inline-block; padding: 10px 20px; border-radius: 6px; font-weight: 600; border: 1px solid var(--border); background: var(--surface); color: var(--text); } .btn:hover { background: var(--surface-2); text-decoration: none; } .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; } .btn-primary:hover { opacity: 0.9; background: var(--accent); } .site-footer { border-top: 1px solid var(--border); padding: 40px 16px 24px; margin-top: 64px; color: var(--text-muted); font-size: 0.88rem; background: var(--surface); } .footer-grid { max-width: 1200px; margin: 0 auto 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; } .footer-grid h4 { margin: 0 0 10px; font-size: 0.95rem; color: var(--text); font-weight: 700; } .footer-grid ul { list-style: none; margin: 0; padding: 0; } .footer-grid li { margin-bottom: 5px; line-height: 1.5; } .footer-grid a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; } .footer-grid a:hover { color: var(--accent); } .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.8rem; } .footer-bottom em { color: var(--text-muted); font-style: normal; } .theme-fab { position: fixed; right: 20px; bottom: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); transition: transform 0.15s, box-shadow 0.15s; z-index: 1000; font-size: 1.2rem; } .theme-fab:hover { transform: scale(1.08); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45); } .theme-fab:active { transform: scale(0.96); } .theme-menu { position: fixed; right: 20px; bottom: 80px; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 2px; z-index: 1000; } .theme-menu[hidden] { display: none; } .theme-option { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: none; border: 1px solid transparent; border-radius: 8px; color: var(--text); font-size: 0.9rem; text-align: left; cursor: pointer; font-family: inherit; } .theme-option:hover { background: var(--surface-2); } .theme-option.active { border-color: var(--accent); color: var(--accent); font-weight: 600; } .theme-swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; } .page-header { max-width: 720px; margin: 0 auto 32px; } .page-header h1 { margin: 0 0 8px; } .reading-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 100; transition: width 0.08s linear; pointer-events: none; } .prose h2, .prose h3, .prose h4 { position: relative; scroll-margin-top: 64px; } .prose .anchor-link { position: absolute; left: -1.2em; top: 0; padding-right: 0.3em; color: var(--text-muted); opacity: 0; text-decoration: none; font-weight: 400; transition: opacity 0.15s; } .prose h2:hover .anchor-link, .prose h3:hover .anchor-link, .prose h4:hover .anchor-link, .prose .anchor-link:focus { opacity: 1; } .prose .anchor-link:hover { color: var(--accent); } .tutorial-search { max-width: 720px; margin: 16px auto 0; } .tutorial-search input[type="search"] { width: 100%; padding: 10px 14px; font-size: 1rem; font-family: inherit; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; } .tutorial-search input[type="search"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); } .tutorial-search .search-hint { margin: 12px 0 0; color: var(--text-muted); font-size: 0.9rem; text-align: center; } .tutorial-card.hidden { display: none; } .section-pad { padding: 32px 0; } .list-plain { list-style: none; padding: 0; } .error-page { padding: 64px 0; text-align: center; } .error-page h1 { font-size: 4rem; margin: 0; } .error-page p { color: var(--text-muted); } @media (max-width: 600px) { .site-nav-inner { flex-direction: column; align-items: flex-start; gap: 8px; } .site-nav-cta { margin-left: 0; } .hero h1 { font-size: 1.8rem; } main { padding: 24px 12px; } .prose table { font-size: 0.82rem; } .prose th, .prose td { padding: 5px 7px; word-break: break-word; overflow-wrap: anywhere; } .prose pre { font-size: 0.82rem; padding: 10px; } .prose pre code { font-size: 0.82rem; } } .skip-link { position: absolute; top: -40px; left: 0; background: var(--accent); color: #fff; padding: 8px 16px; z-index: 10000; text-decoration: none; border-radius: 0 0 6px 0; font-weight: 600; } .skip-link:focus { top: 0; text-decoration: none; color: #fff; outline: 2px solid var(--text); outline-offset: 2px; } .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 1100px; margin: 0 auto; gap: 32px; } @media (min-width: 1000px) { .article-layout { grid-template-columns: minmax(0, 720px) 240px; align-items: start; } } .article-layout > * { min-width: 0; } .article-layout .prose { margin: 0; } .toc { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto; font-size: 0.85rem; border-left: 2px solid var(--border); padding-left: 14px; display: none; } @media (min-width: 1000px) { .toc { display: block; } } .toc-title { font-weight: 700; color: var(--text); margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; } .toc ul { list-style: none; padding: 0; margin: 0; } .toc li { margin: 4px 0; line-height: 1.4; } .toc li.toc-h3 { padding-left: 14px; } .toc a { color: var(--text-muted); text-decoration: none; display: block; padding: 2px 0; border-left: 2px solid transparent; margin-left: -16px; padding-left: 14px; transition: color 0.12s, border-color 0.12s; } .toc a:hover { color: var(--accent); text-decoration: none; } .toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; } .prose pre { position: relative; } .code-copy-btn { position: absolute; top: 8px; right: 8px; background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; font-size: 0.75rem; font-family: inherit; cursor: pointer; opacity: 0; transition: opacity 0.15s, color 0.15s, border-color 0.15s; } .prose pre:hover .code-copy-btn, .code-copy-btn:focus { opacity: 1; } .code-copy-btn:hover { color: var(--accent); border-color: var(--accent); } .code-copy-btn.copied { color: var(--accent); border-color: var(--accent); } .prose img { cursor: zoom-in; } .lightbox-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; } .lightbox-overlay[hidden] { display: none; } .lightbox-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6); } .lightbox-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; padding: 4px 12px; font-family: inherit; } .lightbox-close:hover { color: var(--accent); } .helpful { margin: 40px auto 0; max-width: 720px; padding: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); text-align: center; } .helpful-question { margin: 0 0 12px; font-weight: 600; color: var(--text); } .helpful-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.95rem; cursor: pointer; transition: border-color 0.15s, color 0.15s; } .helpful-btn:hover { border-color: var(--accent); color: var(--accent); } .helpful-btn:disabled { cursor: default; opacity: 0.7; } .helpful-btn.voted { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); } .helpful-count { margin: 12px 0 0; color: var(--text-muted); font-size: 0.85rem; } .helpful-thanks { margin: 12px 0 0; color: var(--accent); font-size: 0.9rem; font-weight: 600; } .prev-next { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; max-width: 720px; margin: 40px auto 0; } .prev-next > * { min-width: 0; } @media (max-width: 600px) { .prev-next { grid-template-columns: minmax(0, 1fr); } } .prev-next a { display: block; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); text-decoration: none; transition: border-color 0.15s; } .prev-next a:hover { border-color: var(--accent); text-decoration: none; } .prev-next .pn-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .prev-next .pn-title { font-weight: 600; color: var(--accent); font-size: 0.95rem; line-height: 1.35; } .prev-next .pn-next { text-align: right; } .prev-next .pn-prev:only-child { grid-column: 1; } @media print { .site-nav, .site-footer, .theme-fab, .theme-menu, .reading-progress, .toc, .code-copy-btn, .helpful, .prev-next, .skip-link, .tutorial-search { display: none !important; } body { background: #fff; color: #000; font-size: 11pt; } .article-layout { grid-template-columns: 1fr !important; } .prose { max-width: 100%; margin: 0; } .prose a { color: #000; text-decoration: underline; } .prose a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; } .prose pre, .prose code { background: #f4f4f4 !important; border: 1px solid #ddd; color: #000; } .prose h1, .prose h2, .prose h3 { page-break-after: avoid; } .prose img, .prose pre, .prose blockquote { page-break-inside: avoid; } }</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"İlk QSO Adım Adım — Lisans Sonrası İlk Kontağın Pratik Rehberi","description":"Yeni amatör operatör için ilk QSO yapma rehberi. Frekans seçimi, çağrı işareti telaffuzu, RST verme, log tutma, korkulardan kurtulma, klasik hatalar.","url":"https://amator.tr/tutorials/ilk-qso-adim-adim","datePublished":"2026-04-26T00:00:00+03:00","dateModified":"2026-04-26T00:00:00+03:00","inLanguage":"tr-TR","author":{"@type":"Person","name":"Kaan Dikeç","url":"https://amator.tr/iletisim","identifier":"TB2KKD"},"publisher":{"@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":{"@type":"ImageObject","url":"https://amator.tr/og/default.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://amator.tr/tutorials/ilk-qso-adim-adim"},"articleSection":"ilk QSO","keywords":"ilk QSO, başlangıç, çağrı, lisans, korku","wordCount":1589,"image":"https://amator.tr/og/ilk-qso-adim-adim.png"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Ana Sayfa","item":"https://amator.tr/"},{"@type":"ListItem","position":2,"name":"Tutorial'lar","item":"https://amator.tr/tutorials/"},{"@type":"ListItem","position":3,"name":"İlk QSO Adım Adım — Lisans Sonrası İlk Kontağın Pratik Rehberi"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Kaç kontak yapmalıyım haftada?","acceptedAnswer":{"@type":"Answer","text":"Rule of thumb: 5-10 kontak / hafta = aktif operatör. 50+ kontak / hafta = \"DX hunter\" / contester."}},{"@type":"Question","name":"Mikrofon korkum geçer mi?","acceptedAnswer":{"@type":"Answer","text":"3-5 kontak sonra büyük çoğunluğu geçer. 20-30 kontak sonra natural olur. Sadece pratik gerek."}},{"@type":"Question","name":"Yanlış programlama ne yaparım?","acceptedAnswer":{"@type":"Answer","text":"Eğer TX yapamıyorsan → frekans / shift / CTCSS yanlış. CHIRP ile gözden geçir."}},{"@type":"Question","name":"QSL?\" duydum, ne demem?","acceptedAnswer":{"@type":"Answer","text":"\"QSL\" = anlaşıldı / aldım. Cevabı \"QSL\" veya \"Yes I copy\"."}},{"@type":"Question","name":"Eski operatörler genç başlangıçtan sıkılıyor mu?","acceptedAnswer":{"@type":"Answer","text":"Tam tersi — Türkiye amatör topluluğu küçük, yeni operatörü hep desteklerler. \"Hoş geldin\" hissi gerçek. ---"}}]}</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+
+<main id="main" tabindex="-1">
+<div class="article-layout">
+<article class="prose">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Ana Sayfa</a> › <a href="/tutorials/">Tutorial'lar</a> › <span>İlk QSO Adım Adım — Lisans Sonrası İlk Kontağın Pratik Rehberi</span></nav>
+<header><h1>İlk QSO Adım Adım — Lisans Sonrası İlk Kontağın Pratik Rehberi</h1>
+<p class="meta"><time datetime="2026-04-26">2026-04-26</time> · 8 dk okuma · 1589 kelime</p>
+</header>
+<p>KEGM sınavını verdin, BTK lisansını aldın, çağrı işaretin var: TB3KKD. Telsizini açtın, mikrofonu eline aldın... ve <strong>donup kaldın</strong>. &quot;Ne diyeceğim?&quot; Bu rehber yeni operatörün <strong>ilk kontak korkusunu yenmek + standart akışı izlemek</strong> için.</p>
+<h2 id="korku-gercek"><a class="anchor-link" href="#korku-gercek" aria-label="Bu basliga link">#</a>&quot;Korku&quot; gerçek</h2>
+<p>Yeni operatör psikolojisi:</p>
+<ul>
+<li><strong>Mike fright</strong> (mikrofon korkusu) — sınıf öğrencisinin ilk sunum hissi</li>
+<li>&quot;Yanlış bir şey söylersem rezil olurum&quot;</li>
+<li>&quot;Yabancı operatör İngilizce sorar, ne yapacağım?&quot;</li>
+<li>&quot;Telsizi yanlış programladım, herkes duyacak&quot;</li>
+</ul>
+<p><strong>Hepsi normal.</strong> Tüm operatörler bu evreyi geçti. Çözüm: pratik + standart akışı izleme + yapacak yer + güvenli alan.</p>
+<h2 id="i-lk-qso-nereden-basla"><a class="anchor-link" href="#i-lk-qso-nereden-basla" aria-label="Bu basliga link">#</a>İlk QSO: nereden başla?</h2>
+<p>3 yaygın yol — kolaydan zora:</p>
+<h3 id="1-yerel-role-ile-en-kolay-utangaclik-icin-ideal"><a class="anchor-link" href="#1-yerel-role-ile-en-kolay-utangaclik-icin-ideal" aria-label="Bu basliga link">#</a>1. Yerel röle ile (en kolay — utangaçlık için ideal)</h3>
+<ul>
+<li>145.500 MHz simplex çağrı veya yakın röle</li>
+<li>Repeater sinyali güçlendirir → basit el telsiziyle bile net görüşme</li>
+<li>Cevap alma ihtimali <strong>yüksek</strong> (frekanslar kalabalık, operatörler aktif)</li>
+<li><strong>Utangaçlık dostu</strong>: kısa görüşmeler yaygın, uzun sohbet baskısı yok</li>
+<li>2m FM, çok kısa kontat yeter (30 saniye)</li>
+</ul>
+<h3 id="2-echolink-internet-koprusuyle"><a class="anchor-link" href="#2-echolink-internet-koprusuyle" aria-label="Bu basliga link">#</a>2. EchoLink (internet köprüsüyle)</h3>
+<ul>
+<li>Lisanslı kullanım, ama daha rahat</li>
+<li>Bilgisayardan ses kart üzerinden</li>
+<li>Bağlandığın röle gerçek RF radyo — ama sen internet üzerinden</li>
+</ul>
+<h3 id="3-hf-ssb-en-zor-ama-en-otantik"><a class="anchor-link" href="#3-hf-ssb-en-zor-ama-en-otantik" aria-label="Bu basliga link">#</a>3. HF SSB (en zor ama en otantik)</h3>
+<ul>
+<li>14.245 MHz USB üstüne git</li>
+<li>Avrupa SSB DX dinle</li>
+<li>&quot;CQ DX&quot; + çağrı işaretin — uzun mesafe kontak</li>
+</ul>
+<p>İlk kontak için <strong>röle</strong> öner — düşük baskı, uyumlu topluluk.</p>
+<h2 id="standart-qso-akisi"><a class="anchor-link" href="#standart-qso-akisi" aria-label="Bu basliga link">#</a>Standart QSO akışı</h2>
+<p>3 dakikalık tipik kontak:</p>
+<h3 id="a-baslatir-sen"><a class="anchor-link" href="#a-baslatir-sen" aria-label="Bu basliga link">#</a>A başlatır (sen)</h3>
+<blockquote>
+<p><em>&quot;Burası TB3KKD, dinliyorum&quot;</em></p>
+</blockquote>
+<p>(Eğer bir kişiyi hedefliyorsan: &quot;TA2ABC TA2ABC, burası TB3KKD&quot; iki kez söyle)</p>
+<h3 id="b-cevap-verir"><a class="anchor-link" href="#b-cevap-verir" aria-label="Bu basliga link">#</a>B cevap verir</h3>
+<blockquote>
+<p><em>&quot;TB3KKD&#39;yi alıyorum, burası TA2ABC, sinyalini 5/9 alıyorum, ismim Ali, QTH İstanbul, sana iyi günler&quot;</em></p>
+</blockquote>
+<h3 id="a-cevap-verir"><a class="anchor-link" href="#a-cevap-verir" aria-label="Bu basliga link">#</a>A cevap verir</h3>
+<blockquote>
+<p><em>&quot;Selam Ali, TB3KKD&#39;den. Senin sinyalini de 5/9 alıyorum, ben Kaan, QTH Bursa. Bu benim ilk QSO&#39;m! Heyecanlıyım, yeni başladım.&quot;</em></p>
+</blockquote>
+<h3 id="b-reaction"><a class="anchor-link" href="#b-reaction" aria-label="Bu basliga link">#</a>B reaction</h3>
+<blockquote>
+<p><em>&quot;Kaan, hoş geldin amatör radyoya! Tebrikler. Ne kadar telsiz kullandın bugün? Anteni nasıl?&quot;</em></p>
+</blockquote>
+<h3 id="sohbet-2-5-dakika"><a class="anchor-link" href="#sohbet-2-5-dakika" aria-label="Bu basliga link">#</a>Sohbet 2-5 dakika</h3>
+<ul>
+<li>Ekipmanlar</li>
+<li>Yer / hava</li>
+<li>Hobiler</li>
+</ul>
+<h3 id="a-bitirme"><a class="anchor-link" href="#a-bitirme" aria-label="Bu basliga link">#</a>A bitirme</h3>
+<blockquote>
+<p><em>&quot;Çok memnun oldum Ali. Hoşçakal, 73 best dilimle, TB3KKD clear and listening.&quot;</em></p>
+</blockquote>
+<h3 id="b-bitirme"><a class="anchor-link" href="#b-bitirme" aria-label="Bu basliga link">#</a>B bitirme</h3>
+<blockquote>
+<p><em>&quot;73 Kaan! Hoşçakal. TA2ABC clear.&quot;</em></p>
+</blockquote>
+<h2 id="hazirlik-5-dakika-once"><a class="anchor-link" href="#hazirlik-5-dakika-once" aria-label="Bu basliga link">#</a>Hazırlık (5 dakika önce)</h2>
+<p>İlk kontak öncesi check-list:</p>
+<h3 id="1-cagri-isaretini-ezbere-bil"><a class="anchor-link" href="#1-cagri-isaretini-ezbere-bil" aria-label="Bu basliga link">#</a>1. Çağrı işaretini ezbere bil</h3>
+<p>TB3KKD&#39;yi fonetik:</p>
+<blockquote>
+<p>&quot;Tango Bravo Three Kilo Kilo Delta&quot;</p>
+</blockquote>
+<p>10 kez tekrar et — telsiz açmadan ezbere.</p>
+<h3 id="2-frekansi-tune-et"><a class="anchor-link" href="#2-frekansi-tune-et" aria-label="Bu basliga link">#</a>2. Frekansı tune et</h3>
+<ul>
+<li>145.500 MHz simplex (yeni kontak çağrısı)</li>
+<li>Veya yakın röle (örn 145.6125, -0.6 shift, CTCSS 88.5)</li>
+</ul>
+<h3 id="3-volume-squelch"><a class="anchor-link" href="#3-volume-squelch" aria-label="Bu basliga link">#</a>3. Volume + squelch</h3>
+<ul>
+<li>Squelch&#39;i orta seviye — sürekli noise kapansın ama zayıf sinyal yakalansın</li>
+<li>Volume rahatsız etmeyen seviye</li>
+</ul>
+<h3 id="4-mikrofon-test"><a class="anchor-link" href="#4-mikrofon-test" aria-label="Bu basliga link">#</a>4. Mikrofon test</h3>
+<ul>
+<li>&quot;Test test 1 2 3&quot;</li>
+<li>VU meter (analog) veya bilgisayar sound monitor mid-range</li>
+</ul>
+<h3 id="5-defter-log"><a class="anchor-link" href="#5-defter-log" aria-label="Bu basliga link">#</a>5. Defter / log</h3>
+<ul>
+<li>Bilgisayar <a href="/tutorials/log-tutma-qsl-lotw">logging yazılım</a> açık</li>
+<li>Veya kağıt + kalem — çağrı işareti, tarih, saat, frekans, RST</li>
+</ul>
+<h2 id="kontak-oncesi-dinleme-3-5-dakika"><a class="anchor-link" href="#kontak-oncesi-dinleme-3-5-dakika" aria-label="Bu basliga link">#</a>Kontak öncesi dinleme (3-5 dakika)</h2>
+<p>İlk QSO&#39;yu yapmadan önce <strong>kültürü öğren</strong>:</p>
+<ul>
+<li>145.500&#39;i 5 dakika dinle — kim kontak yapıyor, nasıl konuşuyor</li>
+<li>Hangi formal/informal seviye kullanıyor?</li>
+<li>Türkçe mi İngilizce mi tercih?</li>
+<li>Pile-up var mı?</li>
+</ul>
+<p><strong>Pratik öneri</strong>: ilk gün <strong>dinle, kontak yapma</strong>. İkinci gün küçük cesaret + ilk QSO.</p>
+<h2 id="role-hazirligi-shift-ctcss-kontrol"><a class="anchor-link" href="#role-hazirligi-shift-ctcss-kontrol" aria-label="Bu basliga link">#</a>Röle hazırlığı (shift + CTCSS kontrol)</h2>
+<p>Röleye bağlanmadan önce 3 kritik ayar:</p>
+<h3 id="1-shift-isareti"><a class="anchor-link" href="#1-shift-isareti" aria-label="Bu basliga link">#</a>1. Shift (+/-) işareti</h3>
+<p>Telsiz ekranında <strong>&quot;+&quot;</strong> veya <strong>&quot;-&quot;</strong> işaretini görmeden asla mandala basma. Bu işaret yoksa <strong>simplex</strong> kanaldasın — röle seni asla duymaz. Türkiye 2m röleleri: <strong>-0.6 MHz</strong> shift standart.</p>
+<h3 id="2-ctcss-tonu"><a class="anchor-link" href="#2-ctcss-tonu" aria-label="Bu basliga link">#</a>2. CTCSS tonu</h3>
+<p>Röleler gürültüden tetiklenmemek için alt-ses tonu bekler (88.5 Hz, 123.0 Hz vs). Eğer karşı tarafı duyuyor ama sen cevap verdiğinde kimse duymuyorsa, %99 ihtimalle <strong>TX Tone</strong> kapalı veya yanlış.</p>
+<h3 id="3-kerchunking-yapma"><a class="anchor-link" href="#3-kerchunking-yapma" aria-label="Bu basliga link">#</a>3. &quot;Kerchunking&quot; YAPMA</h3>
+<p>Telsizin çalışıp çalışmadığını test etmek için mandala yarım saniye basıp bırakmak — telsizci dünyasında <strong>&quot;kerchunking&quot;</strong> denir ve çok kaba sayılır. Röleyi tetikler ama ses yok, herkes &quot;bu kim?&quot; diye sorar.</p>
+<p><strong>Doğru yöntem:</strong> mandala bas ve söyle: <em>&quot;Burası TB3KKD, telsiz testi, cevap veren var mı?&quot;</em> Hem sistemi test ettin hem nezaketini korudun.</p>
+<h2 id="cq-atmak-kontak-baslatma"><a class="anchor-link" href="#cq-atmak-kontak-baslatma" aria-label="Bu basliga link">#</a>CQ atmak (kontak başlatma)</h2>
+<p>Eğer kimse aktif değilse, sen başlat:</p>
+<h3 id="cagri-sekli"><a class="anchor-link" href="#cagri-sekli" aria-label="Bu basliga link">#</a>Çağrı şekli</h3>
+<blockquote>
+<p><em>&quot;CQ CQ CQ this is Tango Bravo Three Kilo Kilo Delta, TB3KKD calling CQ on 145.500&quot;</em></p>
+</blockquote>
+<p>veya Türkçe:</p>
+<blockquote>
+<p><em>&quot;CQ CQ CQ, burası TB3KKD, TB3KKD, çağrıyorum, dinliyorum&quot;</em></p>
+</blockquote>
+<h3 id="10-15-saniye-dinle"><a class="anchor-link" href="#10-15-saniye-dinle" aria-label="Bu basliga link">#</a>10-15 saniye dinle</h3>
+<p>Cevap gelmezse 1-2 dakika sonra tekrar et. 3-4 deneme yeter — boş frekans / kötü propagasyon.</p>
+<h3 id="pratik"><a class="anchor-link" href="#pratik" aria-label="Bu basliga link">#</a>Pratik</h3>
+<p>Kalabalık şehirde (İstanbul / İzmir / Ankara) röle CQ 30 saniyede cevap. Köyde / dağlık bölgede 30 dakika sürebilir.</p>
+<h2 id="yaygin-korkular-cozum"><a class="anchor-link" href="#yaygin-korkular-cozum" aria-label="Bu basliga link">#</a>Yaygın korkular + çözüm</h2>
+<h3 id="korku-1-cagri-isaretini-yanlis-soylerim"><a class="anchor-link" href="#korku-1-cagri-isaretini-yanlis-soylerim" aria-label="Bu basliga link">#</a>Korku 1: &quot;Çağrı işaretini yanlış söylerim&quot;</h3>
+<p><strong>Çözüm</strong>: 100 kez ezbere oku. Yanlış söylesen bile karşı taraf düzeltir, dünya yıkılmaz.</p>
+<h3 id="korku-2-i-ngilizce-konusmak-gerekirse"><a class="anchor-link" href="#korku-2-i-ngilizce-konusmak-gerekirse" aria-label="Bu basliga link">#</a>Korku 2: &quot;İngilizce konuşmak gerekirse?&quot;</h3>
+<p><strong>Çözüm</strong>: Türkçe ile başla. Yabancı duysa <strong>&quot;sorry, I don&#39;t speak English well&quot;</strong> + &quot;Tango Bravo Three...&quot; yeter. Çoğu kontak fonetik + RST + isim formattadır, kompleks İngilizce gerek değil.</p>
+<h3 id="korku-3-telsizimi-yanlis-programladim"><a class="anchor-link" href="#korku-3-telsizimi-yanlis-programladim" aria-label="Bu basliga link">#</a>Korku 3: &quot;Telsizimi yanlış programladım&quot;</h3>
+<p><strong>Çözüm</strong>: Önce <strong>dinle</strong> — sinyal alıyorsan TX&#39;in büyük ihtimalle de çalışır. SWR meter&#39;da gücü kontrol et. Sıkıntı varsa karşı taraf &quot;<strong>You are weak</strong>&quot; der, ona göre düzelt.</p>
+<h3 id="korku-4-yanlis-bir-sey-soylersem"><a class="anchor-link" href="#korku-4-yanlis-bir-sey-soylersem" aria-label="Bu basliga link">#</a>Korku 4: &quot;Yanlış bir şey söylersem&quot;</h3>
+<p><strong>Çözüm</strong>: <strong>Politik / dini / cinsel konu</strong> = kaçın. Diğer her şey OK. Yanlış teknik söylersen daha tecrübeli operatör nazik ekibinde düzeltir, samimi atmosfer.</p>
+<h3 id="korku-5-pile-up-var-anlasilmiyorum"><a class="anchor-link" href="#korku-5-pile-up-var-anlasilmiyorum" aria-label="Bu basliga link">#</a>Korku 5: &quot;Pile-up var, anlaşılmıyorum&quot;</h3>
+<p><strong>Çözüm</strong>: Pile-up&#39;a girme yeni başlangıçta. Sakin frekans bul, 1-1 kontak yap.</p>
+<h2 id="rst-raporu-nasil-verilir"><a class="anchor-link" href="#rst-raporu-nasil-verilir" aria-label="Bu basliga link">#</a>RST raporu nasıl verilir?</h2>
+<p>3 hane (CW) veya 2 hane (SSB/FM):</p>
+<h3 id="r-readability"><a class="anchor-link" href="#r-readability" aria-label="Bu basliga link">#</a>R (Readability)</h3>
+<ul>
+<li>1: anlaşılmıyor</li>
+<li>2: anca</li>
+<li>3: zorla</li>
+<li>4: oldukça</li>
+<li>5: mükemmel</li>
+</ul>
+<h3 id="s-signal-strength"><a class="anchor-link" href="#s-signal-strength" aria-label="Bu basliga link">#</a>S (Signal Strength)</h3>
+<ul>
+<li>1-9: zayıftan kuvvetliye</li>
+</ul>
+<h3 id="pratik"><a class="anchor-link" href="#pratik" aria-label="Bu basliga link">#</a>Pratik</h3>
+<ul>
+<li>&quot;<strong>5/9</strong>&quot; en yaygın (mükemmel readability, 9 strength)</li>
+<li>&quot;<strong>5/7</strong>&quot; iyi sinyal</li>
+<li>&quot;<strong>3/3</strong>&quot; zayıf sinyal — netice almak zor</li>
+</ul>
+<p>Tipik FM / röle kontağında genelde &quot;<strong>5/9</strong>&quot; çünkü ya alıyor ya almıyor (FM&#39;in capture effect&#39;i).</p>
+<h2 id="kontak-suresi"><a class="anchor-link" href="#kontak-suresi" aria-label="Bu basliga link">#</a>Kontak süresi</h2>
+<ul>
+<li><strong>Röle / FM</strong>: 30 saniye - 5 dakika (uzunsa rölede başkasının erişimi bloke)</li>
+<li><strong>HF SSB</strong>: 5-15 dakika (sosyal sohbet)</li>
+<li><strong>Contest</strong>: 10-30 saniye (hızlı exchange)</li>
+</ul>
+<p>İlk kontağında <strong>kısa tut</strong> — 1-2 dakika yeterli, baskı az.</p>
+<h2 id="log-tutma"><a class="anchor-link" href="#log-tutma" aria-label="Bu basliga link">#</a>Log tutma</h2>
+<p>Her kontak kayıt et:</p>
+<ul>
+<li>Tarih + saat <strong>UTC</strong> (lokal değil!)</li>
+<li>Çağrı işareti karşı tarafın</li>
+<li>Frekans + mod</li>
+<li>RST verdiği + aldığın</li>
+<li>Adı (eğer söylediyse)</li>
+<li>Notlar</li>
+</ul>
+<p><a href="/tutorials/log-tutma-qsl-lotw">Log tutma + QSL tutorial</a> detay.</p>
+<h2 id="kontak-sonrasi"><a class="anchor-link" href="#kontak-sonrasi" aria-label="Bu basliga link">#</a>Kontak sonrası</h2>
+<h3 id="qsl-kart"><a class="anchor-link" href="#qsl-kart" aria-label="Bu basliga link">#</a>QSL kart</h3>
+<p>Karşı taraf &quot;QSL kart gönderir misin?&quot; derse:</p>
+<ul>
+<li>Online: <a href="https://www.eqsl.cc/">eqsl.cc</a> hesap aç → online &quot;kart&quot;</li>
+<li>LotW (ARRL Logbook of the World) — DXCC için resmi</li>
+<li>Paper kart — TRAC QSL bürosu</li>
+</ul>
+<h3 id="sonraki-adimlar"><a class="anchor-link" href="#sonraki-adimlar" aria-label="Bu basliga link">#</a>Sonraki adımlar</h3>
+<ul>
+<li>10 kontak: bir hafta içinde aynı röle / HF</li>
+<li>50 kontak: bir ay</li>
+<li>Yeni bantlar / modlar dene</li>
+<li>TRAC üye ol — topluluk + eğitim</li>
+</ul>
+<h2 id="gorunmez-kurallar"><a class="anchor-link" href="#gorunmez-kurallar" aria-label="Bu basliga link">#</a>&quot;Görünmez kurallar&quot;</h2>
+<p>Yazılı olmayan ama herkesin uyduğu:</p>
+<h3 id="frekans-nezaket"><a class="anchor-link" href="#frekans-nezaket" aria-label="Bu basliga link">#</a>Frekans nezaket</h3>
+<ul>
+<li>Boş frekansta <strong>&quot;Is this frequency in use?&quot;</strong> sor</li>
+<li>Net&#39;in başlama saatlerinde frekansı boşalt</li>
+<li>Aşırı uzun monolog yapma — karşı tarafın söz hakkı</li>
+</ul>
+<h3 id="saygi"><a class="anchor-link" href="#saygi" aria-label="Bu basliga link">#</a>Saygı</h3>
+<ul>
+<li>DX yapan operatöre uzun sohbet açma — &quot;5/9 73&quot; yeter, sıraya bekleyenler var</li>
+<li>Politik tartışmaya girme</li>
+<li>Yaş / din / etnik köken sorma (rahatsız edici)</li>
+</ul>
+<h3 id="gizlilik"><a class="anchor-link" href="#gizlilik" aria-label="Bu basliga link">#</a>Gizlilik</h3>
+<ul>
+<li>Karşı tarafın kişisel bilgisini kimseye açıklama</li>
+<li>Web&#39;de kontak içeriği paylaşma izin alma</li>
+</ul>
+<h2 id="bant-nezaketi-nereye-dokunma"><a class="anchor-link" href="#bant-nezaketi-nereye-dokunma" aria-label="Bu basliga link">#</a>Bant nezaketi — nereye dokunma</h2>
+<h3 id="sacred-frequencies"><a class="anchor-link" href="#sacred-frequencies" aria-label="Bu basliga link">#</a>&quot;Sacred frequencies&quot;</h3>
+<ul>
+<li><strong>3.999 MHz</strong>: AFAD acil net (Türkiye)</li>
+<li><strong>7.110 MHz</strong>: IARU R1 emergency</li>
+<li><strong>14.300 MHz</strong>: maritime mobile / emergency</li>
+<li><strong>121.500 MHz</strong>: aviation distress (sen TX yapma)</li>
+<li><strong>156.800 MHz Ch16</strong>: maritime distress</li>
+</ul>
+<h3 id="acil-iletisim"><a class="anchor-link" href="#acil-iletisim" aria-label="Bu basliga link">#</a>Acil iletişim</h3>
+<p>EmComm operatörlerinin trafiği görünce <strong>frekansı boşalt</strong>, gerek yok kontak yapma.</p>
+<h2 id="ekipman-kontrolu"><a class="anchor-link" href="#ekipman-kontrolu" aria-label="Bu basliga link">#</a>Ekipman kontrolü</h2>
+<p>İlk kontaktan önce:</p>
+<h3 id="telsiz"><a class="anchor-link" href="#telsiz" aria-label="Bu basliga link">#</a>Telsiz</h3>
+<ul>
+<li>Şarjlı pil, fully charged</li>
+<li>Power output 4-5W (Baofeng standartı)</li>
+<li>Squelch test</li>
+<li>Manuel volume + squelch ayar bilgisi</li>
+</ul>
+<h3 id="anten"><a class="anchor-link" href="#anten" aria-label="Bu basliga link">#</a>Anten</h3>
+<ul>
+<li>Stock antenne yerine <strong>Nagoya NA-771</strong> veya benzeri (büyük artış)</li>
+<li>SWR test (mümkünse) — anten OK</li>
+<li>Konnektör temiz, sıkı</li>
+</ul>
+<h3 id="lokasyon"><a class="anchor-link" href="#lokasyon" aria-label="Bu basliga link">#</a>Lokasyon</h3>
+<ul>
+<li>İçeride RF reception zayıf — pencere yakınında / balkonda dur</li>
+<li>Çoklu kat olunca + binadan dışarı bak</li>
+</ul>
+<h2 id="pratik-7-gunluk-plan"><a class="anchor-link" href="#pratik-7-gunluk-plan" aria-label="Bu basliga link">#</a>Pratik 7 günlük plan</h2>
+<h3 id="gun-1-lisansi-al-ekipmani-al-programla"><a class="anchor-link" href="#gun-1-lisansi-al-ekipmani-al-programla" aria-label="Bu basliga link">#</a>Gün 1: lisansı al, ekipmanı al, programla</h3>
+<ul>
+<li>Çağrı işareti BTK&#39;dan al</li>
+<li>Baofeng UV-5R + Nagoya NA-771</li>
+<li>CHIRP ile programla → röle CSV</li>
+</ul>
+<h3 id="gun-2-dinle-tx-yok"><a class="anchor-link" href="#gun-2-dinle-tx-yok" aria-label="Bu basliga link">#</a>Gün 2: dinle (TX yok)</h3>
+<ul>
+<li>145.500 simplex 1 saat dinle</li>
+<li>Yakın röleleri dinle</li>
+<li>Kontak akışını gözlemle</li>
+</ul>
+<h3 id="gun-3-cagri-isareti-pratigi"><a class="anchor-link" href="#gun-3-cagri-isareti-pratigi" aria-label="Bu basliga link">#</a>Gün 3: çağrı işareti pratiği</h3>
+<ul>
+<li>Fonetik telaffuzu 100 kez söyle</li>
+<li>Aile üyeleri ile &quot;test&quot; konuşma</li>
+</ul>
+<h3 id="gun-4-kucuk-cesaret"><a class="anchor-link" href="#gun-4-kucuk-cesaret" aria-label="Bu basliga link">#</a>Gün 4: küçük cesaret</h3>
+<ul>
+<li>145.500&#39;de &quot;Burası TB3KKD, test&quot; söyle</li>
+<li>Cevap gelmezse sorun değil — pratik</li>
+</ul>
+<h3 id="gun-5-ilk-qso"><a class="anchor-link" href="#gun-5-ilk-qso" aria-label="Bu basliga link">#</a>Gün 5: ilk QSO</h3>
+<ul>
+<li>Yakın röle aç</li>
+<li>&quot;Burası TB3KKD, dinliyorum&quot;</li>
+<li>30 saniye - 1 dakika kontak</li>
+</ul>
+<h3 id="gun-6-7-tekrar"><a class="anchor-link" href="#gun-6-7-tekrar" aria-label="Bu basliga link">#</a>Gün 6-7: tekrar</h3>
+<ul>
+<li>Daha uzun kontak (2-3 dakika)</li>
+<li>Farklı bant / mod dene</li>
+</ul>
+<h2 id="sik-sorulan-sorular"><a class="anchor-link" href="#sik-sorulan-sorular" aria-label="Bu basliga link">#</a>Sık sorulan sorular</h2>
+<h3 id="kac-kontak-yapmaliyim-haftada"><a class="anchor-link" href="#kac-kontak-yapmaliyim-haftada" aria-label="Bu basliga link">#</a>Kaç kontak yapmalıyım haftada?</h3>
+<p>Rule of thumb: <strong>5-10 kontak / hafta</strong> = aktif operatör. 50+ kontak / hafta = &quot;DX hunter&quot; / contester.</p>
+<h3 id="mikrofon-korkum-gecer-mi"><a class="anchor-link" href="#mikrofon-korkum-gecer-mi" aria-label="Bu basliga link">#</a>Mikrofon korkum geçer mi?</h3>
+<p>3-5 kontak sonra büyük çoğunluğu geçer. 20-30 kontak sonra natural olur. Sadece pratik gerek.</p>
+<h3 id="yanlis-programlama-ne-yaparim"><a class="anchor-link" href="#yanlis-programlama-ne-yaparim" aria-label="Bu basliga link">#</a>Yanlış programlama ne yaparım?</h3>
+<p>Eğer TX yapamıyorsan → frekans / shift / CTCSS yanlış. CHIRP ile gözden geçir.</p>
+<h3 id="qsl-duydum-ne-demem"><a class="anchor-link" href="#qsl-duydum-ne-demem" aria-label="Bu basliga link">#</a>&quot;QSL?&quot; duydum, ne demem?</h3>
+<p>&quot;<strong>QSL</strong>&quot; = anlaşıldı / aldım. Cevabı <strong>&quot;QSL&quot;</strong> veya <strong>&quot;Yes I copy&quot;</strong>.</p>
+<h3 id="eski-operatorler-genc-baslangictan-sikiliyor-mu"><a class="anchor-link" href="#eski-operatorler-genc-baslangictan-sikiliyor-mu" aria-label="Bu basliga link">#</a>Eski operatörler genç başlangıçtan sıkılıyor mu?</h3>
+<p>Tam tersi — Türkiye amatör topluluğu küçük, <strong>yeni operatörü hep desteklerler</strong>. &quot;Hoş geldin&quot; hissi gerçek.</p>
+<hr>
+<h2 id="i-lgili-kaynaklar"><a class="anchor-link" href="#i-lgili-kaynaklar" aria-label="Bu basliga link">#</a>İlgili kaynaklar</h2>
+<ul>
+<li><a href="/tutorials/q-kodlari-isletme-adabi">Q kodları + işletme adabı</a></li>
+<li><a href="/tutorials/fonetik-alfabe-tarih-standartlar">Fonetik alfabe tarih + standartlar</a></li>
+<li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı işareti nasıl alınır</a></li>
+<li><a href="/tutorials/role-nedir">Röle nedir</a> — VHF röle pratiği</li>
+<li><a href="/tutorials/ilk-telsiz-satin-alma-rehberi">İlk telsiz satın alma</a></li>
+<li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R programlama</a></li>
+<li><a href="/tutorials/log-tutma-qsl-lotw">Log tutma + QSL</a></li>
+<li><strong>Genişletilmiş kaynak:</strong> <a href="https://telsizcilik.com/">telsizcilik.com</a> — ilk QSO makaleleri</li>
+</ul>
+
+</article>
+</div>
+<nav class="prev-next" aria-label="Diğer kılavuzlar"><a class="pn-prev" href="/tutorials/ilk-telsiz-satin-alma-rehberi" rel="prev"><div class="pn-label">← Önceki</div><div class="pn-title">İlk Telsiz Satın Alma Rehberi — Bütçe ve Kullanıma Göre Seçim</div></a><a class="pn-next" href="/tutorials/homebrew-ekipman-yapimi" rel="next"><div class="pn-label">Sonraki →</div><div class="pn-title">Homebrew — Kendi Telsiz Ekipmanını İnşa Etmenin Sanatı</div></a></nav>
+<script type="module" src="/shared/js/reading-progress.js" defer></script>
+<script type="module" src="/shared/js/toc.js" defer></script>
+<script type="module" src="/shared/js/code-copy.js" defer></script>
+<script type="module" src="/shared/js/lightbox.js" defer></script>
+<script type="module" src="/shared/js/helpful.js" defer></script>
+</main>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+
+</body>
+</html>

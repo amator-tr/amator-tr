@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTCSS / DCS Tonları: Açıklama, Kullanım ve Sık Hatalar — amator.tr</title>
+<meta name="description" content="CTCSS (sub-audible ton) ve DCS (digital coded squelch) ne işe yarar, nasıl çalışır, telsiz programlamasında nasıl kullanılır, sık yapılan hatalar ve TR rölelerinde tipik tonlar.">
+<meta name="keywords" content="ctcss, dcs, röle, programlama, squelch, ton">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<link rel="canonical" href="https://amator.tr/tutorials/ctcss-dcs-nedir">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTCSS / DCS Tonları: Açıklama, Kullanım ve Sık Hatalar">
+<meta property="og:description" content="CTCSS (sub-audible ton) ve DCS (digital coded squelch) ne işe yarar, nasıl çalışır, telsiz programlamasında nasıl kullanılır, sık yapılan hatalar ve TR rölelerinde tipik tonlar.">
+<meta property="og:url" content="https://amator.tr/tutorials/ctcss-dcs-nedir">
+<meta property="og:image" content="https://amator.tr/og/ctcss-dcs-nedir.png">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="amator.tr">
+<meta property="article:author" content="Kaan Dikeç">
+<meta property="article:published_time" content="2026-04-25T00:00:00+03:00">
+<meta property="article:modified_time" content="2026-04-25T00:00:00+03:00">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="amator.tr Tutorials" href="/feed.xml">
+<style>:root { --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1c1c; --accent: #e94560; --text: #f5f5f5; --text-muted: #888; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #262626; } [data-theme="dark-navy"] { --bg: #1a1a2e; --surface: #16213e; --surface-2: #0f3460; --accent: #e94560; --text: #eee; --text-muted: #999; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #2a2a4a; } [data-theme="dark-charcoal"] { --bg: #15151a; --surface: #1f1f27; --surface-2: #2a2a33; --accent: #e94560; --text: #e8e8e8; --text-muted: #9090a0; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #33333d; } [data-theme="light"] { --bg: #f0f2f5; --surface: #ffffff; --surface-2: #e8ecf1; --accent: #d63031; --text: #2d3436; --text-muted: #636e72; --success: #00b894; --warning: #e17055; --error: #d63031; --border: #dfe6e9; } [data-theme="vanta-black"] { --bg: #000000; --surface: #080808; --surface-2: #101010; --accent: #e94560; --text: #c8c8c8; --text-muted: #787878; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #1a1a1a; } [data-theme="contrast"] { --bg: #000000; --surface: #000000; --surface-2: #0a0a0a; --accent: #ffff00; --text: #ffffff; --text-muted: #ffffff; --success: #00ff00; --warning: #ffff00; --error: #ff6060; --border: #ffffff; } [data-theme="contrast"] a { text-decoration: underline; } [data-theme="contrast"] :focus-visible { outline: 3px solid #ffff00; outline-offset: 2px; } :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; } * { box-sizing: border-box; } html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; } html, body { overflow-x: clip; } body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px; } a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; } .container { max-width: 880px; margin: 0 auto; padding: 0 16px; } .site-nav { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); z-index: 50; } .site-nav-inner { display: flex; align-items: center; gap: 16px; padding: 12px 16px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; } .site-nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text); } .site-nav-links { display: flex; gap: 14px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; } .site-nav-links a { color: var(--text-muted); font-size: 0.95rem; } .site-nav-links a:hover, .site-nav-links a.active { color: var(--accent); } .site-nav-cta { margin-left: auto; padding: 6px 14px; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); font-size: 0.9rem; } .site-nav-cta:hover { background: var(--accent); color: #fff; text-decoration: none; } main { padding: 32px 16px; } .breadcrumb { max-width: 720px; margin: 0 auto 12px; font-size: 0.82rem; color: var(--text-muted); } .breadcrumb a { color: var(--text-muted); text-decoration: none; } .breadcrumb a:hover { color: var(--accent); } .breadcrumb span { color: var(--text); } .prose { max-width: 720px; margin: 0 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; } .prose h1 { font-size: 2rem; line-height: 1.25; margin: 0 0 8px; } .prose h2 { font-size: 1.5rem; margin-top: 2em; } .prose h3 { font-size: 1.2rem; margin-top: 1.5em; } .prose p { margin: 1em 0; } .prose code { background: var(--surface-2); padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; } .prose pre { background: var(--surface-2); border: 1px solid var(--border); padding: 12px; border-radius: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; } .prose pre code { white-space: pre; word-break: normal; overflow-wrap: normal; background: none; padding: 0; } .prose blockquote { border-left: 3px solid var(--accent); padding-left: 12px; margin-left: 0; color: var(--text-muted); } .prose img { max-width: 100%; height: auto; } .prose .meta { color: var(--text-muted); font-size: 0.9rem; } .prose .table-wrap, .prose table { display: block; width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1em 0; } .prose table { border-collapse: collapse; min-width: 100%; } .prose th, .prose td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; word-break: normal; } .prose th { background: var(--surface-2); } .prose a { word-break: break-word; overflow-wrap: anywhere; } .tutorials-list { display: grid; gap: 16px; max-width: 720px; margin: 0 auto; } .tutorial-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; } .tutorial-card h2 { margin: 0 0 6px; font-size: 1.25rem; } .tutorial-card .meta { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 8px; } .tutorial-card .tag { display: inline-block; background: var(--surface-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-right: 4px; } .hero { text-align: center; padding: 60px 16px; background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%); border-bottom: 1px solid var(--border); } .hero h1 { font-size: 2.4rem; margin: 0 0 12px; } .hero p { color: var(--text-muted); font-size: 1.1rem; margin: 0 auto; max-width: 600px; } .hero-cta { margin-top: 24px; display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; } .hero h1 span { white-space: nowrap; } .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 1100px; margin: 0 auto; } .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px 20px; text-decoration: none; color: var(--text); transition: border-color 0.15s, transform 0.15s; display: block; } .cat-card:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-2px); } .cat-card .cat-icon { font-size: 1.6rem; margin-bottom: 10px; } .cat-card h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--accent); } .cat-card p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; } .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; max-width: 1100px; margin: 0 auto; } .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; text-decoration: none; color: var(--text); transition: border-color 0.15s; display: block; } .feat-card:hover { border-color: var(--accent); text-decoration: none; } .feat-card h3 { margin: 0 0 6px; font-size: 1rem; color: var(--accent); } .feat-card p { margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; } .btn { display: inline-block; padding: 10px 20px; border-radius: 6px; font-weight: 600; border: 1px solid var(--border); background: var(--surface); color: var(--text); } .btn:hover { background: var(--surface-2); text-decoration: none; } .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; } .btn-primary:hover { opacity: 0.9; background: var(--accent); } .site-footer { border-top: 1px solid var(--border); padding: 40px 16px 24px; margin-top: 64px; color: var(--text-muted); font-size: 0.88rem; background: var(--surface); } .footer-grid { max-width: 1200px; margin: 0 auto 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; } .footer-grid h4 { margin: 0 0 10px; font-size: 0.95rem; color: var(--text); font-weight: 700; } .footer-grid ul { list-style: none; margin: 0; padding: 0; } .footer-grid li { margin-bottom: 5px; line-height: 1.5; } .footer-grid a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; } .footer-grid a:hover { color: var(--accent); } .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.8rem; } .footer-bottom em { color: var(--text-muted); font-style: normal; } .theme-fab { position: fixed; right: 20px; bottom: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); transition: transform 0.15s, box-shadow 0.15s; z-index: 1000; font-size: 1.2rem; } .theme-fab:hover { transform: scale(1.08); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45); } .theme-fab:active { transform: scale(0.96); } .theme-menu { position: fixed; right: 20px; bottom: 80px; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 2px; z-index: 1000; } .theme-menu[hidden] { display: none; } .theme-option { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: none; border: 1px solid transparent; border-radius: 8px; color: var(--text); font-size: 0.9rem; text-align: left; cursor: pointer; font-family: inherit; } .theme-option:hover { background: var(--surface-2); } .theme-option.active { border-color: var(--accent); color: var(--accent); font-weight: 600; } .theme-swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; } .page-header { max-width: 720px; margin: 0 auto 32px; } .page-header h1 { margin: 0 0 8px; } .reading-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 100; transition: width 0.08s linear; pointer-events: none; } .prose h2, .prose h3, .prose h4 { position: relative; scroll-margin-top: 64px; } .prose .anchor-link { position: absolute; left: -1.2em; top: 0; padding-right: 0.3em; color: var(--text-muted); opacity: 0; text-decoration: none; font-weight: 400; transition: opacity 0.15s; } .prose h2:hover .anchor-link, .prose h3:hover .anchor-link, .prose h4:hover .anchor-link, .prose .anchor-link:focus { opacity: 1; } .prose .anchor-link:hover { color: var(--accent); } .tutorial-search { max-width: 720px; margin: 16px auto 0; } .tutorial-search input[type="search"] { width: 100%; padding: 10px 14px; font-size: 1rem; font-family: inherit; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; } .tutorial-search input[type="search"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); } .tutorial-search .search-hint { margin: 12px 0 0; color: var(--text-muted); font-size: 0.9rem; text-align: center; } .tutorial-card.hidden { display: none; } .section-pad { padding: 32px 0; } .list-plain { list-style: none; padding: 0; } .error-page { padding: 64px 0; text-align: center; } .error-page h1 { font-size: 4rem; margin: 0; } .error-page p { color: var(--text-muted); } @media (max-width: 600px) { .site-nav-inner { flex-direction: column; align-items: flex-start; gap: 8px; } .site-nav-cta { margin-left: 0; } .hero h1 { font-size: 1.8rem; } main { padding: 24px 12px; } .prose table { font-size: 0.82rem; } .prose th, .prose td { padding: 5px 7px; word-break: break-word; overflow-wrap: anywhere; } .prose pre { font-size: 0.82rem; padding: 10px; } .prose pre code { font-size: 0.82rem; } } .skip-link { position: absolute; top: -40px; left: 0; background: var(--accent); color: #fff; padding: 8px 16px; z-index: 10000; text-decoration: none; border-radius: 0 0 6px 0; font-weight: 600; } .skip-link:focus { top: 0; text-decoration: none; color: #fff; outline: 2px solid var(--text); outline-offset: 2px; } .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 1100px; margin: 0 auto; gap: 32px; } @media (min-width: 1000px) { .article-layout { grid-template-columns: minmax(0, 720px) 240px; align-items: start; } } .article-layout > * { min-width: 0; } .article-layout .prose { margin: 0; } .toc { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto; font-size: 0.85rem; border-left: 2px solid var(--border); padding-left: 14px; display: none; } @media (min-width: 1000px) { .toc { display: block; } } .toc-title { font-weight: 700; color: var(--text); margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; } .toc ul { list-style: none; padding: 0; margin: 0; } .toc li { margin: 4px 0; line-height: 1.4; } .toc li.toc-h3 { padding-left: 14px; } .toc a { color: var(--text-muted); text-decoration: none; display: block; padding: 2px 0; border-left: 2px solid transparent; margin-left: -16px; padding-left: 14px; transition: color 0.12s, border-color 0.12s; } .toc a:hover { color: var(--accent); text-decoration: none; } .toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; } .prose pre { position: relative; } .code-copy-btn { position: absolute; top: 8px; right: 8px; background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; font-size: 0.75rem; font-family: inherit; cursor: pointer; opacity: 0; transition: opacity 0.15s, color 0.15s, border-color 0.15s; } .prose pre:hover .code-copy-btn, .code-copy-btn:focus { opacity: 1; } .code-copy-btn:hover { color: var(--accent); border-color: var(--accent); } .code-copy-btn.copied { color: var(--accent); border-color: var(--accent); } .prose img { cursor: zoom-in; } .lightbox-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; } .lightbox-overlay[hidden] { display: none; } .lightbox-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6); } .lightbox-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; padding: 4px 12px; font-family: inherit; } .lightbox-close:hover { color: var(--accent); } .helpful { margin: 40px auto 0; max-width: 720px; padding: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); text-align: center; } .helpful-question { margin: 0 0 12px; font-weight: 600; color: var(--text); } .helpful-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.95rem; cursor: pointer; transition: border-color 0.15s, color 0.15s; } .helpful-btn:hover { border-color: var(--accent); color: var(--accent); } .helpful-btn:disabled { cursor: default; opacity: 0.7; } .helpful-btn.voted { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); } .helpful-count { margin: 12px 0 0; color: var(--text-muted); font-size: 0.85rem; } .helpful-thanks { margin: 12px 0 0; color: var(--accent); font-size: 0.9rem; font-weight: 600; } .prev-next { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; max-width: 720px; margin: 40px auto 0; } .prev-next > * { min-width: 0; } @media (max-width: 600px) { .prev-next { grid-template-columns: minmax(0, 1fr); } } .prev-next a { display: block; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); text-decoration: none; transition: border-color 0.15s; } .prev-next a:hover { border-color: var(--accent); text-decoration: none; } .prev-next .pn-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .prev-next .pn-title { font-weight: 600; color: var(--accent); font-size: 0.95rem; line-height: 1.35; } .prev-next .pn-next { text-align: right; } .prev-next .pn-prev:only-child { grid-column: 1; } @media print { .site-nav, .site-footer, .theme-fab, .theme-menu, .reading-progress, .toc, .code-copy-btn, .helpful, .prev-next, .skip-link, .tutorial-search { display: none !important; } body { background: #fff; color: #000; font-size: 11pt; } .article-layout { grid-template-columns: 1fr !important; } .prose { max-width: 100%; margin: 0; } .prose a { color: #000; text-decoration: underline; } .prose a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; } .prose pre, .prose code { background: #f4f4f4 !important; border: 1px solid #ddd; color: #000; } .prose h1, .prose h2, .prose h3 { page-break-after: avoid; } .prose img, .prose pre, .prose blockquote { page-break-inside: avoid; } }</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"CTCSS / DCS Tonları: Açıklama, Kullanım ve Sık Hatalar","description":"CTCSS (sub-audible ton) ve DCS (digital coded squelch) ne işe yarar, nasıl çalışır, telsiz programlamasında nasıl kullanılır, sık yapılan hatalar ve TR rölelerinde tipik tonlar.","url":"https://amator.tr/tutorials/ctcss-dcs-nedir","datePublished":"2026-04-25T00:00:00+03:00","dateModified":"2026-04-25T00:00:00+03:00","inLanguage":"tr-TR","author":{"@type":"Person","name":"Kaan Dikeç","url":"https://amator.tr/iletisim","identifier":"TB2KKD"},"publisher":{"@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":{"@type":"ImageObject","url":"https://amator.tr/og/default.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://amator.tr/tutorials/ctcss-dcs-nedir"},"articleSection":"ctcss","keywords":"ctcss, dcs, röle, programlama, squelch, ton","wordCount":1375,"image":"https://amator.tr/og/ctcss-dcs-nedir.png"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Ana Sayfa","item":"https://amator.tr/"},{"@type":"ListItem","position":2,"name":"Tutorial'lar","item":"https://amator.tr/tutorials/"},{"@type":"ListItem","position":3,"name":"CTCSS / DCS Tonları: Açıklama, Kullanım ve Sık Hatalar"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Röle açılmıyor","acceptedAnswer":{"@type":"Answer","text":"TX tonu yanlış veya OFF; röle başka bir ton bekliyor"}},{"@type":"Question","name":"Röle açılıyor ama sesini duyamıyorum","acceptedAnswer":{"@type":"Answer","text":"RX tonu (Tone Squelch) yanlış set edilmiş — `Tone` yerine `TSQL`, ve röle CTCSS göndermiyor"}},{"@type":"Question","name":"Bazen açılıyor, bazen değil","acceptedAnswer":{"@type":"Answer","text":"Sinyal eşiği marjinal — daha güçlü anten gerek; ton doğru"}},{"@type":"Question","name":"Başka bir röleyi de duyuyorum","acceptedAnswer":{"@type":"Answer","text":"İki röle aynı frekansta CTCSS bağımsız çakışıyor — RX tonunu set ederek istediğin röleyi izole et"}},{"@type":"Question","name":"DCS açılmıyor","acceptedAnswer":{"@type":"Answer","text":"Polarity ters — N→R çevir"}},{"@type":"Question","name":"TX'te ton göndermiyor","acceptedAnswer":{"@type":"Answer","text":"Mode = OFF, doğru `Tone` ile değiştir"}},{"@type":"Question","name":"Telsizde ton menüsü yok","acceptedAnswer":{"@type":"Answer","text":"Çok eski model — yenisi gerek (UV-K5 yetiyor)"}}]}</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+
+<main id="main" tabindex="-1">
+<div class="article-layout">
+<article class="prose">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Ana Sayfa</a> › <a href="/tutorials/">Tutorial'lar</a> › <span>CTCSS / DCS Tonları: Açıklama, Kullanım ve Sık Hatalar</span></nav>
+<header><h1>CTCSS / DCS Tonları: Açıklama, Kullanım ve Sık Hatalar</h1>
+<p class="meta"><time datetime="2026-04-25">2026-04-25</time> · 7 dk okuma · 1375 kelime</p>
+</header>
+<h2 id="squelch-nedir-temel-kavram"><a class="anchor-link" href="#squelch-nedir-temel-kavram" aria-label="Bu basliga link">#</a>Squelch nedir? (temel kavram)</h2>
+<p>Bir telsizin alıcısı sürekli olarak antenden gelen RF&#39;yi işler. Hiçbir yayın yokken bile çevreden gelen kozmik gürültü, atmosferik etki ve elektronik parazit hoparlörden <strong>statik (beyaz gürültü)</strong> olarak duyulur — &quot;shhhhhh&quot; sesi. <strong>Squelch</strong> (susturucu), bu gürültüyü kesmek için sinyal seviyesi belirli bir eşiğin altındayken hoparlörü <strong>otomatik olarak kapatan</strong> devredir.</p>
+<p>Klasik squelch sadece <strong>sinyal gücüne</strong> bakar. Bir başka istasyon yeterince güçlü yayın yapıyorsa squelch açılır, siz onu duyarsınız — yayın sizin için kastedilmiş olsun veya olmasın. Şehir içinde bu yetersiz: bir kanaldaki röleyi dinlerken, yan kanaldan taşan başka bir kullanıcının sinyalini de duyarsınız.</p>
+<p>İşte burada <strong>CTCSS</strong> ve <strong>DCS</strong> devreye girer.</p>
+<h2 id="ctcss-continuous-tone-coded-squelch-system"><a class="anchor-link" href="#ctcss-continuous-tone-coded-squelch-system" aria-label="Bu basliga link">#</a>CTCSS — Continuous Tone-Coded Squelch System</h2>
+<p>CTCSS, telsizin yayın sırasında ses sinyalinin <strong>altında</strong> çok düşük frekanslı (67 Hz - 254 Hz arası) <strong>sürekli bir ton</strong> göndermesi prensibine dayanır.</p>
+<h3 id="nasil-calisir"><a class="anchor-link" href="#nasil-calisir" aria-label="Bu basliga link">#</a>Nasıl çalışır?</h3>
+<pre><code>Yayıncı (TX):
+  ┌──────────────┐
+  │ Ses sinyali  │ ──┐
+  └──────────────┘   │
+                     ▼
+                  ┌─────┐    ┌─────────┐
+                  │ MIX │───►│ Modüle  │───► Anten
+                  └─────┘    └─────────┘
+                     ▲
+                     │
+  ┌──────────────┐   │
+  │ 100 Hz CTCSS │ ──┘
+  └──────────────┘
+   (sub-audible)
+
+Alıcı (RX):
+                       ┌──── 100 Hz tonu
+                       │     duyar mı?
+  Anten ─► Demodülatör ─┤
+                       │     evet → squelch aç
+                       └─── hayır → squelch kapalı tut
+</code></pre>
+<ul>
+<li><strong>TX (yayın):</strong> &quot;Bu yayın 100 Hz CTCSS tonu içerir&quot; şifresi göndermek için sürekli ton ses sinyalinin altında ekler</li>
+<li><strong>RX (alıcı):</strong> &quot;Sadece 100 Hz CTCSS tonu içeren yayınları aç&quot; filtresi vardır</li>
+<li>100 Hz tonsuz veya farklı tonlu yayınlar için squelch kapalı kalır → hoparlör sessiz</li>
+</ul>
+<p>İnsan kulağı <strong>300 Hz&#39;den düşük</strong> sesleri telsiz bandında duyamaz; bu yüzden CTCSS&#39;e &quot;<strong>sub-audible</strong> (duyulmaz) ton&quot; denir.</p>
+<h3 id="ctcss-hangi-senaryolarda-kullanilir"><a class="anchor-link" href="#ctcss-hangi-senaryolarda-kullanilir" aria-label="Bu basliga link">#</a>CTCSS hangi senaryolarda kullanılır?</h3>
+<h4 id="1-role-koruma"><a class="anchor-link" href="#1-role-koruma" aria-label="Bu basliga link">#</a>1. Röle koruma</h4>
+<p>Röle alıcısı sürekli açık olsa, atmosferik gürültü + uzaktaki diğer kanal sinyallerini sürekli yayınlamaya başlar. CTCSS sayesinde <strong>sadece kasıtlı operatörler</strong> röleyi açabilir. Bu en yaygın kullanımdır.</p>
+<h4 id="2-frekans-paylasimi-simplex"><a class="anchor-link" href="#2-frekans-paylasimi-simplex" aria-label="Bu basliga link">#</a>2. Frekans paylaşımı (simplex)</h4>
+<p>Aynı frekansta farklı CTCSS tonları kullanan iki grup birbirini duymadan yayın yapabilir. Örnek:</p>
+<ul>
+<li>Grup A: 145.500 + CTCSS 100 Hz</li>
+<li>Grup B: 145.500 + CTCSS 123 Hz</li>
+<li>Her grup sadece kendi tonunu duyar</li>
+</ul>
+<h4 id="3-gurultu-filtresi-mobile"><a class="anchor-link" href="#3-gurultu-filtresi-mobile" aria-label="Bu basliga link">#</a>3. Gürültü filtresi (mobile)</h4>
+<p>Mobil veya portatif kullanımda zayıf parazitleri otomatik kesip sadece tam yayınları duymak için RX tonu kullanılabilir.</p>
+<h3 id="yaygin-ctcss-tonlari-tam-eia-standarti"><a class="anchor-link" href="#yaygin-ctcss-tonlari-tam-eia-standarti" aria-label="Bu basliga link">#</a>Yaygın CTCSS tonları (tam EIA standartı)</h3>
+<p>CTCSS standardı <strong>50 farklı ton</strong> tanımlar (her zaman aynı set). Aşağıda <strong>EIA standart liste</strong>si:</p>
+<pre><code>67.0   71.9   74.4   77.0   79.7   82.5   85.4   88.5   91.5   94.8
+97.4   100.0  103.5  107.2  110.9  114.8  118.8  123.0  127.3  131.8
+136.5  141.3  146.2  151.4  156.7  159.8  162.2  165.5  167.9  171.3
+173.8  177.3  179.9  183.5  186.2  189.9  192.8  196.6  199.5  203.5
+206.5  210.7  218.1  225.7  229.1  233.6  241.8  250.3  254.1
+</code></pre>
+<h3 id="tr-rolelerinde-tipik-tonlar"><a class="anchor-link" href="#tr-rolelerinde-tipik-tonlar" aria-label="Bu basliga link">#</a>TR rölelerinde tipik tonlar</h3>
+<p>Türkiye amatör röle pratiklerinde sık görülenler:</p>
+<table>
+<thead>
+<tr>
+<th>Ton (Hz)</th>
+<th>Yaygın kullanım</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>67.0</strong></td>
+<td>Klasik VHF röle, eski model</td>
+</tr>
+<tr>
+<td><strong>77.0</strong></td>
+<td>Çok yaygın TR röle (özellikle TA1, TA3)</td>
+</tr>
+<tr>
+<td><strong>82.5</strong></td>
+<td>Bazı bölgesel röleler</td>
+</tr>
+<tr>
+<td><strong>88.5</strong></td>
+<td>UHF röleler için sık</td>
+</tr>
+<tr>
+<td><strong>100.0</strong></td>
+<td>Yuvarlak değer, kolay hatırlanır, popüler</td>
+</tr>
+<tr>
+<td><strong>123.0</strong></td>
+<td>Bazı TA2 (Akdeniz) röleleri</td>
+</tr>
+<tr>
+<td><strong>127.3</strong></td>
+<td>TA1 Marmara&#39;da popüler (Çamlıca, vd.)</td>
+</tr>
+<tr>
+<td><strong>151.4</strong></td>
+<td>UHF link röleler</td>
+</tr>
+<tr>
+<td><strong>167.9</strong></td>
+<td>Daha üst tonlardan biri</td>
+</tr>
+</tbody></table>
+<p>(Dinamik liste için <a href="/role-export/">amator.tr/role-export/</a> — her röle için tam ton bilgisi.)</p>
+<h3 id="tx-ton-vs-rx-ton-kritik-ayrim"><a class="anchor-link" href="#tx-ton-vs-rx-ton-kritik-ayrim" aria-label="Bu basliga link">#</a>TX ton vs RX ton (kritik ayrım)</h3>
+<p>İki bağımsız ayar — bu en sık karıştırılan noktadır.</p>
+<table>
+<thead>
+<tr>
+<th>Ayar</th>
+<th>Ne yapar</th>
+<th>Tipik değer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TX (yayın) ton</strong> (&quot;rTone&quot; CHIRP&#39;te)</td>
+<td>Telsizinizin <strong>yayın sırasında gönderdiği</strong> ton. Röle bunu bekliyorsa yayınınızı tekrarlar.</td>
+<td>100 Hz (rölenin istediği)</td>
+</tr>
+<tr>
+<td><strong>RX (alıcı) ton</strong> (&quot;cTone&quot; CHIRP&#39;te)</td>
+<td>Telsizinizin <strong>sadece bu tonu içeren yayınları açtığı</strong> filtre.</td>
+<td>Genelde <strong>OFF</strong></td>
+</tr>
+</tbody></table>
+<h4 id="tipik-role-yapilandirmasi-en-sik"><a class="anchor-link" href="#tipik-role-yapilandirmasi-en-sik" aria-label="Bu basliga link">#</a>Tipik röle yapılandırması (en sık)</h4>
+<ul>
+<li><strong>Tone Mode</strong>: <code>Tone</code></li>
+<li><strong>Tone (rTone)</strong>: 100 Hz (rölenin TX-input için istediği)</li>
+<li><strong>Tone Squelch (cTone)</strong>: (boş)</li>
+</ul>
+<p>Bu ayarla telsiziniz <strong>100 Hz tonunu yayında alta gömer</strong>, ama dinlemede her şeyi açar (rölenin geri-yayınını gibi). En esnek + en yaygın.</p>
+<h4 id="tsql-tx-rx-both-modu"><a class="anchor-link" href="#tsql-tx-rx-both-modu" aria-label="Bu basliga link">#</a>TSQL (TX + RX both) modu</h4>
+<ul>
+<li><strong>Tone Mode</strong>: <code>TSQL</code></li>
+<li><strong>Tone</strong>: 100 (TX)</li>
+<li><strong>Tone Squelch</strong>: 100 (RX)</li>
+</ul>
+<p>Bu ayarla telsiziniz <strong>sadece 100 Hz tonu içeren yayınları açar</strong>. Avantaj: parazit + yan kanal tamamen kesik. Dezavantaj: röle CTCSS göndermiyorsa (çoğu röle göndermez) <strong>hiçbir şey duyamazsınız</strong>.</p>
+<blockquote>
+<p><strong>En sık hata:</strong> Yeni operatör Tone Mode&#39;u TSQL yapar, röle açar (TX OK), ama röleden gelen sinyali duyamaz (RX filtre yanlış). Çözüm: Tone Mode&#39;u <code>Tone</code>&#39;a düşür.</p>
+</blockquote>
+<h2 id="dcs-digital-coded-squelch"><a class="anchor-link" href="#dcs-digital-coded-squelch" aria-label="Bu basliga link">#</a>DCS — Digital Coded Squelch</h2>
+<p>DCS, CTCSS&#39;in <strong>dijital versiyonudur</strong>. Sürekli ton yerine, <strong>134.4 bps hızında 23-bit dijital kod</strong> gönderilir.</p>
+<h3 id="format"><a class="anchor-link" href="#format" aria-label="Bu basliga link">#</a>Format</h3>
+<p>DCS kodları <strong>üç haneli oktal</strong>: 023, 047, 114, 251, 754 vb. Bazı telsiz menülerinde:</p>
+<ul>
+<li><strong>D023N</strong> — Normal polarite</li>
+<li><strong>D023I</strong> — Inverted (ters) polarite</li>
+</ul>
+<p>Inverted nadiren gerekir; default Normal.</p>
+<p>Toplam ~104 farklı DCS kodu vardır (CTCSS&#39;te 50).</p>
+<h3 id="ctcss-vs-dcs-karsilastirmasi"><a class="anchor-link" href="#ctcss-vs-dcs-karsilastirmasi" aria-label="Bu basliga link">#</a>CTCSS vs DCS karşılaştırması</h3>
+<table>
+<thead>
+<tr>
+<th>Özellik</th>
+<th>CTCSS</th>
+<th>DCS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Yaş</strong></td>
+<td>1960&#39;lar</td>
+<td>1980&#39;ler</td>
+</tr>
+<tr>
+<td><strong>Ton/kod sayısı</strong></td>
+<td>50</td>
+<td>~104</td>
+</tr>
+<tr>
+<td><strong>Sahtecilik direnci</strong></td>
+<td>Düşük (yan kanaldan ton sızması olası)</td>
+<td>Çok düşük (dijital, daha sıkı)</td>
+</tr>
+<tr>
+<td><strong>Telsiz desteği</strong></td>
+<td>Hemen hemen tüm amatör radyolar</td>
+<td>Çoğu modern radyo, bazı eski model yok</td>
+</tr>
+<tr>
+<td><strong>TR&#39;de yaygınlık</strong></td>
+<td>%85-90</td>
+<td>%10-15</td>
+</tr>
+<tr>
+<td><strong>Açılma süresi</strong></td>
+<td>&lt; 250 ms</td>
+<td>&lt; 350 ms (kod paketinin tamamı gelmeli)</td>
+</tr>
+</tbody></table>
+<p><strong>Pratik tavsiye:</strong> TR rölelerinde CTCSS hâlâ baskın. Ancak telsizinizde DCS desteği varsa, simplex grubunuzla DCS kullanmak parazit isolasyonunu artırır.</p>
+<h2 id="telsiz-programlamasinda-chirp-referansi"><a class="anchor-link" href="#telsiz-programlamasinda-chirp-referansi" aria-label="Bu basliga link">#</a>Telsiz programlamasında — CHIRP referansı</h2>
+<p>CHIRP&#39;te bir kanal için sütunlar:</p>
+<table>
+<thead>
+<tr>
+<th>Sütun</th>
+<th>Anlam</th>
+<th>Tipik değer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tone Mode</strong></td>
+<td>Hangi mod kullanılacak</td>
+<td><code>OFF</code>, <code>Tone</code>, <code>TSQL</code>, <code>DTCS</code>, <code>Cross</code></td>
+</tr>
+<tr>
+<td><strong>Tone (rTone)</strong></td>
+<td>TX CTCSS frekansı</td>
+<td>100.0</td>
+</tr>
+<tr>
+<td><strong>Tone Squelch (cTone)</strong></td>
+<td>RX CTCSS frekansı</td>
+<td>(genelde boş)</td>
+</tr>
+<tr>
+<td><strong>DTCS Code</strong></td>
+<td>TX/RX DCS kodu</td>
+<td>023</td>
+</tr>
+<tr>
+<td><strong>DTCS Polarity</strong></td>
+<td>DCS Normal/Reverse</td>
+<td>NN, NR, RN, RR</td>
+</tr>
+<tr>
+<td><strong>Cross Mode</strong></td>
+<td>TX ve RX farklı modlar</td>
+<td>Tone→DTCS vb. (nadir)</td>
+</tr>
+</tbody></table>
+<h3 id="standart-role-ayari-ctcss-sadece-tx"><a class="anchor-link" href="#standart-role-ayari-ctcss-sadece-tx" aria-label="Bu basliga link">#</a>Standart röle ayarı (CTCSS, sadece TX)</h3>
+<pre><code>Tone Mode:      Tone
+Tone:           100.0
+Tone Squelch:   (boş)
+</code></pre>
+<h3 id="dcs-role-nadir"><a class="anchor-link" href="#dcs-role-nadir" aria-label="Bu basliga link">#</a>DCS röle (nadir)</h3>
+<pre><code>Tone Mode:      DTCS
+DTCS Code:      023
+DTCS Polarity:  NN
+</code></pre>
+<h3 id="mixed-mode-ctcss-tx-dcs-rx-nadir"><a class="anchor-link" href="#mixed-mode-ctcss-tx-dcs-rx-nadir" aria-label="Bu basliga link">#</a>Mixed mode (CTCSS TX + DCS RX, nadir)</h3>
+<pre><code>Tone Mode:      Cross
+Cross Mode:     Tone→DTCS
+Tone:           100.0
+DTCS Code:      047
+</code></pre>
+<p>Bu son senaryoyu pratikte göremezsiniz; sadece kapsamlılık için.</p>
+<h2 id="sik-sorunlar-ve-teshis"><a class="anchor-link" href="#sik-sorunlar-ve-teshis" aria-label="Bu basliga link">#</a>Sık sorunlar ve teşhis</h2>
+<table>
+<thead>
+<tr>
+<th>Belirti</th>
+<th>Olası sebep</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Röle açılmıyor</td>
+<td>TX tonu yanlış veya OFF; röle başka bir ton bekliyor</td>
+</tr>
+<tr>
+<td>Röle açılıyor ama sesini duyamıyorum</td>
+<td>RX tonu (Tone Squelch) yanlış set edilmiş — <code>Tone</code> yerine <code>TSQL</code>, ve röle CTCSS göndermiyor</td>
+</tr>
+<tr>
+<td>Bazen açılıyor, bazen değil</td>
+<td>Sinyal eşiği marjinal — daha güçlü anten gerek; ton doğru</td>
+</tr>
+<tr>
+<td>Başka bir röleyi de duyuyorum</td>
+<td>İki röle aynı frekansta CTCSS bağımsız çakışıyor — RX tonunu set ederek istediğin röleyi izole et</td>
+</tr>
+<tr>
+<td>DCS açılmıyor</td>
+<td>Polarity ters — N→R çevir</td>
+</tr>
+<tr>
+<td>TX&#39;te ton göndermiyor</td>
+<td>Mode = OFF, doğru <code>Tone</code> ile değiştir</td>
+</tr>
+<tr>
+<td>Telsizde ton menüsü yok</td>
+<td>Çok eski model — yenisi gerek (UV-K5 yetiyor)</td>
+</tr>
+</tbody></table>
+<h2 id="ton-tespit-araclari"><a class="anchor-link" href="#ton-tespit-araclari" aria-label="Bu basliga link">#</a>Ton tespit araçları</h2>
+<p>Bilinmeyen bir röleyi karşılaşırsanız ton frekansını anlama yolları:</p>
+<ol>
+<li><strong>CHIRP&#39;te scanner</strong>: Bazı dijital telsizlerde &quot;tone scan&quot; var — kanal aç, ton tarar, bulur.</li>
+<li><strong>UV-K5 + F4HWN</strong>: Menüde &quot;tone scan&quot; yok ama tüm 50 CTCSS&#39;i tek tek manuel deneyebilirsin (~10 dk iş).</li>
+<li><strong>Topluluk listeleri</strong>: TRAC, AKRAD, DARD, <a href="/role-export/">amator.tr/role-export/</a> — bilinen tüm rölelerin tonu kayıtlı.</li>
+<li><strong>Spectrum + ton dekoder uygulamalar</strong>: SDR (RTL-SDR + dump1090 / SDR# decoder eklentileri).</li>
+</ol>
+<h2 id="tarihce-neden-ctcss-var"><a class="anchor-link" href="#tarihce-neden-ctcss-var" aria-label="Bu basliga link">#</a>Tarihçe — neden CTCSS var?</h2>
+<p>CTCSS 1960&#39;larda ABD&#39;de Motorola tarafından &quot;Private Line&quot; (PL) ticari adıyla geliştirildi. Polis, taksi, itfaiye gibi paylaşımlı ticari frekanslarda farklı şirketlerin birbirini duymadan yayın yapmasını sağladı. Amatör radyo standardı 1980&#39;lerde <strong>TIA/EIA-603-B</strong> olarak normalleşti.</p>
+<p>Tüm 50 standart ton bu spec&#39;te tanımlı; üreticiler arası uyum garanti.</p>
+<h2 id="guvenlik-gizlilik-notu"><a class="anchor-link" href="#guvenlik-gizlilik-notu" aria-label="Bu basliga link">#</a>Güvenlik &amp; gizlilik notu</h2>
+<p>CTCSS / DCS <strong>gizlilik aracı değildir</strong>. Yayınınız hâlâ açık RF&#39;tir, herhangi biri uygun donanımla (SDR, telsiz scanner, dump tool) <strong>dinleyebilir</strong>. Sadece <strong>yan kanaldaki random kullanıcılarının duyma şansını azaltır</strong>. Yasal olarak amatör frekanslarda <strong>şifreleme yasaktır</strong> — yayın açık, ton sadece UX/parazit yönetimi için.</p>
+<h2 id="siradaki"><a class="anchor-link" href="#siradaki" aria-label="Bu basliga link">#</a>Sıradaki</h2>
+<ul>
+<li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a> — F4HWN&#39;de Tone Mode menüsü kullanımı</li>
+<li><a href="/tutorials/role-nedir">Röle Nedir?</a> — duplex shift + ton birlikte nasıl çalışır</li>
+<li><a href="/tutorials/anten-yapimi-temel">J-Pole Anten Yapımı</a> — daha güçlü TX = ton iletim daha güvenilir</li>
+</ul>
+<p>73!</p>
+
+</article>
+</div>
+<nav class="prev-next" aria-label="Diğer kılavuzlar"><a class="pn-prev" href="/tutorials/dmr-nedir-anytone-d878uv" rel="prev"><div class="pn-label">← Önceki</div><div class="pn-title">DMR Nedir? Anytone D878UV ve Brandmeister TG 286 (Türkiye)</div></a><a class="pn-next" href="/tutorials/cagri-isareti-nasil-alinir" rel="next"><div class="pn-label">Sonraki →</div><div class="pn-title">Türkiye&#39;de Çağrı İşareti Nasıl Alınır? (BTK + KEGM 2026)</div></a></nav>
+<script type="module" src="/shared/js/reading-progress.js" defer></script>
+<script type="module" src="/shared/js/toc.js" defer></script>
+<script type="module" src="/shared/js/code-copy.js" defer></script>
+<script type="module" src="/shared/js/lightbox.js" defer></script>
+<script type="module" src="/shared/js/helpful.js" defer></script>
+</main>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+
+</body>
+</html>

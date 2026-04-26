@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FT8 Nedir? Düşük Güçle Dünyayla Konuşma — WSJT-X Rehberi — amator.tr</title>
+<meta name="description" content="FT8 dijital modu — nasıl çalışır, neden 5W ile dünyayı açar, WSJT-X kurulumu, donanım gereksinimleri, frekanslar, zaman senkronu ve ilk QSO için tam başlangıç rehberi.">
+<meta name="keywords" content="ft8, wsjt-x, hf, dijital-mod, qrp, dx">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<link rel="canonical" href="https://amator.tr/tutorials/ft8-dijital-mod">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FT8 Nedir? Düşük Güçle Dünyayla Konuşma — WSJT-X Rehberi">
+<meta property="og:description" content="FT8 dijital modu — nasıl çalışır, neden 5W ile dünyayı açar, WSJT-X kurulumu, donanım gereksinimleri, frekanslar, zaman senkronu ve ilk QSO için tam başlangıç rehberi.">
+<meta property="og:url" content="https://amator.tr/tutorials/ft8-dijital-mod">
+<meta property="og:image" content="https://amator.tr/og/ft8-dijital-mod.png">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="amator.tr">
+<meta property="article:author" content="Kaan Dikeç">
+<meta property="article:published_time" content="2026-04-25T00:00:00+03:00">
+<meta property="article:modified_time" content="2026-04-25T00:00:00+03:00">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="amator.tr Tutorials" href="/feed.xml">
+<style>:root { --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1c1c; --accent: #e94560; --text: #f5f5f5; --text-muted: #888; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #262626; } [data-theme="dark-navy"] { --bg: #1a1a2e; --surface: #16213e; --surface-2: #0f3460; --accent: #e94560; --text: #eee; --text-muted: #999; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #2a2a4a; } [data-theme="dark-charcoal"] { --bg: #15151a; --surface: #1f1f27; --surface-2: #2a2a33; --accent: #e94560; --text: #e8e8e8; --text-muted: #9090a0; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #33333d; } [data-theme="light"] { --bg: #f0f2f5; --surface: #ffffff; --surface-2: #e8ecf1; --accent: #d63031; --text: #2d3436; --text-muted: #636e72; --success: #00b894; --warning: #e17055; --error: #d63031; --border: #dfe6e9; } [data-theme="vanta-black"] { --bg: #000000; --surface: #080808; --surface-2: #101010; --accent: #e94560; --text: #c8c8c8; --text-muted: #787878; --success: #4ecca3; --warning: #f0a500; --error: #e94560; --border: #1a1a1a; } [data-theme="contrast"] { --bg: #000000; --surface: #000000; --surface-2: #0a0a0a; --accent: #ffff00; --text: #ffffff; --text-muted: #ffffff; --success: #00ff00; --warning: #ffff00; --error: #ff6060; --border: #ffffff; } [data-theme="contrast"] a { text-decoration: underline; } [data-theme="contrast"] :focus-visible { outline: 3px solid #ffff00; outline-offset: 2px; } :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; } * { box-sizing: border-box; } html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; } html, body { overflow-x: clip; } body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 16px; } a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; } .container { max-width: 880px; margin: 0 auto; padding: 0 16px; } .site-nav { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border); z-index: 50; } .site-nav-inner { display: flex; align-items: center; gap: 16px; padding: 12px 16px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; } .site-nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text); } .site-nav-links { display: flex; gap: 14px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; } .site-nav-links a { color: var(--text-muted); font-size: 0.95rem; } .site-nav-links a:hover, .site-nav-links a.active { color: var(--accent); } .site-nav-cta { margin-left: auto; padding: 6px 14px; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); font-size: 0.9rem; } .site-nav-cta:hover { background: var(--accent); color: #fff; text-decoration: none; } main { padding: 32px 16px; } .breadcrumb { max-width: 720px; margin: 0 auto 12px; font-size: 0.82rem; color: var(--text-muted); } .breadcrumb a { color: var(--text-muted); text-decoration: none; } .breadcrumb a:hover { color: var(--accent); } .breadcrumb span { color: var(--text); } .prose { max-width: 720px; margin: 0 auto; min-width: 0; overflow-wrap: anywhere; word-break: break-word; } .prose h1 { font-size: 2rem; line-height: 1.25; margin: 0 0 8px; } .prose h2 { font-size: 1.5rem; margin-top: 2em; } .prose h3 { font-size: 1.2rem; margin-top: 1.5em; } .prose p { margin: 1em 0; } .prose code { background: var(--surface-2); padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; } .prose pre { background: var(--surface-2); border: 1px solid var(--border); padding: 12px; border-radius: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; } .prose pre code { white-space: pre; word-break: normal; overflow-wrap: normal; background: none; padding: 0; } .prose blockquote { border-left: 3px solid var(--accent); padding-left: 12px; margin-left: 0; color: var(--text-muted); } .prose img { max-width: 100%; height: auto; } .prose .meta { color: var(--text-muted); font-size: 0.9rem; } .prose .table-wrap, .prose table { display: block; width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1em 0; } .prose table { border-collapse: collapse; min-width: 100%; } .prose th, .prose td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; word-break: normal; } .prose th { background: var(--surface-2); } .prose a { word-break: break-word; overflow-wrap: anywhere; } .tutorials-list { display: grid; gap: 16px; max-width: 720px; margin: 0 auto; } .tutorial-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; } .tutorial-card h2 { margin: 0 0 6px; font-size: 1.25rem; } .tutorial-card .meta { font-size: 0.85rem; color: var(--text-muted); margin: 0 0 8px; } .tutorial-card .tag { display: inline-block; background: var(--surface-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-right: 4px; } .hero { text-align: center; padding: 60px 16px; background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%); border-bottom: 1px solid var(--border); } .hero h1 { font-size: 2.4rem; margin: 0 0 12px; } .hero p { color: var(--text-muted); font-size: 1.1rem; margin: 0 auto; max-width: 600px; } .hero-cta { margin-top: 24px; display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; } .hero h1 span { white-space: nowrap; } .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 1100px; margin: 0 auto; } .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px 20px; text-decoration: none; color: var(--text); transition: border-color 0.15s, transform 0.15s; display: block; } .cat-card:hover { border-color: var(--accent); text-decoration: none; transform: translateY(-2px); } .cat-card .cat-icon { font-size: 1.6rem; margin-bottom: 10px; } .cat-card h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--accent); } .cat-card p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; } .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; max-width: 1100px; margin: 0 auto; } .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; text-decoration: none; color: var(--text); transition: border-color 0.15s; display: block; } .feat-card:hover { border-color: var(--accent); text-decoration: none; } .feat-card h3 { margin: 0 0 6px; font-size: 1rem; color: var(--accent); } .feat-card p { margin: 0; color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; } .btn { display: inline-block; padding: 10px 20px; border-radius: 6px; font-weight: 600; border: 1px solid var(--border); background: var(--surface); color: var(--text); } .btn:hover { background: var(--surface-2); text-decoration: none; } .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; } .btn-primary:hover { opacity: 0.9; background: var(--accent); } .site-footer { border-top: 1px solid var(--border); padding: 40px 16px 24px; margin-top: 64px; color: var(--text-muted); font-size: 0.88rem; background: var(--surface); } .footer-grid { max-width: 1200px; margin: 0 auto 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; } .footer-grid h4 { margin: 0 0 10px; font-size: 0.95rem; color: var(--text); font-weight: 700; } .footer-grid ul { list-style: none; margin: 0; padding: 0; } .footer-grid li { margin-bottom: 5px; line-height: 1.5; } .footer-grid a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; } .footer-grid a:hover { color: var(--accent); } .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.8rem; } .footer-bottom em { color: var(--text-muted); font-style: normal; } .theme-fab { position: fixed; right: 20px; bottom: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: #fff; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); transition: transform 0.15s, box-shadow 0.15s; z-index: 1000; font-size: 1.2rem; } .theme-fab:hover { transform: scale(1.08); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45); } .theme-fab:active { transform: scale(0.96); } .theme-menu { position: fixed; right: 20px; bottom: 80px; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 2px; z-index: 1000; } .theme-menu[hidden] { display: none; } .theme-option { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: none; border: 1px solid transparent; border-radius: 8px; color: var(--text); font-size: 0.9rem; text-align: left; cursor: pointer; font-family: inherit; } .theme-option:hover { background: var(--surface-2); } .theme-option.active { border-color: var(--accent); color: var(--accent); font-weight: 600; } .theme-swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; } .page-header { max-width: 720px; margin: 0 auto 32px; } .page-header h1 { margin: 0 0 8px; } .reading-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--accent); z-index: 100; transition: width 0.08s linear; pointer-events: none; } .prose h2, .prose h3, .prose h4 { position: relative; scroll-margin-top: 64px; } .prose .anchor-link { position: absolute; left: -1.2em; top: 0; padding-right: 0.3em; color: var(--text-muted); opacity: 0; text-decoration: none; font-weight: 400; transition: opacity 0.15s; } .prose h2:hover .anchor-link, .prose h3:hover .anchor-link, .prose h4:hover .anchor-link, .prose .anchor-link:focus { opacity: 1; } .prose .anchor-link:hover { color: var(--accent); } .tutorial-search { max-width: 720px; margin: 16px auto 0; } .tutorial-search input[type="search"] { width: 100%; padding: 10px 14px; font-size: 1rem; font-family: inherit; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; } .tutorial-search input[type="search"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); } .tutorial-search .search-hint { margin: 12px 0 0; color: var(--text-muted); font-size: 0.9rem; text-align: center; } .tutorial-card.hidden { display: none; } .section-pad { padding: 32px 0; } .list-plain { list-style: none; padding: 0; } .error-page { padding: 64px 0; text-align: center; } .error-page h1 { font-size: 4rem; margin: 0; } .error-page p { color: var(--text-muted); } @media (max-width: 600px) { .site-nav-inner { flex-direction: column; align-items: flex-start; gap: 8px; } .site-nav-cta { margin-left: 0; } .hero h1 { font-size: 1.8rem; } main { padding: 24px 12px; } .prose table { font-size: 0.82rem; } .prose th, .prose td { padding: 5px 7px; word-break: break-word; overflow-wrap: anywhere; } .prose pre { font-size: 0.82rem; padding: 10px; } .prose pre code { font-size: 0.82rem; } } .skip-link { position: absolute; top: -40px; left: 0; background: var(--accent); color: #fff; padding: 8px 16px; z-index: 10000; text-decoration: none; border-radius: 0 0 6px 0; font-weight: 600; } .skip-link:focus { top: 0; text-decoration: none; color: #fff; outline: 2px solid var(--text); outline-offset: 2px; } .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 1100px; margin: 0 auto; gap: 32px; } @media (min-width: 1000px) { .article-layout { grid-template-columns: minmax(0, 720px) 240px; align-items: start; } } .article-layout > * { min-width: 0; } .article-layout .prose { margin: 0; } .toc { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto; font-size: 0.85rem; border-left: 2px solid var(--border); padding-left: 14px; display: none; } @media (min-width: 1000px) { .toc { display: block; } } .toc-title { font-weight: 700; color: var(--text); margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; } .toc ul { list-style: none; padding: 0; margin: 0; } .toc li { margin: 4px 0; line-height: 1.4; } .toc li.toc-h3 { padding-left: 14px; } .toc a { color: var(--text-muted); text-decoration: none; display: block; padding: 2px 0; border-left: 2px solid transparent; margin-left: -16px; padding-left: 14px; transition: color 0.12s, border-color 0.12s; } .toc a:hover { color: var(--accent); text-decoration: none; } .toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; } .prose pre { position: relative; } .code-copy-btn { position: absolute; top: 8px; right: 8px; background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; font-size: 0.75rem; font-family: inherit; cursor: pointer; opacity: 0; transition: opacity 0.15s, color 0.15s, border-color 0.15s; } .prose pre:hover .code-copy-btn, .code-copy-btn:focus { opacity: 1; } .code-copy-btn:hover { color: var(--accent); border-color: var(--accent); } .code-copy-btn.copied { color: var(--accent); border-color: var(--accent); } .prose img { cursor: zoom-in; } .lightbox-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; } .lightbox-overlay[hidden] { display: none; } .lightbox-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6); } .lightbox-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; line-height: 1; padding: 4px 12px; font-family: inherit; } .lightbox-close:hover { color: var(--accent); } .helpful { margin: 40px auto 0; max-width: 720px; padding: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); text-align: center; } .helpful-question { margin: 0 0 12px; font-weight: 600; color: var(--text); } .helpful-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: inherit; font-size: 0.95rem; cursor: pointer; transition: border-color 0.15s, color 0.15s; } .helpful-btn:hover { border-color: var(--accent); color: var(--accent); } .helpful-btn:disabled { cursor: default; opacity: 0.7; } .helpful-btn.voted { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); } .helpful-count { margin: 12px 0 0; color: var(--text-muted); font-size: 0.85rem; } .helpful-thanks { margin: 12px 0 0; color: var(--accent); font-size: 0.9rem; font-weight: 600; } .prev-next { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; max-width: 720px; margin: 40px auto 0; } .prev-next > * { min-width: 0; } @media (max-width: 600px) { .prev-next { grid-template-columns: minmax(0, 1fr); } } .prev-next a { display: block; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); text-decoration: none; transition: border-color 0.15s; } .prev-next a:hover { border-color: var(--accent); text-decoration: none; } .prev-next .pn-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; } .prev-next .pn-title { font-weight: 600; color: var(--accent); font-size: 0.95rem; line-height: 1.35; } .prev-next .pn-next { text-align: right; } .prev-next .pn-prev:only-child { grid-column: 1; } @media print { .site-nav, .site-footer, .theme-fab, .theme-menu, .reading-progress, .toc, .code-copy-btn, .helpful, .prev-next, .skip-link, .tutorial-search { display: none !important; } body { background: #fff; color: #000; font-size: 11pt; } .article-layout { grid-template-columns: 1fr !important; } .prose { max-width: 100%; margin: 0; } .prose a { color: #000; text-decoration: underline; } .prose a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; } .prose pre, .prose code { background: #f4f4f4 !important; border: 1px solid #ddd; color: #000; } .prose h1, .prose h2, .prose h3 { page-break-after: avoid; } .prose img, .prose pre, .prose blockquote { page-break-inside: avoid; } }</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"FT8 Nedir? Düşük Güçle Dünyayla Konuşma — WSJT-X Rehberi","description":"FT8 dijital modu — nasıl çalışır, neden 5W ile dünyayı açar, WSJT-X kurulumu, donanım gereksinimleri, frekanslar, zaman senkronu ve ilk QSO için tam başlangıç rehberi.","url":"https://amator.tr/tutorials/ft8-dijital-mod","datePublished":"2026-04-25T00:00:00+03:00","dateModified":"2026-04-25T00:00:00+03:00","inLanguage":"tr-TR","author":{"@type":"Person","name":"Kaan Dikeç","url":"https://amator.tr/iletisim","identifier":"TB2KKD"},"publisher":{"@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":{"@type":"ImageObject","url":"https://amator.tr/og/default.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://amator.tr/tutorials/ft8-dijital-mod"},"articleSection":"ft8","keywords":"ft8, wsjt-x, hf, dijital-mod, qrp, dx","wordCount":1381,"image":"https://amator.tr/og/ft8-dijital-mod.png"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Ana Sayfa","item":"https://amator.tr/"},{"@type":"ListItem","position":2,"name":"Tutorial'lar","item":"https://amator.tr/tutorials/"},{"@type":"ListItem","position":3,"name":"FT8 Nedir? Düşük Güçle Dünyayla Konuşma — WSJT-X Rehberi"}]}</script>
+
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<nav class="site-nav" aria-label="Ana navigasyon">
+  <div class="site-nav-inner">
+    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
+    <ul class="site-nav-links">
+      <li><a href="/tutorials/">Tutorial'lar</a></li>
+      <li><a href="/role-export/">Röle</a></li>
+      <li><a href="/araclar/anten-hesaplayici/">Anten</a></li>
+      <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS</a></li>
+      <li><a href="/araclar/maidenhead-grid/">Maidenhead</a></li>
+      <li><a href="/araclar/propagasyon-durumu/">Propagasyon</a></li>
+      <li><a href="/araclar/lisans-sinavi/">Sınav</a></li>
+      <li><a href="/sozluk/">Sözlük</a></li>
+      <li><a href="/hakkinda">Hakkında</a></li>
+    </ul>
+    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
+  </div>
+</nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+
+<main id="main" tabindex="-1">
+<div class="article-layout">
+<article class="prose">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Ana Sayfa</a> › <a href="/tutorials/">Tutorial'lar</a> › <span>FT8 Nedir? Düşük Güçle Dünyayla Konuşma — WSJT-X Rehberi</span></nav>
+<header><h1>FT8 Nedir? Düşük Güçle Dünyayla Konuşma — WSJT-X Rehberi</h1>
+<p class="meta"><time datetime="2026-04-25">2026-04-25</time> · 7 dk okuma · 1381 kelime</p>
+</header>
+<h2 id="ft8-nedir-neden-bu-kadar-populer"><a class="anchor-link" href="#ft8-nedir-neden-bu-kadar-populer" aria-label="Bu basliga link">#</a>FT8 nedir, neden bu kadar popüler?</h2>
+<p><strong>FT8</strong> — <em>Franke-Taylor design, 8-FSK modulation</em> — 2017&#39;de Nobel ödüllü astrofizikçi <strong>Joe Taylor (K1JT)</strong> ve Steve Franke (K9AN) tarafından duyurulan, <strong>zayıf sinyal HF dijital iletişim modu</strong>. Birkaç yıl içinde amatör radyo dünyasında &quot;en popüler dijital mod&quot; konumuna geldi: 2024 itibariyle <a href="https://pskreporter.info/">PSK Reporter</a> verilerine göre <strong>dünya çapında dijital trafiğin %70&#39;inden fazlası FT8</strong>.</p>
+<h3 id="neden-bu-kadar-dikkat-cekti"><a class="anchor-link" href="#neden-bu-kadar-dikkat-cekti" aria-label="Bu basliga link">#</a>Neden bu kadar dikkat çekti?</h3>
+<ul>
+<li><strong>Çok düşük güçle (5-10 W) kıtalararası bağlantı</strong> mümkün — &quot;QRP DX&quot;in en kolay yolu</li>
+<li><strong>−24 dBSNR&#39;a kadar dekod</strong> edilebilir — gürültünün altındaki sinyal anlaşılır (insan kulağı CW&#39;de bile en iyi −18 dB)</li>
+<li><strong>15 saniyelik tek QSO</strong> — uzun konuşmaya gerek yok, 1-2 dakikada bir kontak biter</li>
+<li><strong>Otomatik</strong> — yazılım kontak yönetir, sadece &quot;Gönder&quot; butonu</li>
+<li><strong>Şehir içinde, küçük antenle, gürültülü ortamda çalışır</strong> — apartman amatörleri için altın</li>
+<li><strong>Online doğrulama:</strong> <a href="https://lotw.arrl.org">LoTW</a>, <a href="https://www.eqsl.cc">eQSL</a>, <a href="https://www.qrz.com/logbook">QRZ.com Logbook</a></li>
+</ul>
+<h2 id="nasil-calisir"><a class="anchor-link" href="#nasil-calisir" aria-label="Bu basliga link">#</a>Nasıl çalışır?</h2>
+<p>FT8, <strong>8-tone Frequency-Shift Keying</strong> modülasyonu kullanır. Bilgi ses sinyalindeki 8 farklı tonun ardışık değişimleriyle aktarılır. Telsizinizin SSB modunda (tipik USB) verici çalışır; bilgisayarın ses kartı tonları üretir.</p>
+<h3 id="zamanlama"><a class="anchor-link" href="#zamanlama" aria-label="Bu basliga link">#</a>Zamanlama</h3>
+<p>FT8 <strong>15 saniyelik döngülerde</strong> çalışır. Her dakika 4 slot var:</p>
+<ul>
+<li><strong>0:00 — 0:15</strong> TX (yayın)</li>
+<li><strong>0:15 — 0:30</strong> RX (dinleme)</li>
+<li><strong>0:30 — 0:45</strong> TX</li>
+<li><strong>0:45 — 1:00</strong> RX</li>
+</ul>
+<p>İki istasyon iç içe geçer (sen TX iken karşı RX, sen RX iken karşı TX).</p>
+<pre><code>Slot 0 (0-15s)   ─►  CQ TA1ABC KN51         (TA1ABC çağrı yapıyor)
+Slot 1 (15-30s)  ◄─  TA1ABC W2XYZ FN20      (W2XYZ cevap veriyor)
+Slot 2 (30-45s)  ─►  W2XYZ TA1ABC -12       (TA1ABC sinyal raporu gönderiyor: −12 dB)
+Slot 3 (45-60s)  ◄─  TA1ABC W2XYZ R-08      (W2XYZ rapor + onay: −8 dB)
+Slot 4 (0-15s)   ─►  W2XYZ TA1ABC RR73      (TA1ABC son onay)
+Slot 5 (15-30s)  ◄─  TA1ABC W2XYZ 73        (W2XYZ veda)
+</code></pre>
+<p>Toplam <strong>~90 saniye = tam bir QSO</strong>. KN51 ve FN20 grid square&#39;ler (Maidenhead konum kodu).</p>
+<h3 id="mesaj-formati"><a class="anchor-link" href="#mesaj-formati" aria-label="Bu basliga link">#</a>Mesaj formatı</h3>
+<p>FT8 paketi <strong>77 bit</strong> kullanır — sadece çağrı işaretleri + grid + sinyal raporu (RST yok, gereksiz). Yazılım sözcükleri otomatik şifreler/çözer.</p>
+<h3 id="kritik-zaman-senkronizasyonu"><a class="anchor-link" href="#kritik-zaman-senkronizasyonu" aria-label="Bu basliga link">#</a>Kritik: zaman senkronizasyonu</h3>
+<p>İki istasyonun saati <strong>1 saniyeden az hata</strong> ile senkronize olmalı. Aksi takdirde:</p>
+<ul>
+<li>Slot kayar, dekod fail</li>
+<li>&quot;DT&quot; (Delta Time) &gt; 1.5s ise yayını alamazsınız</li>
+</ul>
+<p><strong>Çözüm:</strong> Bilgisayar saatinizi NTP ile sürekli güncel tutun:</p>
+<ul>
+<li><strong>Windows:</strong> Dimension 4 veya NetTime küçük yazılımı (Windows&#39;un kendi NTP&#39;si yetersiz)</li>
+<li><strong>macOS / Linux:</strong> built-in NTP yeter (<code>timedatectl</code> doğrula)</li>
+<li><strong>Android (mobil):</strong> Otomatik tarih + saat açık olmalı; Doğru zaman için NTP Tools</li>
+</ul>
+<h2 id="donanim-gereksinimleri"><a class="anchor-link" href="#donanim-gereksinimleri" aria-label="Bu basliga link">#</a>Donanım gereksinimleri</h2>
+<h3 id="minimum-setup"><a class="anchor-link" href="#minimum-setup" aria-label="Bu basliga link">#</a>Minimum setup</h3>
+<table>
+<thead>
+<tr>
+<th>Bileşen</th>
+<th>Detay</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HF telsiz</strong></td>
+<td>SSB modlu, USB (Upper Side Band) destekli — FT-450, IC-718, Yaesu FT-857, IC-7300 (modern, USB-only)</td>
+</tr>
+<tr>
+<td><strong>Anten</strong></td>
+<td>HF dipole, vertical, EFHW (End-Fed Half-Wave) — 20m bandı (14 MHz) için tipik</td>
+</tr>
+<tr>
+<td><strong>Bilgisayar</strong></td>
+<td>Windows / macOS / Linux — düşük performanslı bile yeter (Raspberry Pi çalışır)</td>
+</tr>
+<tr>
+<td><strong>WSJT-X yazılımı</strong></td>
+<td><a href="https://wsjt.sourceforge.io">wsjt.sourceforge.io</a> — ücretsiz, K1JT&#39;den</td>
+</tr>
+<tr>
+<td><strong>Ses kartı arayüzü</strong></td>
+<td>Modern telsizlerde dahili USB; eski modellerde <strong>Digirig</strong>, <strong>Signalink USB</strong>, <strong>MicroHam DigiKeyer</strong> ($50-300)</td>
+</tr>
+</tbody></table>
+<h3 id="tam-setup-modern"><a class="anchor-link" href="#tam-setup-modern" aria-label="Bu basliga link">#</a>Tam setup (modern)</h3>
+<p>Icom IC-7300 / Yaesu FTDX-10 / FT-991A gibi cihazlar:</p>
+<ul>
+<li>Tek USB kablosu → bilgisayar</li>
+<li>USB içinde hem ses kartı (CODEC) hem CAT (telsiz kontrol) — frekans değişimi yazılımdan otomatik</li>
+<li>WSJT-X &quot;Settings → Radio&quot; sekmesinden CAT seçin</li>
+</ul>
+<h3 id="eski-klasik-telsizle-setup"><a class="anchor-link" href="#eski-klasik-telsizle-setup" aria-label="Bu basliga link">#</a>Eski / klasik telsizle setup</h3>
+<pre><code>[ FT-857 ]──MIC kablo──[ Digirig ]──USB──[ Bilgisayar (WSJT-X) ]
+   │                       │
+   └──ACC kablo (CAT)──────┘
+</code></pre>
+<p>Digirig (<del>$80) modern minimal arayüz; Signalink (</del>$150) ses-only; CAT için ayrı serial kablo gerekir.</p>
+<h3 id="anten-onerisi-apartman-amatoru-icin"><a class="anchor-link" href="#anten-onerisi-apartman-amatoru-icin" aria-label="Bu basliga link">#</a>Anten önerisi (apartman amatörü için)</h3>
+<ul>
+<li><strong>EFHW (End-Fed Half-Wave) 40m</strong>: 20m, 15m, 10m&#39;de ek anten gerekmeden çalışır. ~20m tel + 49:1 unun.</li>
+<li><strong>Magnetic loop</strong>: balkonda küçük (1-1.5m çap) çelik halka + 365 pF değişken kondansatör. Düşük verim ama yer az olduğunda mucize.</li>
+<li><strong>HF vertical</strong>: HyEndFed 80-10, Cushcraft R8, kendi yapımın — gerekli düşey 5-10 m.</li>
+</ul>
+<h2 id="wsjt-x-kurulumu"><a class="anchor-link" href="#wsjt-x-kurulumu" aria-label="Bu basliga link">#</a>WSJT-X kurulumu</h2>
+<h3 id="adim-1-i-ndir-kur"><a class="anchor-link" href="#adim-1-i-ndir-kur" aria-label="Bu basliga link">#</a>Adım 1: İndir + kur</h3>
+<p><a href="https://wsjt.sourceforge.io/wsjtx.html">wsjt.sourceforge.io</a> → işletim sisteminize uygun installer. ~50 MB.</p>
+<h3 id="adim-2-i-lk-acilis-konfigurasyonu"><a class="anchor-link" href="#adim-2-i-lk-acilis-konfigurasyonu" aria-label="Bu basliga link">#</a>Adım 2: İlk açılış konfigürasyonu</h3>
+<p>WSJT-X&#39;i ilk açıştığında <strong>Settings</strong> otomatik çıkar:</p>
+<p><strong>General sekmesi:</strong></p>
+<ul>
+<li>My Call: <code>TA1ABC</code> (sizin)</li>
+<li>My Grid: <code>KN51</code> (Maidenhead grid kodunuz; <a href="https://www.levinecentral.com/ham/grid_square.php">grid map</a>)</li>
+<li>Region: 1 (Türkiye Region 1)</li>
+</ul>
+<p><strong>Radio sekmesi:</strong></p>
+<ul>
+<li>Rig: telsiz modeliniz (örn. &quot;Icom IC-7300&quot;)</li>
+<li>Serial Port: COMx veya /dev/cu.usbmodem...</li>
+<li>PTT method: CAT (modern) veya RTS (eski)</li>
+<li>Mode: USB (Upper Side Band — FT8 her zaman USB)</li>
+</ul>
+<p><strong>Audio sekmesi:</strong></p>
+<ul>
+<li>Soundcard input: <code>USB Audio CODEC</code> (telsizden gelen ses)</li>
+<li>Soundcard output: <code>USB Audio CODEC</code> (telsize giden ses)</li>
+</ul>
+<h3 id="adim-3-test-baglanti"><a class="anchor-link" href="#adim-3-test-baglanti" aria-label="Bu basliga link">#</a>Adım 3: Test bağlantı</h3>
+<p>Settings → Test CAT → ekranda telsizin frekansı görünmeli; Test PTT → telsiz TX&#39;e geçmeli (ama power 0&#39;da test et!).</p>
+<h2 id="i-lk-qso-icin-adim-adim"><a class="anchor-link" href="#i-lk-qso-icin-adim-adim" aria-label="Bu basliga link">#</a>İlk QSO için adım adım</h2>
+<h3 id="1-frekans-sec"><a class="anchor-link" href="#1-frekans-sec" aria-label="Bu basliga link">#</a>1. Frekans seç</h3>
+<p>Standart FT8 dial frekansları (USB modunda):</p>
+<table>
+<thead>
+<tr>
+<th>Bant</th>
+<th>Dial freq</th>
+<th>Kullanım</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>80m</td>
+<td>3.573 MHz</td>
+<td>Akşam, yerel/Avrupa</td>
+</tr>
+<tr>
+<td>40m</td>
+<td>7.074 MHz</td>
+<td>24 saat, Avrupa-Asya</td>
+</tr>
+<tr>
+<td>30m</td>
+<td>10.136 MHz</td>
+<td>Düşük güç, gece</td>
+</tr>
+<tr>
+<td><strong>20m</strong></td>
+<td><strong>14.074 MHz</strong></td>
+<td><strong>En aktif, gündüz dünya geneli</strong></td>
+</tr>
+<tr>
+<td>17m</td>
+<td>18.100 MHz</td>
+<td>Gündüz uzun-mesafe</td>
+</tr>
+<tr>
+<td>15m</td>
+<td>21.074 MHz</td>
+<td>Gündüz, güneş döngüsü iyiyse</td>
+</tr>
+<tr>
+<td>10m</td>
+<td>28.074 MHz</td>
+<td>Gündüz, güneş yüksekken DX</td>
+</tr>
+<tr>
+<td>6m</td>
+<td>50.313 MHz</td>
+<td>Sporadic E sezonunda Avrupa</td>
+</tr>
+</tbody></table>
+<p><strong>Yeni başlayan için: 20m (14.074 MHz)</strong> — gündüz her zaman aktif, sinyaller bol.</p>
+<h3 id="2-telsizi-ayarla"><a class="anchor-link" href="#2-telsizi-ayarla" aria-label="Bu basliga link">#</a>2. Telsizi ayarla</h3>
+<ul>
+<li>Mode: <strong>USB</strong> (yanlış mod = ses tersine, dekod fail)</li>
+<li>Bandwidth: 2.4 kHz (standart SSB)</li>
+<li>AGC: Slow</li>
+<li>Compressor: OFF (sıkıştırma FT8&#39;i bozar)</li>
+<li>TX power: <strong>5-25W</strong> ile başla (yazılımdan veya telsizden)</li>
+</ul>
+<h3 id="3-wsjt-x-39-te-dinle"><a class="anchor-link" href="#3-wsjt-x-39-te-dinle" aria-label="Bu basliga link">#</a>3. WSJT-X&#39;te dinle</h3>
+<ul>
+<li>&quot;Wide Graph&quot; penceresinde dikey çubuklar = aktif sinyaller</li>
+<li>Sol panel &quot;Decode&quot; alanında çözülen QSO&#39;lar:<pre><code>171500  -12  0.4 1242 ~  CQ DL3ABC JN58
+171500  -08  0.2  745 ~  W1XYZ K9DEF EM37
+</code></pre>
+<ul>
+<li><code>−12</code> = sinyal/gürültü dB (negatif = gürültünün altında)</li>
+<li><code>1242</code> = audio frekansı (yan kanal)</li>
+<li><code>CQ DL3ABC JN58</code> = Almanya&#39;dan CQ çağrısı</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-cq-yap-cagri-yayinla"><a class="anchor-link" href="#4-cq-yap-cagri-yayinla" aria-label="Bu basliga link">#</a>4. CQ yap (çağrı yayınla)</h3>
+<ul>
+<li>&quot;Tx 1&quot; alanına: <code>CQ TA1ABC KN51</code> (otomatik dolar)</li>
+<li><strong>&quot;Enable Tx&quot;</strong> tıkla → bir sonraki ÇIFT slotta yayınla başlar</li>
+<li>Yazılım QSO&#39;yu <strong>otomatik yönetir</strong> (cevap gelince Tx 2-6 sırasıyla yanıtlar)</li>
+</ul>
+<h3 id="5-cq-39-ya-cevap-ver"><a class="anchor-link" href="#5-cq-39-ya-cevap-ver" aria-label="Bu basliga link">#</a>5. CQ&#39;ya cevap ver</h3>
+<p>Decode listesinde bir CQ gör:</p>
+<ul>
+<li><strong>Çift tıkla</strong> → yazılım otomatik &quot;Tx 1&quot; tepkisiyle başlar</li>
+<li><strong>Watchdog</strong> sayacını kontrol et (timeout)</li>
+</ul>
+<h3 id="6-onayla-log-39-la"><a class="anchor-link" href="#6-onayla-log-39-la" aria-label="Bu basliga link">#</a>6. Onayla, log&#39;la</h3>
+<p>QSO bittikten sonra (otomatik 73 değişimi) WSJT-X <strong>log dialogu</strong> açar:</p>
+<ul>
+<li>Notları gözden geçir</li>
+<li>&quot;OK&quot; → ADIF dosyasına kaydeder</li>
+<li>LoTW/eQSL&#39;e otomatik upload (Settings → Reporting&#39;te aktif)</li>
+</ul>
+<h2 id="pratik-ipuclari"><a class="anchor-link" href="#pratik-ipuclari" aria-label="Bu basliga link">#</a>Pratik ipuçları</h2>
+<table>
+<thead>
+<tr>
+<th>Sorun</th>
+<th>Çözüm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Hiç sinyal yok&quot;</td>
+<td>Frekans yanlış (mode USB değil), AGC kapalı, anten bağlı değil</td>
+</tr>
+<tr>
+<td>&quot;Sinyal var, dekod yok&quot;</td>
+<td>Saat senkronu kötü (NetTime kur); audio level çok yüksek/düşük</td>
+</tr>
+<tr>
+<td>&quot;TX&#39;te telsiz hata veriyor&quot;</td>
+<td>ALC çubuğu kırmızıda — TX gain&#39;i düşür. ALC sıfır olmalı</td>
+</tr>
+<tr>
+<td>&quot;Karşı tarafa cevap geliyor ama benden duymuyor&quot;</td>
+<td>TX power yetersiz; daha yüksek bant ya da daha iyi anten</td>
+</tr>
+<tr>
+<td>&quot;Sürekli aynı kişiyle QSO yapıyorum&quot;</td>
+<td>Hold Tx Freq açık — frekansı manuel kaydır</td>
+</tr>
+</tbody></table>
+<h3 id="tx-power-dengesi"><a class="anchor-link" href="#tx-power-dengesi" aria-label="Bu basliga link">#</a>TX power dengesi</h3>
+<p>FT8&#39;in en kritik kuralı: <strong>gerekenden fazla güç kullanmayın.</strong> −10 dB raporu = harika. Daha yüksek güç başkalarının QSO&#39;larını engeller. <strong>5-25 W tipik</strong>; 100W FT8 etiketsizliktir.</p>
+<h2 id="i-leri-ozellikler"><a class="anchor-link" href="#i-leri-ozellikler" aria-label="Bu basliga link">#</a>İleri özellikler</h2>
+<h3 id="ft4-ft8-39-in-hizlisi"><a class="anchor-link" href="#ft4-ft8-39-in-hizlisi" aria-label="Bu basliga link">#</a>FT4 (FT8&#39;in hızlısı)</h3>
+<ul>
+<li>7.5 saniye slot (FT8&#39;in yarısı)</li>
+<li>Daha az hassas (~−18 dB) ama daha hızlı QSO</li>
+<li>Frekanslar: 7.0475, 14.080, 21.140 MHz</li>
+</ul>
+<h3 id="js8call"><a class="anchor-link" href="#js8call" aria-label="Bu basliga link">#</a>JS8Call</h3>
+<ul>
+<li>FT8 mod&#39;unu konuşmaya benzer (mesaj göndermek mümkün)</li>
+<li>Acil durum için ideal (e-mail, kısa metin)</li>
+<li>Ayrı yazılım: <a href="http://js8call.com">js8call.com</a></li>
+</ul>
+<h3 id="q65"><a class="anchor-link" href="#q65" aria-label="Bu basliga link">#</a>Q65</h3>
+<ul>
+<li>WSJT-X&#39;in EME (Earth-Moon-Earth, ay yansıması) için sürümü</li>
+<li>Çok zayıf sinyaller, dakikalarca slot</li>
+<li>Ay kullanarak <strong>dünyanın diğer ucuyla</strong> kontak kuruyorsunuz!</li>
+</ul>
+<h3 id="msk144-meteor-scatter"><a class="anchor-link" href="#msk144-meteor-scatter" aria-label="Bu basliga link">#</a>MSK144 (Meteor Scatter)</h3>
+<ul>
+<li>Meteor parlamalarına yansıttığınız sinyalle anlık kontak</li>
+<li>144 MHz VHF DX, perseid yağmuru sezonunda Aug</li>
+</ul>
+<h2 id="yararli-kaynaklar"><a class="anchor-link" href="#yararli-kaynaklar" aria-label="Bu basliga link">#</a>Yararlı kaynaklar</h2>
+<ul>
+<li><a href="https://wsjt.sourceforge.io">WSJT-X resmi</a></li>
+<li><a href="https://pskreporter.info">PSKReporter</a> — global FT8 sinyal haritası</li>
+<li><a href="https://www.g4ifb.com/FT8_Hinson_tips_for_HF_DXers.pdf">FT8 Operating Guide (Hinson)</a> — PDF, ücretsiz</li>
+<li><a href="https://dard81.org.tr/amator-telsizciligin-dijital-devrimi-ft8-nedir-ve-nasil-baslanir/">DARD81 FT8 Türkçe rehber</a></li>
+<li><a href="https://www.tracnevsehir.org.tr/hf-ssb-lsb-usb-am-fm-cw-ve-ft8-nedir/">TRAC Nevşehir HF modülasyon türleri</a></li>
+<li><a href="https://lotw.arrl.org">LoTW (ARRL)</a> — DX onayları</li>
+<li><a href="https://www.qrz.com">QRZ.com</a> — kontakların callsign araması</li>
+</ul>
+<h2 id="siradaki-adimlar"><a class="anchor-link" href="#siradaki-adimlar" aria-label="Bu basliga link">#</a>Sıradaki adımlar</h2>
+<ul>
+<li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti Nasıl Alınır</a> — HF için A/B sınıfı gerekli (TA prefiks)</li>
+<li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS Nedir</a> — VHF dijital alternatif</li>
+<li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a> — başlangıç antenler (VHF; HF için ayrı dipole)</li>
+</ul>
+<p>İlk DX&#39;iniz için <strong>bol şans, 73!</strong></p>
+
+</article>
+</div>
+<nav class="prev-next" aria-label="Diğer kılavuzlar"><a class="pn-prev" href="/tutorials/hf-dipole-efhw-anten" rel="prev"><div class="pn-label">← Önceki</div><div class="pn-title">HF Dipole ve EFHW Anten Yapımı (40m / 20m / Multiband)</div></a><a class="pn-next" href="/tutorials/dmr-nedir-anytone-d878uv" rel="next"><div class="pn-label">Sonraki →</div><div class="pn-title">DMR Nedir? Anytone D878UV ve Brandmeister TG 286 (Türkiye)</div></a></nav>
+<script type="module" src="/shared/js/reading-progress.js" defer></script>
+<script type="module" src="/shared/js/toc.js" defer></script>
+<script type="module" src="/shared/js/code-copy.js" defer></script>
+<script type="module" src="/shared/js/lightbox.js" defer></script>
+<script type="module" src="/shared/js/helpful.js" defer></script>
+</main>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+
+</body>
+</html>

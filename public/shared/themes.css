@@ -1,0 +1,95 @@
+/* ============================================================
+   amator.tr — 4 Theme System
+   Pure Dark (default) + Navy Dark + Komur Dark + Light
+   ============================================================ */
+
+/* Pure Dark — default, no [data-theme] attribute */
+:root {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-2: #1c1c1c;
+  --accent: #e94560;
+  --text: #f5f5f5;
+  --text-muted: #888;
+  --success: #4ecca3;
+  --warning: #f0a500;
+  --error: #e94560;
+  --border: #262626;
+}
+
+[data-theme="dark-navy"] {
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --surface-2: #0f3460;
+  --accent: #e94560;
+  --text: #eee;
+  --text-muted: #999;
+  --success: #4ecca3;
+  --warning: #f0a500;
+  --error: #e94560;
+  --border: #2a2a4a;
+}
+
+[data-theme="dark-charcoal"] {
+  --bg: #15151a;
+  --surface: #1f1f27;
+  --surface-2: #2a2a33;
+  --accent: #e94560;
+  --text: #e8e8e8;
+  --text-muted: #9090a0;
+  --success: #4ecca3;
+  --warning: #f0a500;
+  --error: #e94560;
+  --border: #33333d;
+}
+
+[data-theme="light"] {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --surface-2: #e8ecf1;
+  --accent: #d63031;
+  --text: #2d3436;
+  --text-muted: #636e72;
+  --success: #00b894;
+  --warning: #e17055;
+  --error: #d63031;
+  --border: #dfe6e9;
+}
+
+/* Vanta Black — pure black OLED, yumuşak okunabilir yazı renkleri */
+[data-theme="vanta-black"] {
+  --bg: #000000;
+  --surface: #080808;
+  --surface-2: #101010;
+  --accent: #e94560;
+  --text: #c8c8c8;
+  --text-muted: #787878;
+  --success: #4ecca3;
+  --warning: #f0a500;
+  --error: #e94560;
+  --border: #1a1a1a;
+}
+
+/* High-contrast — WCAG AAA, görme zorluğu çekenler için */
+[data-theme="contrast"] {
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #0a0a0a;
+  --accent: #ffff00;
+  --text: #ffffff;
+  --text-muted: #ffffff;
+  --success: #00ff00;
+  --warning: #ffff00;
+  --error: #ff6060;
+  --border: #ffffff;
+}
+[data-theme="contrast"] a { text-decoration: underline; }
+[data-theme="contrast"] :focus-visible {
+  outline: 3px solid #ffff00;
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
