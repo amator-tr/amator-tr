@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { authMiddleware } from './auth.js';
 import statsPublicRoutes from './routes/stats-public-routes.js';
+import roleExportRoutes from './routes/role-export-routes.js';
 import authRoutes from './routes/auth-routes.js';
 import mainRoutes from './routes/main-routes.js';
 import adminRoutes from './routes/admin-routes.js';
@@ -59,6 +60,7 @@ app.get('/robots.txt', (c) => {
 });
 
 app.route('/', statsPublicRoutes);
+app.route('/', roleExportRoutes);
 
 app.use('*', authMiddleware(getCookie));
 
