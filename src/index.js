@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { authMiddleware } from './auth.js';
+import statsPublicRoutes from './routes/stats-public-routes.js';
 import authRoutes from './routes/auth-routes.js';
 import mainRoutes from './routes/main-routes.js';
 import adminRoutes from './routes/admin-routes.js';
@@ -34,8 +35,16 @@ app.use('*', async (c, next) => {
 });
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+const CSRF_SKIP = ['/api/stats/ping', '/api/stats/download', '/api/stats/helpful'];
 app.use('*', async (c, next) => {
   if (SAFE_METHODS.has(c.req.method)) return next();
+  if (CSRF_SKIP.includes(c.req.path)) {
+    const origin = c.req.header('Origin') || '';
+    if (origin && !origin.startsWith('https://amator.tr')) {
+      return c.json({ error: 'CSRF kontrol basarisiz' }, 403);
+    }
+    return next();
+  }
   const origin = c.req.header('Origin') || c.req.header('Referer') || '';
   const expected = c.env.APP_URL || 'https://cagri.amator.tr';
   if (!origin.startsWith(expected)) {
@@ -48,6 +57,8 @@ app.get('/robots.txt', (c) => {
   c.header('Content-Type', 'text/plain; charset=UTF-8');
   return c.body('User-agent: *\nDisallow: /\n');
 });
+
+app.route('/', statsPublicRoutes);
 
 app.use('*', authMiddleware(getCookie));
 
