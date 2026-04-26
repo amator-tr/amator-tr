@@ -49,12 +49,11 @@ amator-tr/
 
 ## Sifirdan Kurulum
 
-### 1. Sunucuya klonla
+### 1. Klonla
 
 ```bash
-ssh ubuntu@144.24.190.251
-git clone git@github.com:amator-tr/amator-tr.git ~/amator-tr
-cd ~/amator-tr
+git clone git@github.com:amator-tr/amator-tr.git
+cd amator-tr
 ```
 
 ### 2. .env olustur
@@ -130,7 +129,7 @@ docker compose up -d
 docker compose run --rm backup
 
 # Static dosyalari guncelle (lokal'den)
-rsync -avz --delete public/ ubuntu@144.24.190.251:~/amator-tr/public/
+rsync -avz --delete public/ user@sunucu:~/amator-tr/public/
 docker compose restart web
 ```
 
@@ -177,7 +176,7 @@ npm install
 
 ```toml
 [vars]
-ALLOWED_IPS = "144.24.190.251,2603:c020:8010:ec31:0:e9c4:7fb1:5cdc"
+ALLOWED_IPS = "SUNUCU_IPV4,SUNUCU_IPV6"
 ```
 
 Sunucunun dis IP'lerini bulmak icin:
@@ -192,19 +191,19 @@ curl -6 ifconfig.me    # IPv6
 npx wrangler deploy
 ```
 
-Worker URL'i (ornek: `https://ai-proxy.dikeckaan.workers.dev`) otomatik olarak `src/ai.js` icinde tanimli.
+Worker URL'i (ornek: `https://AI_PROXY_WORKER_URL`) otomatik olarak `src/ai.js` icinde tanimli.
 Sunucu IP degisirse `wrangler.toml`'u guncelleyip tekrar deploy et.
 
 ### Test
 
 ```bash
 # Disaridan (404 donmeli)
-curl -X POST https://ai-proxy.dikeckaan.workers.dev/@cf/meta/llama-3.1-8b-instruct \
+curl -X POST https://AI_PROXY_WORKER_URL/@cf/meta/llama-3.1-8b-instruct \
   -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"test"}],"max_tokens":5}'
 
 # Sunucudan (cevap donmeli)
-ssh ubuntu@144.24.190.251 "curl -X POST https://ai-proxy.dikeckaan.workers.dev/@cf/meta/llama-3.1-8b-instruct \
+ssh user@sunucu "curl -X POST https://AI_PROXY_WORKER_URL/@cf/meta/llama-3.1-8b-instruct \
   -H 'Content-Type: application/json' \
   -d '{\"messages\":[{\"role\":\"user\",\"content\":\"Merhaba\"}],\"max_tokens\":10}'"
 ```
