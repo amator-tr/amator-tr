@@ -1,23 +1,16 @@
+const PROXY_URL = process.env.AI_PROXY_URL || 'https://ai-proxy.dikeckaan.workers.dev';
+
 class CloudflareAI {
-  constructor(accountId, apiToken) {
-    this.accountId = accountId;
-    this.apiToken = apiToken;
-  }
-
   async run(model, input) {
-    if (!this.accountId || !this.apiToken) {
-      return { response: 'AI servisi yapilandirilmamis' };
-    }
-
-    const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/ai/run/${model}`;
-    const res = await fetch(url, {
+    const res = await fetch(`${PROXY_URL}/${model}`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.apiToken}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
     });
+
+    if (res.status === 404) {
+      return { response: 'AI servisi kullanılamıyor' };
+    }
 
     const data = await res.json();
     if (!data.success) {
@@ -30,11 +23,6 @@ class CloudflareAI {
 let instance = null;
 
 export function getAI() {
-  if (!instance) {
-    instance = new CloudflareAI(
-      process.env.CLOUDFLARE_ACCOUNT_ID,
-      process.env.CLOUDFLARE_API_TOKEN
-    );
-  }
+  if (!instance) instance = new CloudflareAI();
   return instance;
 }

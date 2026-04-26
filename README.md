@@ -151,6 +151,60 @@ docker compose restart web
 - **Static:** nginx:alpine
 - **Proxy:** nginx:alpine (domain-based routing)
 - **SSL:** Cloudflare Proxy (Flexible mode)
-- **AI:** Cloudflare Workers AI REST API (opsiyonel)
+- **AI:** Cloudflare Workers AI via ai-proxy worker (opsiyonel)
 - **Email:** Resend API
 - **CAPTCHA:** Cloudflare Turnstile
+
+## AI Proxy Worker
+
+AI ozellikleri (moderasyon, asistan, mors kelime uretimi) icin ayri bir CF Worker kullanilir.
+Worker sadece sunucu IP'sinden gelen isteklere cevap verir, diger IP'lere 404 doner.
+Token/API key gerektirmez.
+
+**Repo:** `github.com/amator-tr/ai-proxy`
+
+### Kurulum
+
+```bash
+git clone git@github.com:amator-tr/ai-proxy.git
+cd ai-proxy
+npm install
+```
+
+### Yapilandirma
+
+`wrangler.toml` icindeki `ALLOWED_IPS`'e sunucu IP'lerini ekle (IPv4 ve IPv6, virgul ile):
+
+```toml
+[vars]
+ALLOWED_IPS = "144.24.190.251,2603:c020:8010:ec31:0:e9c4:7fb1:5cdc"
+```
+
+Sunucunun dis IP'lerini bulmak icin:
+```bash
+curl -4 ifconfig.me    # IPv4
+curl -6 ifconfig.me    # IPv6
+```
+
+### Deploy
+
+```bash
+npx wrangler deploy
+```
+
+Worker URL'i (ornek: `https://ai-proxy.dikeckaan.workers.dev`) otomatik olarak `src/ai.js` icinde tanimli.
+Sunucu IP degisirse `wrangler.toml`'u guncelleyip tekrar deploy et.
+
+### Test
+
+```bash
+# Disaridan (404 donmeli)
+curl -X POST https://ai-proxy.dikeckaan.workers.dev/@cf/meta/llama-3.1-8b-instruct \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"test"}],"max_tokens":5}'
+
+# Sunucudan (cevap donmeli)
+ssh ubuntu@144.24.190.251 "curl -X POST https://ai-proxy.dikeckaan.workers.dev/@cf/meta/llama-3.1-8b-instruct \
+  -H 'Content-Type: application/json' \
+  -d '{\"messages\":[{\"role\":\"user\",\"content\":\"Merhaba\"}],\"max_tokens\":10}'"
+```
