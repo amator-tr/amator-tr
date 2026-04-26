@@ -24,3 +24,6 @@ Thumbs.db
 # Temp
 *.tmp
 *.swp
+d1-dump.sql
+d1-inserts.sql
+*.sql.bak
