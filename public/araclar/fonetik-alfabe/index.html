@@ -269,6 +269,7 @@
     <strong>Neden fonetik alfabe?</strong> Telsiz iletisiminde harfler ve rakamlar kotu kanal kosullarinda karisabilir.
     Fonetik alfabe, her harfi benzersiz bir kelime ile temsil ederek yanlisanlama riskini en aza indirir.
     Ornegin "TA2KKD" cagri isareti telsizde "Tango Alfa Two Kilo Kilo Delta" olarak soylenir.
+    <br><strong>Not:</strong> Rakamlar pratikte genelde Turkce okunur (1=Bir, 2=Iki, 3=Uc...). Quiz ve pratik modunda hem Turkce hem Ingilizce hem de rakam olarak yazmak kabul edilir.
   </div>
 
   <div class="tab-row" id="tab-row">
@@ -312,7 +313,7 @@
       <div class="quiz-subtitle">Bu cagri isaretinin fonetik karsiligini yazin:</div>
       <div class="practice-callsign" id="prac-callsign">TA2XYZ</div>
       <div class="practice-input-wrap">
-        <input type="text" class="practice-input" id="prac-input" placeholder="Ornek: Tango Alfa Two X-ray Yankee Zulu" autocomplete="off">
+        <input type="text" class="practice-input" id="prac-input" placeholder="Ornek: Tango Alfa 2 X-ray Yankee Zulu veya Tango Alfa Iki ..." autocomplete="off">
         <div class="practice-hint">Her karakter icin fonetik karsiligini boslukla ayirarak yazin.</div>
       </div>
       <button class="check-btn" id="prac-check" type="button">Kontrol Et</button>
@@ -411,6 +412,41 @@
     '0':'Zero','1':'One','2':'Two','3':'Three','4':'Four',
     '5':'Five','6':'Six','7':'Seven','8':'Eight','9':'Niner'
   };
+
+  var NUMBER_ALIASES = {
+    '0': ['zero','sifir','sıfır','0'],
+    '1': ['one','bir','1'],
+    '2': ['two','iki','2'],
+    '3': ['three','uc','üç','uch','3'],
+    '4': ['four','dort','dört','4'],
+    '5': ['five','bes','beş','besh','5'],
+    '6': ['six','alti','altı','6'],
+    '7': ['seven','yedi','7'],
+    '8': ['eight','sekiz','8'],
+    '9': ['niner','nine','dokuz','9']
+  };
+
+  function normalizeWord(w) {
+    return w.toLowerCase()
+      .replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u')
+      .replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c')
+      .replace(/İ/g,'i').replace(/[^a-z0-9\-]/g,'').trim();
+  }
+
+  function wordsMatch(inputWord, expectedChar) {
+    var n = normalizeWord(inputWord);
+    var expectedPhonetic = normalizeWord(PHONETIC[expectedChar] || '');
+    if (n === expectedPhonetic) return true;
+    if (/\d/.test(expectedChar)) {
+      var aliases = NUMBER_ALIASES[expectedChar];
+      if (aliases) {
+        for (var i = 0; i < aliases.length; i++) {
+          if (n === normalizeWord(aliases[i])) return true;
+        }
+      }
+    }
+    return false;
+  }
 
   var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   var DIGITS = '0123456789'.split('');
@@ -593,14 +629,21 @@
     if (!input) return;
 
     var expected = callsignToPhonetic(currentCallsign);
-    var normalizedInput = input.replace(/\s+/g, ' ').toLowerCase();
-    var normalizedExpected = expected.toLowerCase();
+    var inputWords = input.replace(/\s+/g, ' ').trim().split(' ');
+    var csChars = currentCallsign.split('');
+
+    var allMatch = inputWords.length === csChars.length;
+    if (allMatch) {
+      for (var wi = 0; wi < csChars.length; wi++) {
+        if (!wordsMatch(inputWords[wi], csChars[wi])) { allMatch = false; break; }
+      }
+    }
 
     var feedback = document.getElementById('prac-feedback');
     feedback.classList.remove('hidden', 'correct', 'wrong');
     feedback.textContent = '';
 
-    if (normalizedInput === normalizedExpected) {
+    if (allMatch) {
       pracCorrect++;
       feedback.classList.add('correct');
       feedback.textContent = 'Dogru!';
