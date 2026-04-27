@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>İletişim &amp; Katkı — amator.tr</title>
+<meta name="description" content="amator.tr ile iletişime geçin — hata bildirimi, içerik katkısı, yeni cihaz desteği için GitHub Issues veya e-posta. Lisans, atıflar ve yazar bilgisi.">
+<link rel="canonical" href="https://amator.tr/iletisim">
+<meta property="og:type" content="website">
+<meta property="og:title" content="İletişim &amp; Katkı">
+<meta property="og:description" content="amator.tr ile iletişime geçin — hata bildirimi, içerik katkısı, yeni cihaz desteği için GitHub Issues veya e-posta. Lisans, atıflar ve yazar bilgisi.">
+<meta property="og:url" content="https://amator.tr/iletisim">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<nav id="site-nav"></nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+
+<main id="main" tabindex="-1">
+<article class="prose"><h1>İletişim &amp; Katkı</h1><h2 id="yazar"><a class="anchor-link" href="#yazar" aria-label="Bu basliga link">#</a>Yazar</h2>
+<p><strong>Kaan Dikeç</strong> — Bilgisayar Mühendisi</p>
+<p>Amatör telsiz çağrı işaretim: <strong>TB2KKD</strong></p>
+<p>amator.tr&#39;yi açık kaynak hobi projesi olarak geliştiriyor ve sürdürüyorum. Topluluğun katkıları + geri bildirimleri büyük değer taşır.</p>
+<h2 id="e-posta"><a class="anchor-link" href="#e-posta" aria-label="Bu basliga link">#</a>E-posta</h2>
+<pre><code>amatortelsiz [et] yodobi [nokta] app
+</code></pre>
+<p>(Anti-spam için açıkça yazıyoruz; spambot dostudur. Düz hâli: <code>amatortelsiz</code> + <code>@</code> + <code>yodobi.app</code>)</p>
+<h2 id="hata-bildirimi-ozellik-istegi"><a class="anchor-link" href="#hata-bildirimi-ozellik-istegi" aria-label="Bu basliga link">#</a>Hata bildirimi &amp; özellik isteği</h2>
+<p>En hızlı kanal <strong>GitHub Issues</strong>:</p>
+<p>→ <strong><a href="https://github.com/amator-tr/amator-tr.github.io/issues">github.com/amator-tr/amator-tr.github.io/issues</a></strong></p>
+<p>Issue açarken şu bilgileri paylaşın:</p>
+<ul>
+<li>Hatanın nasıl tetiklendiği (adım adım)</li>
+<li>Beklediğiniz davranış vs gerçekleşen</li>
+<li>Tarayıcı + işletim sistemi</li>
+<li>(varsa) Ekran görüntüsü, hata konsolu çıktısı</li>
+</ul>
+<h2 id="i-cerik-katkisi-pull-request"><a class="anchor-link" href="#i-cerik-katkisi-pull-request" aria-label="Bu basliga link">#</a>İçerik katkısı (Pull Request)</h2>
+<p>Tutorial&#39;lar <code>content/tutorials/</code> klasöründe Markdown dosyalarıdır. Yeni bir kılavuz eklemek için:</p>
+<ol>
+<li>Repo&#39;yu fork et</li>
+<li><code>content/tutorials/yeni-konu.md</code> oluştur — frontmatter şablonunu mevcut tutorial&#39;lardan kopyala</li>
+<li>Pull Request aç</li>
+</ol>
+<p>Markdown frontmatter zorunlu alanlar:</p>
+<pre><code class="language-markdown">---
+title: &quot;Konunun Başlığı&quot;
+slug: konunun-slug-u
+date: 2026-04-25
+description: SEO için 150 karakter altı özet
+tags: [tag1, tag2]
+author: amator.tr
+---
+</code></pre>
+<h2 id="yeni-cihaz-destegi-istegi"><a class="anchor-link" href="#yeni-cihaz-destegi-istegi" aria-label="Bu basliga link">#</a>Yeni cihaz desteği isteği</h2>
+<p><a href="/role-export/">Röle Export</a> sayfasına yeni telsiz/cihaz desteği eklenmesini istiyorsanız, <strong>örnek bir CSV dosyası</strong> göndermeniz gerek.</p>
+<h3 id="lutfen-sadece-csv-gonderin"><a class="anchor-link" href="#lutfen-sadece-csv-gonderin" aria-label="Bu basliga link">#</a>Lütfen sadece CSV gönderin</h3>
+<p>❌ <strong><code>.rdt</code></strong> (TYT MD-380, Connect Systems CodePlug formatı)
+❌ <strong><code>.dat</code></strong> (Anytone)
+❌ <strong><code>.bin</code></strong> (Quansheng EEPROM dump)
+❌ <strong><code>.img</code></strong> (CHIRP image dosyası)
+❌ <strong><code>.ic7300_settings</code></strong>, <strong><code>.icf</code></strong>, <strong><code>.codeplug</code></strong>, üretici özel formatlar</p>
+<p>✅ <strong>Sadece <code>.csv</code></strong> — UTF-8, virgül veya noktalı virgül ayraçlı</p>
+<p>CSV içinde minimum şu sütunlar olmalı:</p>
+<table>
+<thead>
+<tr>
+<th>Sütun adı</th>
+<th>Anlam</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Channel Name</code> veya <code>Name</code></td>
+<td>Kanal görünen adı (örn. &quot;Çamlıca&quot;, &quot;İstanbul-1&quot;)</td>
+</tr>
+<tr>
+<td><code>Frequency</code> veya <code>RX Frequency</code></td>
+<td>Alıcı frekansı (MHz, örn. 145.625)</td>
+</tr>
+<tr>
+<td><code>Duplex</code> veya <code>Offset Direction</code></td>
+<td><code>+</code> / <code>-</code> / <code>simplex</code></td>
+</tr>
+<tr>
+<td><code>Offset</code> veya <code>TX Offset</code></td>
+<td>Shift miktarı (örn. 0.6 MHz)</td>
+</tr>
+<tr>
+<td><code>Mode</code></td>
+<td>FM / NFM / AM</td>
+</tr>
+<tr>
+<td><code>Tone Mode</code></td>
+<td>OFF / Tone / TSQL / DTCS</td>
+</tr>
+<tr>
+<td><code>Tone</code></td>
+<td>CTCSS frekansı (örn. 100.0)</td>
+</tr>
+<tr>
+<td><code>Power</code></td>
+<td>Low / Mid / High</td>
+</tr>
+</tbody></table>
+<p>Cihazınız bu şablonun dışında ekstra sütun gerektiriyorsa o sütunları <strong>ek olarak</strong> koyabilirsiniz — biz cihaz profilini eklerken bunları işleriz. Ama <strong>temel CHIRP sütunları yoksa kabul edilmez</strong>.</p>
+<h3 id="neden-csv-only"><a class="anchor-link" href="#neden-csv-only" aria-label="Bu basliga link">#</a>Neden CSV-only?</h3>
+<ul>
+<li><strong>Reverse-engineering yükü:</strong> Üretici özel binary formatları (RDT, BIN, vd.) dağınık + cihaza özgü. Her cihaz için ayrı parser yazmak imkansız.</li>
+<li><strong>Topluluk standardı:</strong> CHIRP CSV formatı ITU-Region-1&#39;de fiilî standart; tüm büyük amatör programlama yazılımı destekler.</li>
+<li><strong>Versiyon stabil:</strong> Üretici binary formatlarını sessizce değiştirir; CSV stabil kalır.</li>
+</ul>
+<p>CSV nasıl çıkarılır:</p>
+<ul>
+<li><strong>CHIRP&#39;te:</strong> <code>File → Export → CSV</code> (en yaygın)</li>
+<li><strong>Excel/LibreOffice&#39;te:</strong> Manuel hazırla, &quot;Save as CSV&quot; (UTF-8 encoding seç)</li>
+<li><strong>Python ile:</strong> Cihazın binary&#39;sinden parse + pandas/csv modülü ile yazma</li>
+</ul>
+<p>Hazır CSV&#39;yi e-posta ile + cihazın <strong>markası, modeli, firmware sürümü</strong> bilgisiyle gönderin. ~1-2 hafta içinde <a href="/role-export/">/role-export/</a> sayfasında profil görünür.</p>
+<h2 id="lisans"><a class="anchor-link" href="#lisans" aria-label="Bu basliga link">#</a>Lisans</h2>
+<p>amator.tr <strong>MIT Lisansı</strong> altında açık kaynaktır:</p>
+<pre><code>MIT License
+
+Copyright (c) 2026 Kaan Dikeç (TB2KKD)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</code></pre>
+<p>Tutorial içeriği için:</p>
+<ul>
+<li>Yazılı içerik <strong>CC BY 4.0</strong> (atıfla yeniden yayınlanabilir)</li>
+<li>Kod örnekleri <strong>MIT</strong> ile aynı</li>
+</ul>
+<h2 id="atiflar"><a class="anchor-link" href="#atiflar" aria-label="Bu basliga link">#</a>Atıflar</h2>
+<table>
+<thead>
+<tr>
+<th>Kaynak</th>
+<th>Kullanım</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Röle veritabanı</strong></td>
+<td><a href="https://amatortelsizcilik.com.tr">amatortelsizcilik.com.tr</a>, <a href="https://telsizcilik.com">telsizcilik.com</a>, <a href="https://www.ta-role.com">ta-role.com</a> — topluluk kaynakları, ticari kullanım yapmıyoruz</td>
+</tr>
+<tr>
+<td><strong>Airband (havalimanı + frekans)</strong></td>
+<td><a href="https://ourairports.com">OurAirports.com</a> — CC0 dataset</td>
+</tr>
+<tr>
+<td><strong>Marine VHF Türkiye</strong></td>
+<td><a href="https://www.qsl.net/ta1dx/amator/bandmarine.htm">TA1DX QSL.net sayfası</a></td>
+</tr>
+<tr>
+<td><strong>Harita</strong></td>
+<td><a href="https://leafletjs.com">Leaflet</a> (BSD) + OpenStreetMap tiles + Carto basemap</td>
+</tr>
+<tr>
+<td><strong>UV-K5 firmware bilgisi</strong></td>
+<td><a href="https://github.com/armel/uv-k5-firmware-custom">armel/uv-k5-firmware-custom</a> (Apache 2.0)</td>
+</tr>
+<tr>
+<td><strong>Lisans bilgisi</strong></td>
+<td><a href="https://www.btk.gov.tr">BTK</a>, <a href="https://www.kiyiemniyeti.gov.tr">KEGM</a>, <a href="https://trac.org.tr">TRAC</a>, <a href="https://akrad.org.tr">AKRAD</a></td>
+</tr>
+</tbody></table>
+<p>Kullandığımız tüm kaynaklara teşekkür. Telif haklarının iyi yönetimi için herhangi bir öğe için &quot;kaldırılma&quot; talebi geldiğinde derhal kaldırırız — issue açın veya e-posta atın.</p>
+<h2 id="sosyal-medya-topluluk"><a class="anchor-link" href="#sosyal-medya-topluluk" aria-label="Bu basliga link">#</a>Sosyal medya / Topluluk</h2>
+<p>Bu site herhangi bir kuruluşa bağlı değildir. Kişisel bir hobi projesidir.</p>
+<p>Topluluk ortak alanları için <strong>TRAC</strong> (ulusal), <strong>AKRAD</strong>, <strong>DARD</strong>, <strong>ANTRAK</strong>, <strong>TAMSAT</strong> gibi kulüplerin sosyal medyalarını takip edebilirsiniz. Her bölgenin kendi haftalık net&#39;i + etkinlik takvimi vardır.</p>
+<p>73, <strong>de TB2KKD</strong>.</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/rf-los/">RF Görüş Hattı (LOS)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+
+</body>
+</html>
