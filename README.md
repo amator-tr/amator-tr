@@ -41,10 +41,11 @@ amator-tr/
 │   └── shared/             # Tema CSS/JS
 ├── data/                   # SQLite DB + backup (git'e gitmez)
 │   └── cagri.db
-└── scripts/
-    ├── backup.js           # SQLite backup (son 30 gun)
-    ├── setup-cron.sh       # Gunluk backup cron kurulumu
-    └── auto-push.sh        # Degisiklik varsa GitHub'a push
+├── scripts/
+│   ├── backup.js           # SQLite backup (son 30 gun)
+│   ├── setup-cron.sh       # Gunluk backup cron kurulumu
+│   └── auto-push.sh        # Degisiklik varsa GitHub'a push
+└── deploy.sh               # Pull + rebuild + CF cache purge
 ```
 
 ## Sifirdan Kurulum
@@ -74,7 +75,8 @@ Doldurulacak degerler:
 | `TURNSTILE_SITE_KEY` | CF Zero Trust > Turnstile |
 | `RESEND_API_KEY` | resend.com API key |
 | `CLOUDFLARE_ACCOUNT_ID` | CF dashboard > Account ID (AI icin, opsiyonel) |
-| `CLOUDFLARE_API_TOKEN` | CF API token (AI icin, opsiyonel) |
+| `CLOUDFLARE_API_TOKEN` | CF API token (AI + cache purge icin, opsiyonel) |
+| `CLOUDFLARE_ZONE_ID` | CF dashboard > zone overview (deploy.sh cache purge icin, opsiyonel) |
 
 ### 3. Ayaga kaldir
 
@@ -132,6 +134,21 @@ docker compose run --rm backup
 rsync -avz --delete public/ user@sunucu:~/amator-tr/public/
 docker compose restart web
 ```
+
+## Deploy
+
+Sunucuda yeni commit'leri canliya almak icin:
+
+```bash
+bash deploy.sh
+```
+
+Script sirasiyla:
+
+1. `.env`'i yukler
+2. `git pull --ff-only` — yeni commit yoksa cikar (no-op)
+3. `docker compose up -d --build --remove-orphans` — degisen container'lari recreate eder
+4. `CLOUDFLARE_ZONE_ID` ve `CLOUDFLARE_API_TOKEN` tanimliysa CF cache'i temizler (yoksa uyari verip atlar)
 
 ## Guvenlik
 
