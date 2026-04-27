@@ -1,10 +1,21 @@
 /**
- * shared/js/nav.js — Merkezi navbar
- * 1. nav.css'i otomatik yukler (tek kaynak CSS)
+ * shared/js/nav.js — Merkezi navbar + GA
+ * 1. Google Analytics otomatik inject
  * 2. <nav id="site-nav"></nav> bulursa icini doldurur
  * 3. Dropdown click handler baglar
  */
 (function() {
+  // GA inject — sayfa zaten GA yuklemediyse ekle
+  var GA_ID = 'G-YDKPBD0EJX';
+  if (!document.querySelector('script[src*="googletagmanager.com/gtag"]')) {
+    var gs = document.createElement('script');
+    gs.async = true;
+    gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(gs);
+    var gi = document.createElement('script');
+    gi.textContent = 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + GA_ID + '");';
+    document.head.appendChild(gi);
+  }
   var TOOLS = [
     { href: '/araclar/anten-hesaplayici/', label: 'Anten Hesaplayıcı' },
     { href: '/araclar/bant-plani/', label: 'Bant Planı' },
