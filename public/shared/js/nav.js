@@ -21,7 +21,7 @@
   ];
 
   var LINKS_AFTER = [
-    { href: '/sozluk/', label: 'Sözlük' },
+    { href: '/sozluk', label: 'Sözlük' },
     { href: '/hakkinda', label: 'Hakkında' },
   ];
 
