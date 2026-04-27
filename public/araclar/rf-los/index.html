@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RF Gorush Hatti (Line of Sight) Hesaplayici — amator.tr</title>
+<meta name="description" content="Gercek arazi yukseklik verileriyle RF gorush hatti (LOS) hesaplayici. Amator telsiz icin coklu nokta arasi radyo frekans yolu analizi, Fresnel bolge hesaplama, link butcesi.">
+<meta name="keywords" content="RF gorush hatti, LOS hesaplayici, radyo frekans yol analizi, arazi yukseklik, amator telsiz, ham radio, Fresnel zone, radyo yayilim, link butcesi, anten hesaplama">
+<meta name="author" content="TA1VAL (Talha Akkaya) / amator.tr">
+<link rel="canonical" href="https://amator.tr/araclar/rf-los/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RF Gorush Hatti (LOS) Hesaplayici — amator.tr">
+<meta property="og:description" content="Gercek arazi yukseklik verileriyle RF gorush hatti hesaplayici. Amator telsiz icin coklu nokta arasi analiz.">
+<meta property="og:url" content="https://amator.tr/araclar/rf-los/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" crossorigin href="/araclar/rf-los/assets/index-Bn8Le3zc.css">
+<style>
+* { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 16px;
+  display: block;
+  min-height: auto;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.site-nav {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 10000;
+}
+.site-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.site-nav-brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+  text-decoration: none;
+}
+.site-nav-links {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.site-nav-links a { color: var(--text-muted); font-size: 0.9rem; }
+.site-nav-links a:hover, .site-nav-links a.active { color: var(--accent); text-decoration: none; }
+.site-nav-cta {
+  margin-left: auto;
+  padding: 5px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+.site-nav-cta:hover { background: var(--accent); color: #fff; text-decoration: none; }
+.source-credit {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  white-space: nowrap;
+}
+.source-credit a { color: var(--accent); font-weight: 600; }
+.theme-fab {
+  position: fixed; right: 16px; bottom: 16px; width: 42px; height: 42px;
+  border-radius: 50%; background: var(--accent); color: #fff; border: none;
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35); z-index: 10001; font-size: 1.1rem;
+  transition: transform 0.15s;
+}
+.theme-fab:hover { transform: scale(1.08); }
+.theme-menu {
+  position: fixed; right: 16px; bottom: 68px; min-width: 200px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  display: flex; flex-direction: column; gap: 2px; z-index: 10001;
+}
+.theme-menu[hidden] { display: none; }
+.theme-option {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+  background: none; border: 1px solid transparent; border-radius: 8px;
+  color: var(--text); font-size: 0.9rem; text-align: left; cursor: pointer; font-family: inherit;
+}
+.theme-option:hover { background: var(--surface-2); }
+.theme-option.active { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.theme-swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+
+#root .app {
+  height: calc(100vh - 44px);
+}
+
+/* =============================================
+   rflos Panel Theme Overrides — amator.tr
+   ============================================= */
+
+/* Control Panel (sol panel) */
+.control-panel {
+  background: var(--surface) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+  border: 1px solid var(--border) !important;
+}
+.panel-header {
+  border-bottom-color: var(--accent) !important;
+}
+.panel-header h2 {
+  color: var(--text) !important;
+}
+
+/* Point cards */
+.point-item {
+  background: var(--surface-2) !important;
+}
+.point-header {
+  border-bottom-color: var(--border) !important;
+}
+
+/* Section headers */
+.section-header h3 {
+  color: var(--text) !important;
+}
+
+/* RF Section & LOS Selector */
+.rf-section {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
+  border-color: var(--accent) !important;
+}
+.rf-section h3 {
+  color: var(--accent) !important;
+}
+.los-selector-section {
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface)) !important;
+  border-color: var(--accent) !important;
+}
+.los-selector-section h3 {
+  color: var(--accent) !important;
+}
+.frequency-selector label,
+.selector-group label {
+  color: var(--text-muted) !important;
+}
+
+/* Import dialog */
+.import-dialog {
+  background: var(--surface-2) !important;
+}
+
+/* Input group labels */
+.input-group label {
+  color: var(--text-muted) !important;
+}
+.height-input-row label {
+  color: var(--text-muted) !important;
+}
+.loading {
+  color: var(--text-muted) !important;
+}
+
+/* LOS Panel (sag alt panel) */
+.los-panel {
+  background: var(--surface) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+  border: 1px solid var(--border) !important;
+}
+.los-header {
+  border-bottom-color: var(--accent) !important;
+}
+.los-header h3 {
+  color: var(--text) !important;
+}
+.los-detail {
+  color: var(--text-muted) !important;
+}
+.los-info {
+  color: var(--text) !important;
+}
+
+/* LOS status badges */
+.los-clear {
+  background: color-mix(in srgb, var(--success) 15%, var(--surface)) !important;
+  color: var(--success) !important;
+}
+.los-blocked {
+  background: color-mix(in srgb, var(--error) 15%, var(--surface)) !important;
+  color: var(--error) !important;
+}
+.los-horizon {
+  background: color-mix(in srgb, var(--warning) 15%, var(--surface)) !important;
+  color: var(--warning) !important;
+}
+
+/* Inputs */
+.input-base, .input-regular, .input-data, .input-name, .input-compact {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.input-base:focus, .input-regular:focus, .input-data:focus, .input-name:focus, .input-compact:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent) !important;
+}
+.input-data::placeholder, .input-compact::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Select dropdowns */
+.select-base, .select-unit {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.select-base:focus, .select-unit:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent) !important;
+}
+.select-unit option {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+/* Textarea */
+.textarea-base {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.textarea-base:focus {
+  border-color: var(--accent) !important;
+}
+
+/* Unit label */
+.unit-label {
+  background: var(--surface-2) !important;
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
+}
+
+/* Buttons — primary */
+.btn-primary {
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface)) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--accent) 20%, var(--surface)) !important;
+}
+
+/* Buttons — danger */
+.btn-danger {
+  background: color-mix(in srgb, var(--error) 12%, var(--surface)) !important;
+  border-color: var(--error) !important;
+  color: var(--error) !important;
+}
+.btn-danger:hover {
+  background: color-mix(in srgb, var(--error) 20%, var(--surface)) !important;
+}
+.btn-danger-solid {
+  background: var(--error) !important;
+}
+.btn-danger-solid:hover {
+  background: color-mix(in srgb, var(--error) 80%, #000) !important;
+}
+
+/* Buttons — success */
+.btn-success {
+  background: color-mix(in srgb, var(--success) 12%, var(--surface)) !important;
+  border-color: var(--success) !important;
+  color: var(--success) !important;
+}
+.btn-success:hover {
+  background: color-mix(in srgb, var(--success) 20%, var(--surface)) !important;
+}
+
+/* Buttons — neutral */
+.btn-neutral {
+  background: var(--surface-2) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+.btn-neutral:hover {
+  background: color-mix(in srgb, var(--surface-2) 80%, var(--text)) !important;
+}
+
+/* Buttons — disabled */
+.btn-regular:disabled, .btn-small:disabled {
+  background: var(--surface-2) !important;
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
+}
+
+/* Frequency buttons */
+.btn-freq-default {
+  background: var(--surface) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+.btn-freq-default:hover {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
+}
+.btn-freq-default.active {
+  background: var(--accent) !important;
+  color: #fff !important;
+}
+
+/* Import/cancel solid buttons */
+.btn-import-solid {
+  background: var(--accent) !important;
+}
+.btn-import-solid:hover {
+  background: color-mix(in srgb, var(--accent) 80%, #000) !important;
+}
+.btn-cancel-solid {
+  background: var(--error) !important;
+}
+.btn-cancel-solid:hover {
+  background: color-mix(in srgb, var(--error) 80%, #000) !important;
+}
+
+/* Show panel button (hamburger) */
+.btn-show-panel {
+  background: var(--accent) !important;
+}
+.btn-show-panel:hover {
+  background: color-mix(in srgb, var(--accent) 80%, #000) !important;
+}
+
+/* Modals */
+.modal-overlay {
+  background: rgba(0,0,0,0.75) !important;
+}
+.modal-content, .modal-content-wide {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+}
+.modal-header {
+  background: var(--surface-2) !important;
+  border-bottom-color: var(--accent) !important;
+}
+.modal-header h2 {
+  color: var(--accent) !important;
+}
+
+/* ERP Calculator */
+.erp-info-section {
+  background: var(--surface-2) !important;
+}
+.erp-info-label {
+  color: var(--text-muted) !important;
+}
+.erp-info-value {
+  color: var(--text) !important;
+}
+.erp-point-section {
+  background: var(--surface-2) !important;
+}
+.erp-point-section h3 {
+  color: var(--text) !important;
+  border-bottom-color: var(--border) !important;
+}
+.erp-input-group label {
+  color: var(--text-muted) !important;
+}
+.erp-warning {
+  background: color-mix(in srgb, var(--warning) 12%, var(--surface)) !important;
+  border-color: var(--warning) !important;
+  color: var(--warning) !important;
+}
+.erp-result-section {
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #000)) !important;
+}
+.erp-result-badge {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+/* Advanced Settings Modal */
+.settings-section {
+  background: var(--surface-2) !important;
+}
+.settings-section h3 {
+  color: var(--text) !important;
+  border-bottom-color: var(--border) !important;
+}
+.settings-input-group label {
+  color: var(--text-muted) !important;
+}
+.settings-value-label {
+  color: var(--text) !important;
+}
+.settings-value-number {
+  color: var(--accent) !important;
+}
+.settings-description {
+  color: var(--text-muted) !important;
+}
+.settings-preset-label {
+  color: var(--text) !important;
+}
+input[type="range"] {
+  background: var(--surface-2) !important;
+}
+input[type="range"]::-webkit-slider-thumb {
+  background: var(--accent) !important;
+}
+input[type="range"]::-moz-range-thumb {
+  background: var(--accent) !important;
+}
+
+/* Help Modal */
+.help-section h3 {
+  color: var(--text) !important;
+  border-left-color: var(--accent) !important;
+}
+.help-section li {
+  color: var(--text-muted) !important;
+  border-bottom-color: var(--border) !important;
+}
+.help-section li strong {
+  color: var(--accent) !important;
+}
+
+/* Footer (orijinal rflos footer) — gizle, biz kendi credit bar'imizi kullaniyoruz */
+.app-footer {
+  display: none !important;
+}
+
+/* Scrollbar */
+.control-panel::-webkit-scrollbar,
+.los-panel::-webkit-scrollbar,
+.erp-modal-content::-webkit-scrollbar,
+.help-modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.control-panel::-webkit-scrollbar-track,
+.los-panel::-webkit-scrollbar-track,
+.erp-modal-content::-webkit-scrollbar-track,
+.help-modal-content::-webkit-scrollbar-track {
+  background: var(--surface-2);
+  border-radius: 3px;
+}
+.control-panel::-webkit-scrollbar-thumb,
+.los-panel::-webkit-scrollbar-thumb,
+.erp-modal-content::-webkit-scrollbar-thumb,
+.help-modal-content::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+/* Chart.js canvas text override — chart labels */
+.chart-container {
+  color: var(--text) !important;
+}
+
+/* Leaflet popup override */
+.leaflet-popup-content-wrapper {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+.leaflet-popup-tip {
+  background: var(--surface) !important;
+}
+
+/* Leaflet zoom controls */
+.leaflet-control-zoom a {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--surface-2) !important;
+}
+
+/* Leaflet attribution */
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--surface) 85%, transparent) !important;
+  color: var(--text-muted) !important;
+}
+.leaflet-control-attribution a {
+  color: var(--accent) !important;
+}
+
+/* Override rflos global body/root styles */
+:root {
+  color-scheme: dark !important;
+  color: var(--text) !important;
+  background-color: var(--bg) !important;
+}
+[data-theme="light"] {
+  color-scheme: light !important;
+}
+body {
+  display: block !important;
+  place-items: unset !important;
+  min-height: auto !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+#root {
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (max-width: 600px) {
+  .site-nav-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .site-nav-cta { margin-left: 0; }
+  .site-nav-links { gap: 10px; }
+  #root .app { height: calc(100vh - 90px); }
+}
+</style>
+</head>
+<body>
+<nav id="site-nav"></nav>
+<script src="/shared/js/nav.js"></script>
+
+<div id="root"></div>
+
+<div class="source-credit">
+  Orijinal kaynak: <a href="https://github.com/talhaakkaya/rflos" target="_blank" rel="noopener noreferrer">talhaakkaya/rflos</a> &mdash; <a href="https://www.qrz.com/db/TA1VAL" target="_blank" rel="noopener noreferrer">TA1VAL</a>
+</div>
+
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema sec">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema secenekleri" hidden></div>
+
+<script type="module" src="/shared/js/theme.js"></script>
+<script type="module" crossorigin src="/araclar/rf-los/assets/index-C9GouBoD.js"></script>
+</body>
+</html>

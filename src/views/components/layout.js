@@ -88,6 +88,7 @@ ${headExtra || ''}
       <li><a href="https://amator.tr/araclar/ctcss-ton-bulucu/" rel="noopener">CTCSS</a></li>
       <li><a href="https://amator.tr/araclar/maidenhead-grid/" rel="noopener">Maidenhead</a></li>
 <li><a href="https://amator.tr/araclar/propagasyon-durumu/" rel="noopener">Propagasyon</a></li>
+<li><a href="https://amator.tr/araclar/rf-los/" rel="noopener">RF LOS</a></li>
 <li><a href="https://amator.tr/araclar/lisans-sinavi/" rel="noopener">Sınav</a></li>
       <li><a href="https://amator.tr/sozluk" rel="noopener">Sözlük</a></li>
       <li><a href="/" class="active">Çağrı Defteri</a></li>
