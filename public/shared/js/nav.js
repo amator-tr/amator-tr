@@ -7,12 +7,17 @@
 (function() {
   var TOOLS = [
     { href: '/araclar/anten-hesaplayici/', label: 'Anten Hesaplayıcı' },
+    { href: '/araclar/bant-plani/', label: 'Bant Planı' },
+    { href: '/araclar/birim-cevirici/', label: 'Birim Çevirici' },
     { href: '/araclar/ctcss-ton-bulucu/', label: 'CTCSS / DCS Bulucu' },
+    { href: '/araclar/fonetik-alfabe/', label: 'Fonetik Alfabe' },
+    { href: '/araclar/kablo-kayip/', label: 'Kablo Kayıp' },
+    { href: '/araclar/lisans-sinavi/', label: 'Lisans Sınavı' },
     { href: '/araclar/maidenhead-grid/', label: 'Maidenhead Grid' },
     { href: '/araclar/maidenhead-harita/', label: 'Grid Harita (TA1VAL)' },
     { href: '/araclar/propagasyon-durumu/', label: 'HF Propagasyon' },
     { href: '/araclar/rf-los/', label: 'RF Görüş Hattı' },
-    { href: '/araclar/lisans-sinavi/', label: 'Lisans Sınavı' },
+    { href: '/araclar/role-harita/', label: 'Röle Haritası' },
   ];
 
   var LINKS_BEFORE = [

@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fonetik Alfabe Antrenoru — amator.tr</title>
+<meta name="description" content="NATO/ICAO fonetik alfabe antrenoru. Alfa, Bravo, Charlie... Amator telsiz icin fonetik alfabe ogrenme, quiz ve pratik modlari.">
+<meta name="keywords" content="fonetik alfabe, NATO alfabe, ICAO, phonetic alphabet, Alfa Bravo Charlie, amator telsiz, ham radio, cagri isareti">
+<meta name="author" content="Kaan Dikec (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/fonetik-alfabe/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fonetik Alfabe Antrenoru — amator.tr">
+<meta property="og:description" content="NATO/ICAO fonetik alfabe ogrenme, quiz ve cagri isareti pratik modu.">
+<meta property="og:url" content="https://amator.tr/araclar/fonetik-alfabe/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  .tool-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+
+  .tab-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 16px 0;
+  }
+  .tab-btn {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tab-btn:hover:not(.active) { background: color-mix(in srgb, var(--accent) 15%, var(--surface-2)); }
+
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .hidden { display: none; }
+
+  /* Learn mode */
+  .alpha-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  .alpha-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .alpha-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .alpha-char {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .alpha-word {
+    font-size: 0.88rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Quiz mode */
+  .quiz-area { text-align: center; }
+  .quiz-prompt {
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 20px 0;
+    line-height: 1;
+  }
+  .quiz-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .quiz-option {
+    padding: 14px;
+    background: var(--surface-2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--text);
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .quiz-option:hover { border-color: var(--accent); transform: scale(1.02); }
+  .quiz-option.correct {
+    border-color: var(--success);
+    background: color-mix(in srgb, var(--success) 15%, var(--surface));
+    color: var(--success);
+  }
+  .quiz-option.wrong {
+    border-color: var(--error);
+    background: color-mix(in srgb, var(--error) 15%, var(--surface));
+    color: var(--error);
+  }
+  .quiz-option:disabled { cursor: default; opacity: 0.7; }
+
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 16px 0;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+  .score-bar strong { color: var(--accent); }
+  .score-correct { color: var(--success); font-weight: 700; }
+  .score-wrong { color: var(--error); font-weight: 700; }
+
+  .next-btn {
+    margin-top: 16px;
+    padding: 10px 24px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .next-btn:hover { opacity: 0.9; }
+
+  /* Practice mode */
+  .practice-area { text-align: center; }
+  .practice-callsign {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 16px 0;
+    letter-spacing: 0.15em;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .practice-input-wrap {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .practice-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .practice-input:focus { outline: none; border-color: var(--accent); }
+  .practice-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .check-btn {
+    margin-top: 12px;
+    padding: 10px 24px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .check-btn:hover { opacity: 0.9; }
+  .practice-feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .practice-feedback.correct {
+    background: color-mix(in srgb, var(--success) 12%, var(--surface));
+    color: var(--success);
+    border: 1px solid var(--success);
+  }
+  .practice-feedback.wrong {
+    background: color-mix(in srgb, var(--error) 12%, var(--surface));
+    color: var(--error);
+    border: 1px solid var(--error);
+  }
+  .practice-feedback .expected {
+    display: block;
+    margin-top: 6px;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+  }
+
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .pop { animation: pop 0.3s ease; }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .shake { animation: shake 0.3s ease; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana iceriye atla</a>
+<nav id="site-nav"></nav>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema sec" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema secenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+
+<main id="main" tabindex="-1">
+<div class="tool-wrap">
+  <header class="page-header">
+    <h1>Fonetik Alfabe Antrenoru</h1>
+    <p class="meta">NATO/ICAO fonetik alfabe ogrenme ve pratik. Telsizde net iletisim icin vazgecilmez.</p>
+  </header>
+
+  <div class="info-banner">
+    <strong>Neden fonetik alfabe?</strong> Telsiz iletisiminde harfler ve rakamlar kotu kanal kosullarinda karisabilir.
+    Fonetik alfabe, her harfi benzersiz bir kelime ile temsil ederek yanlisanlama riskini en aza indirir.
+    Ornegin "TA2KKD" cagri isareti telsizde "Tango Alfa Two Kilo Kilo Delta" olarak soylenir.
+  </div>
+
+  <div class="tab-row" id="tab-row">
+    <button class="tab-btn active" type="button" data-tab="learn">Ogren</button>
+    <button class="tab-btn" type="button" data-tab="quiz">Quiz</button>
+    <button class="tab-btn" type="button" data-tab="practice">Pratik</button>
+  </div>
+
+  <!-- LEARN MODE -->
+  <div id="section-learn" class="section-card">
+    <h2 style="margin:0 0 14px;font-size:1.1rem;color:var(--text);">Harfler (A-Z)</h2>
+    <div class="alpha-grid" id="alpha-grid-letters"></div>
+    <h2 style="margin:20px 0 14px;font-size:1.1rem;color:var(--text);">Rakamlar (0-9)</h2>
+    <div class="alpha-grid" id="alpha-grid-numbers"></div>
+  </div>
+
+  <!-- QUIZ MODE -->
+  <div id="section-quiz" class="section-card hidden">
+    <div class="score-bar" id="quiz-score">
+      <span>Dogru: <span class="score-correct" id="quiz-correct">0</span></span>
+      <span>Yanlis: <span class="score-wrong" id="quiz-wrong">0</span></span>
+      <span>Toplam: <strong id="quiz-total">0</strong></span>
+      <span>Basari: <strong id="quiz-pct">-</strong></span>
+    </div>
+    <div class="quiz-area">
+      <div class="quiz-subtitle">Bu karakterin fonetik karsiligi nedir?</div>
+      <div class="quiz-prompt" id="quiz-char">?</div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <button class="next-btn hidden" id="quiz-next" type="button">Sonraki</button>
+    </div>
+  </div>
+
+  <!-- PRACTICE MODE -->
+  <div id="section-practice" class="section-card hidden">
+    <div class="score-bar" id="practice-score">
+      <span>Dogru: <span class="score-correct" id="prac-correct">0</span></span>
+      <span>Yanlis: <span class="score-wrong" id="prac-wrong">0</span></span>
+      <span>Basari: <strong id="prac-pct">-</strong></span>
+    </div>
+    <div class="practice-area">
+      <div class="quiz-subtitle">Bu cagri isaretinin fonetik karsiligini yazin:</div>
+      <div class="practice-callsign" id="prac-callsign">TA2XYZ</div>
+      <div class="practice-input-wrap">
+        <input type="text" class="practice-input" id="prac-input" placeholder="Ornek: Tango Alfa Two X-ray Yankee Zulu" autocomplete="off">
+        <div class="practice-hint">Her karakter icin fonetik karsiligini boslukla ayirarak yazin.</div>
+      </div>
+      <button class="check-btn" id="prac-check" type="button">Kontrol Et</button>
+      <button class="next-btn hidden" id="prac-next" type="button">Sonraki</button>
+      <div class="practice-feedback hidden" id="prac-feedback"></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Role Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Olcum</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayici</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Baslangic & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Cagri Isareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araclar</h4>
+      <ul>
+        <li><a href="/role-export/">Role CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayici</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/rf-los/">RF Gorus Hatti (LOS)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sinavi Simulatoru</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Cagri Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkinda</a></li>
+        <li><a href="/iletisim">Iletisim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikec (TB2KKD)</li>
+        <li><em>MIT lisansi, acik kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Turkiye amator telsiz toplulugu icin acik kaynak portal</p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+(function() {
+  var PHONETIC = {
+    'A':'Alfa','B':'Bravo','C':'Charlie','D':'Delta','E':'Echo','F':'Foxtrot',
+    'G':'Golf','H':'Hotel','I':'India','J':'Juliet','K':'Kilo','L':'Lima',
+    'M':'Mike','N':'November','O':'Oscar','P':'Papa','Q':'Quebec','R':'Romeo',
+    'S':'Sierra','T':'Tango','U':'Uniform','V':'Victor','W':'Whiskey','X':'X-ray',
+    'Y':'Yankee','Z':'Zulu',
+    '0':'Zero','1':'One','2':'Two','3':'Three','4':'Four',
+    '5':'Five','6':'Six','7':'Seven','8':'Eight','9':'Niner'
+  };
+
+  var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  var DIGITS = '0123456789'.split('');
+  var ALL_CHARS = LETTERS.concat(DIGITS);
+
+  /* Turkish callsign prefixes */
+  var PREFIXES = ['TA','TB','TC','TA1','TA2','TA3','TA4','TA5','TA6','TA7','TB2','TB3'];
+  var SUFFIXES_LEN = [2, 3]; /* 2 or 3 letter suffix */
+
+  function randomItem(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function generateCallsign() {
+    var prefix = randomItem(PREFIXES);
+    var suffLen = randomItem(SUFFIXES_LEN);
+    var suffix = '';
+    for (var i = 0; i < suffLen; i++) suffix += randomItem(LETTERS);
+    return prefix + suffix;
+  }
+
+  function getPhonetic(char) {
+    return PHONETIC[char.toUpperCase()] || char;
+  }
+
+  function callsignToPhonetic(cs) {
+    var parts = [];
+    for (var i = 0; i < cs.length; i++) {
+      parts.push(getPhonetic(cs[i]));
+    }
+    return parts.join(' ');
+  }
+
+  /* ========== LEARN MODE ========== */
+  function buildLearnGrid() {
+    var gridLetters = document.getElementById('alpha-grid-letters');
+    var gridNumbers = document.getElementById('alpha-grid-numbers');
+
+    for (var i = 0; i < LETTERS.length; i++) {
+      var card = document.createElement('div');
+      card.className = 'alpha-card';
+      var ch = document.createElement('div');
+      ch.className = 'alpha-char';
+      ch.textContent = LETTERS[i];
+      card.appendChild(ch);
+      var word = document.createElement('div');
+      word.className = 'alpha-word';
+      word.textContent = PHONETIC[LETTERS[i]];
+      card.appendChild(word);
+      gridLetters.appendChild(card);
+    }
+
+    for (var i = 0; i < DIGITS.length; i++) {
+      var card = document.createElement('div');
+      card.className = 'alpha-card';
+      var ch = document.createElement('div');
+      ch.className = 'alpha-char';
+      ch.textContent = DIGITS[i];
+      card.appendChild(ch);
+      var word = document.createElement('div');
+      word.className = 'alpha-word';
+      word.textContent = PHONETIC[DIGITS[i]];
+      card.appendChild(word);
+      gridNumbers.appendChild(card);
+    }
+  }
+
+  /* ========== QUIZ MODE ========== */
+  var quizCorrect = 0;
+  var quizWrong = 0;
+  var quizTotal = 0;
+  var quizAnswered = false;
+
+  function updateQuizScore() {
+    document.getElementById('quiz-correct').textContent = quizCorrect;
+    document.getElementById('quiz-wrong').textContent = quizWrong;
+    document.getElementById('quiz-total').textContent = quizTotal;
+    document.getElementById('quiz-pct').textContent = quizTotal > 0 ? Math.round((quizCorrect / quizTotal) * 100) + '%' : '-';
+  }
+
+  function newQuizQuestion() {
+    quizAnswered = false;
+    document.getElementById('quiz-next').classList.add('hidden');
+
+    var char = randomItem(ALL_CHARS);
+    var correct = PHONETIC[char];
+
+    document.getElementById('quiz-char').textContent = char;
+
+    /* Generate 3 wrong options */
+    var allPhonetics = [];
+    for (var k in PHONETIC) {
+      if (PHONETIC[k] !== correct) allPhonetics.push(PHONETIC[k]);
+    }
+    var wrongs = shuffle(allPhonetics).slice(0, 3);
+    var options = shuffle([correct].concat(wrongs));
+
+    var optionsEl = document.getElementById('quiz-options');
+    optionsEl.textContent = '';
+
+    for (var i = 0; i < options.length; i++) {
+      var btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.type = 'button';
+      btn.textContent = options[i];
+      btn.dataset.answer = options[i];
+      btn.dataset.correct = correct;
+      optionsEl.appendChild(btn);
+    }
+  }
+
+  document.getElementById('quiz-options').addEventListener('click', function(e) {
+    var btn = e.target.closest('.quiz-option');
+    if (!btn || quizAnswered) return;
+    quizAnswered = true;
+    quizTotal++;
+
+    var isCorrect = btn.dataset.answer === btn.dataset.correct;
+    if (isCorrect) {
+      quizCorrect++;
+      btn.classList.add('correct');
+      btn.classList.add('pop');
+    } else {
+      quizWrong++;
+      btn.classList.add('wrong');
+      btn.classList.add('shake');
+      /* Show correct answer */
+      var allBtns = document.getElementById('quiz-options').querySelectorAll('.quiz-option');
+      for (var i = 0; i < allBtns.length; i++) {
+        if (allBtns[i].dataset.answer === btn.dataset.correct) {
+          allBtns[i].classList.add('correct');
+        }
+        allBtns[i].disabled = true;
+      }
+    }
+
+    var allBtns2 = document.getElementById('quiz-options').querySelectorAll('.quiz-option');
+    for (var i = 0; i < allBtns2.length; i++) allBtns2[i].disabled = true;
+
+    updateQuizScore();
+    document.getElementById('quiz-next').classList.remove('hidden');
+  });
+
+  document.getElementById('quiz-next').addEventListener('click', newQuizQuestion);
+
+  /* ========== PRACTICE MODE ========== */
+  var pracCorrect = 0;
+  var pracWrong = 0;
+  var currentCallsign = '';
+
+  function updatePracScore() {
+    var total = pracCorrect + pracWrong;
+    document.getElementById('prac-correct').textContent = pracCorrect;
+    document.getElementById('prac-wrong').textContent = pracWrong;
+    document.getElementById('prac-pct').textContent = total > 0 ? Math.round((pracCorrect / total) * 100) + '%' : '-';
+  }
+
+  function newPracticeCallsign() {
+    currentCallsign = generateCallsign();
+    document.getElementById('prac-callsign').textContent = currentCallsign;
+    document.getElementById('prac-input').value = '';
+    document.getElementById('prac-feedback').classList.add('hidden');
+    document.getElementById('prac-next').classList.add('hidden');
+    document.getElementById('prac-check').classList.remove('hidden');
+    document.getElementById('prac-input').disabled = false;
+    document.getElementById('prac-input').focus();
+  }
+
+  function checkPractice() {
+    var input = document.getElementById('prac-input').value.trim();
+    if (!input) return;
+
+    var expected = callsignToPhonetic(currentCallsign);
+    var normalizedInput = input.replace(/\s+/g, ' ').toLowerCase();
+    var normalizedExpected = expected.toLowerCase();
+
+    var feedback = document.getElementById('prac-feedback');
+    feedback.classList.remove('hidden', 'correct', 'wrong');
+    feedback.textContent = '';
+
+    if (normalizedInput === normalizedExpected) {
+      pracCorrect++;
+      feedback.classList.add('correct');
+      feedback.textContent = 'Dogru!';
+      document.getElementById('prac-callsign').classList.add('pop');
+      setTimeout(function() { document.getElementById('prac-callsign').classList.remove('pop'); }, 300);
+    } else {
+      pracWrong++;
+      feedback.classList.add('wrong');
+      var wrongText = document.createTextNode('Yanlis!');
+      feedback.appendChild(wrongText);
+      var expectedSpan = document.createElement('span');
+      expectedSpan.className = 'expected';
+      expectedSpan.textContent = 'Dogru cevap: ' + expected;
+      feedback.appendChild(expectedSpan);
+      document.getElementById('prac-callsign').classList.add('shake');
+      setTimeout(function() { document.getElementById('prac-callsign').classList.remove('shake'); }, 300);
+    }
+
+    updatePracScore();
+    document.getElementById('prac-check').classList.add('hidden');
+    document.getElementById('prac-next').classList.remove('hidden');
+    document.getElementById('prac-input').disabled = true;
+  }
+
+  document.getElementById('prac-check').addEventListener('click', checkPractice);
+  document.getElementById('prac-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !this.disabled) checkPractice();
+  });
+  document.getElementById('prac-next').addEventListener('click', newPracticeCallsign);
+
+  /* ========== TAB SWITCHING ========== */
+  var activeTab = 'learn';
+  var tabRow = document.getElementById('tab-row');
+
+  function setTab(tab) {
+    activeTab = tab;
+    var btns = tabRow.querySelectorAll('.tab-btn');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('active', btns[i].dataset.tab === tab);
+    }
+    document.getElementById('section-learn').classList.toggle('hidden', tab !== 'learn');
+    document.getElementById('section-quiz').classList.toggle('hidden', tab !== 'quiz');
+    document.getElementById('section-practice').classList.toggle('hidden', tab !== 'practice');
+
+    if (tab === 'quiz') newQuizQuestion();
+    if (tab === 'practice') newPracticeCallsign();
+  }
+
+  tabRow.addEventListener('click', function(e) {
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    setTab(btn.dataset.tab);
+  });
+
+  /* Init */
+  buildLearnGrid();
+  updateQuizScore();
+  updatePracScore();
+})();
+</script>
+</body>
+</html>

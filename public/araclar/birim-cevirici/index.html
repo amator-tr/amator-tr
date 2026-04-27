@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birim Cevirici (Watt / dBm / dBW / S-metre) — amator.tr</title>
+<meta name="description" content="RF guc birim cevirici. Watt, miliwatt, dBm, dBW arasi donusum. S-metre tablosu, voltaj hesaplama. Amator telsiz icin hizli referans.">
+<meta name="keywords" content="dBm, dBW, watt, miliwatt, S-metre, RF guc, birim cevirici, amator telsiz, ham radio, sinyal gucu">
+<meta name="author" content="Kaan Dikec (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/birim-cevirici/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Birim Cevirici (Watt / dBm / dBW / S-metre) — amator.tr">
+<meta property="og:description" content="RF guc birim cevirici. Watt, dBm, dBW, S-metre donusumleri.">
+<meta property="og:url" content="https://amator.tr/araclar/birim-cevirici/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  .tool-wrap { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .section-card h2 {
+    font-size: 1.15rem;
+    margin: 0 0 14px;
+    color: var(--text);
+  }
+
+  .converter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .conv-field label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .conv-field input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .conv-field input:focus { outline: none; border-color: var(--accent); }
+  .conv-field input.active-input { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent); }
+
+  .quick-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 14px 0 0;
+  }
+  .preset-btn {
+    padding: 6px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-family: inherit;
+    transition: background 0.15s, color 0.15s;
+  }
+  .preset-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .smeter-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .smeter-table th, .smeter-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .smeter-table th {
+    background: var(--surface-2);
+    font-weight: 600;
+    color: var(--text);
+    position: sticky;
+    top: 0;
+  }
+  .smeter-table td { color: var(--text-muted); }
+  .smeter-table td.val {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .smeter-table-wrap {
+    max-height: 460px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .smeter-table tr.highlight { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+
+  .voltage-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    align-items: end;
+  }
+  @media (max-width: 500px) {
+    .voltage-section { grid-template-columns: 1fr; }
+  }
+  .voltage-result {
+    padding: 12px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+  .voltage-result .big-val {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+  }
+  .formula-box {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    margin: 12px 0;
+    color: var(--text);
+    white-space: pre-line;
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana iceriye atla</a>
+<nav id="site-nav"></nav>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema sec" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema secenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+
+<main id="main" tabindex="-1">
+<div class="tool-wrap">
+  <header class="page-header">
+    <h1>Birim Cevirici (Watt / dBm / dBW / S-metre)</h1>
+    <p class="meta">RF guc birimleri arasi hizli donusum. Deger gir, diger birimler otomatik hesaplanir.</p>
+  </header>
+
+  <!-- Section 1: Power Converter -->
+  <div class="section-card">
+    <h2>Guc Cevirici</h2>
+    <div class="converter-grid">
+      <div class="conv-field">
+        <label for="inp-watt">Watt (W)</label>
+        <input type="number" id="inp-watt" step="any" placeholder="100">
+      </div>
+      <div class="conv-field">
+        <label for="inp-mw">Miliwatt (mW)</label>
+        <input type="number" id="inp-mw" step="any" placeholder="100000">
+      </div>
+      <div class="conv-field">
+        <label for="inp-dbm">dBm</label>
+        <input type="number" id="inp-dbm" step="any" placeholder="50">
+      </div>
+      <div class="conv-field">
+        <label for="inp-dbw">dBW</label>
+        <input type="number" id="inp-dbw" step="any" placeholder="20">
+      </div>
+    </div>
+    <div class="quick-presets" id="presets"></div>
+    <div class="formula-box">dBm = 10 * log10(mW)
+dBW = 10 * log10(W)
+dBm = dBW + 30</div>
+  </div>
+
+  <!-- Section 2: S-Meter Table -->
+  <div class="section-card">
+    <h2>S-Metre Tablosu (HF, 50 ohm)</h2>
+    <div class="info-banner">
+      Her S birimi 6 dB'lik sinyal degisimi. S9 = -73 dBm (IARU standart, 50 MHz alti HF icin).
+    </div>
+    <div class="smeter-table-wrap">
+      <table class="smeter-table">
+        <thead>
+          <tr>
+            <th>S Degeri</th>
+            <th>dBm</th>
+            <th>microV (50 ohm)</th>
+            <th>Watt</th>
+          </tr>
+        </thead>
+        <tbody id="smeter-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3: Voltage -->
+  <div class="section-card">
+    <h2>Voltaj (EMF) Hesaplama</h2>
+    <p class="meta" style="margin-top:0;">dBm degerinden 50 ohm empedansta microVolt hesaplama.</p>
+    <div class="voltage-section">
+      <div class="conv-field">
+        <label for="voltage-dbm">dBm degeri</label>
+        <input type="number" id="voltage-dbm" step="any" value="-73" placeholder="-73">
+      </div>
+      <div class="voltage-result" id="voltage-result">
+        <div>Voltaj (EMF):</div>
+        <div class="big-val" id="voltage-val">--</div>
+      </div>
+    </div>
+    <div class="formula-box">V(uV) = sqrt(P(mW) * Z * 1000) * 1000
+P(mW) = 10^(dBm/10)
+Z = 50 ohm</div>
+  </div>
+</div>
+</main>
+
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Role Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Olcum</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayici</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Baslangic & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Cagri Isareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araclar</h4>
+      <ul>
+        <li><a href="/role-export/">Role CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayici</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/rf-los/">RF Gorus Hatti (LOS)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sinavi Simulatoru</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Cagri Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkinda</a></li>
+        <li><a href="/iletisim">Iletisim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikec (TB2KKD)</li>
+        <li><em>MIT lisansi, acik kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Turkiye amator telsiz toplulugu icin acik kaynak portal</p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+(function() {
+  /* S-Meter data */
+  var SMETER = [
+    { s: 'S1',     dbm: -121 },
+    { s: 'S2',     dbm: -115 },
+    { s: 'S3',     dbm: -109 },
+    { s: 'S4',     dbm: -103 },
+    { s: 'S5',     dbm: -97  },
+    { s: 'S6',     dbm: -91  },
+    { s: 'S7',     dbm: -85  },
+    { s: 'S8',     dbm: -79  },
+    { s: 'S9',     dbm: -73  },
+    { s: 'S9+10',  dbm: -63  },
+    { s: 'S9+20',  dbm: -53  },
+    { s: 'S9+30',  dbm: -43  },
+    { s: 'S9+40',  dbm: -33  },
+    { s: 'S9+50',  dbm: -23  },
+    { s: 'S9+60',  dbm: -13  }
+  ];
+
+  /* Quick presets: watt values */
+  var PRESETS = [5, 10, 25, 50, 100, 500, 1000];
+
+  /* Elements */
+  var inpWatt = document.getElementById('inp-watt');
+  var inpMw   = document.getElementById('inp-mw');
+  var inpDbm  = document.getElementById('inp-dbm');
+  var inpDbw  = document.getElementById('inp-dbw');
+  var presetsEl = document.getElementById('presets');
+  var smeterTbody = document.getElementById('smeter-tbody');
+  var voltageDbmEl = document.getElementById('voltage-dbm');
+  var voltageValEl = document.getElementById('voltage-val');
+
+  var updating = false;
+
+  function dbmToMicroV(dbm) {
+    /* V = sqrt(P * Z), P in watts, Z=50 */
+    var pW = Math.pow(10, dbm / 10) / 1000; /* dBm -> W */
+    var v = Math.sqrt(pW * 50); /* volts */
+    return v * 1e6; /* microvolts */
+  }
+
+  function clearActive() {
+    [inpWatt, inpMw, inpDbm, inpDbw].forEach(function(el) {
+      el.classList.remove('active-input');
+    });
+  }
+
+  function updateFrom(source) {
+    if (updating) return;
+    updating = true;
+    clearActive();
+    source.classList.add('active-input');
+
+    var val = parseFloat(source.value);
+    if (isNaN(val)) {
+      [inpWatt, inpMw, inpDbm, inpDbw].forEach(function(el) {
+        if (el !== source) el.value = '';
+      });
+      updating = false;
+      return;
+    }
+
+    var watt, mw, dbm, dbw;
+
+    if (source === inpWatt) {
+      watt = val;
+      mw = watt * 1000;
+      dbm = 10 * Math.log10(mw);
+      dbw = 10 * Math.log10(watt);
+    } else if (source === inpMw) {
+      mw = val;
+      watt = mw / 1000;
+      dbm = 10 * Math.log10(mw);
+      dbw = 10 * Math.log10(watt);
+    } else if (source === inpDbm) {
+      dbm = val;
+      mw = Math.pow(10, dbm / 10);
+      watt = mw / 1000;
+      dbw = dbm - 30;
+    } else if (source === inpDbw) {
+      dbw = val;
+      watt = Math.pow(10, dbw / 10);
+      mw = watt * 1000;
+      dbm = dbw + 30;
+    }
+
+    if (source !== inpWatt) inpWatt.value = watt > 0.001 ? watt.toPrecision(6) : watt.toExponential(3);
+    if (source !== inpMw)   inpMw.value = mw > 0.001 ? mw.toPrecision(6) : mw.toExponential(3);
+    if (source !== inpDbm)  inpDbm.value = dbm.toFixed(2);
+    if (source !== inpDbw)  inpDbw.value = dbw.toFixed(2);
+
+    /* Highlight matching S-meter row */
+    var rows = smeterTbody.querySelectorAll('tr');
+    for (var i = 0; i < rows.length; i++) {
+      rows[i].classList.remove('highlight');
+    }
+    /* Find closest S value */
+    var closestIdx = 0;
+    var closestDist = Infinity;
+    for (var i = 0; i < SMETER.length; i++) {
+      var d = Math.abs(dbm - SMETER[i].dbm);
+      if (d < closestDist) { closestDist = d; closestIdx = i; }
+    }
+    if (rows[closestIdx]) rows[closestIdx].classList.add('highlight');
+
+    updating = false;
+  }
+
+  [inpWatt, inpMw, inpDbm, inpDbw].forEach(function(el) {
+    el.addEventListener('input', function() { updateFrom(el); });
+  });
+
+  /* Build presets */
+  for (var i = 0; i < PRESETS.length; i++) {
+    var btn = document.createElement('button');
+    btn.className = 'preset-btn';
+    btn.type = 'button';
+    btn.textContent = PRESETS[i] + 'W';
+    btn.dataset.watt = String(PRESETS[i]);
+    presetsEl.appendChild(btn);
+  }
+  presetsEl.addEventListener('click', function(e) {
+    var btn = e.target.closest('.preset-btn');
+    if (!btn) return;
+    inpWatt.value = btn.dataset.watt;
+    updateFrom(inpWatt);
+  });
+
+  /* Build S-meter table */
+  for (var i = 0; i < SMETER.length; i++) {
+    var s = SMETER[i];
+    var tr = document.createElement('tr');
+
+    var tdS = document.createElement('td');
+    tdS.textContent = s.s;
+    tdS.style.fontWeight = '600';
+    tr.appendChild(tdS);
+
+    var tdDbm = document.createElement('td');
+    tdDbm.className = 'val';
+    tdDbm.textContent = s.dbm + ' dBm';
+    tr.appendChild(tdDbm);
+
+    var uv = dbmToMicroV(s.dbm);
+    var tdUv = document.createElement('td');
+    tdUv.className = 'val';
+    tdUv.textContent = uv < 1 ? uv.toFixed(3) + ' uV' : uv.toFixed(1) + ' uV';
+    tr.appendChild(tdUv);
+
+    var pW = Math.pow(10, s.dbm / 10) / 1000;
+    var tdW = document.createElement('td');
+    tdW.className = 'val';
+    tdW.textContent = pW < 0.001 ? pW.toExponential(2) + ' W' : pW.toPrecision(3) + ' W';
+    tr.appendChild(tdW);
+
+    smeterTbody.appendChild(tr);
+  }
+
+  /* Voltage calculator */
+  function calcVoltage() {
+    var dbm = parseFloat(voltageDbmEl.value);
+    if (isNaN(dbm)) {
+      voltageValEl.textContent = '--';
+      return;
+    }
+    var uv = dbmToMicroV(dbm);
+    if (uv >= 1e6) {
+      voltageValEl.textContent = (uv / 1e6).toFixed(3) + ' V';
+    } else if (uv >= 1000) {
+      voltageValEl.textContent = (uv / 1000).toFixed(2) + ' mV';
+    } else {
+      voltageValEl.textContent = uv.toFixed(2) + ' uV';
+    }
+  }
+  voltageDbmEl.addEventListener('input', calcVoltage);
+  calcVoltage();
+
+  /* Initial calculation with 100W */
+  inpWatt.value = '100';
+  updateFrom(inpWatt);
+})();
+</script>
+</body>
+</html>

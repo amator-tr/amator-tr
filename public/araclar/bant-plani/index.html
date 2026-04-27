@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bant Plani (IARU Region 1) — amator.tr</title>
+<meta name="description" content="Turkiye amator telsiz bant plani goruntuleyici. IARU Region 1 HF, VHF, UHF bant planlari. CW, SSB, FM, dijital, beacon, uydu segmentleri.">
+<meta name="keywords" content="bant plani, band plan, IARU Region 1, HF bant, VHF bant, UHF bant, amator telsiz frekans, ham radio band plan, Turkiye">
+<meta name="author" content="Kaan Dikec (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/bant-plani/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bant Plani (IARU Region 1) — amator.tr">
+<meta property="og:description" content="Turkiye amator telsiz IARU Region 1 bant plani goruntuleyici. HF, VHF, UHF.">
+<meta property="og:url" content="https://amator.tr/araclar/bant-plani/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  .tool-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  .tab-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 16px 0;
+  }
+  .tab-btn {
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tab-btn:hover:not(.active) { background: color-mix(in srgb, var(--accent) 15%, var(--surface-2)); }
+
+  .band-section { margin-bottom: 28px; }
+  .band-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 4px;
+  }
+  .band-range {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .band-bar-container {
+    position: relative;
+    height: 44px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    display: flex;
+    cursor: pointer;
+  }
+  .band-segment {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #fff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0 4px;
+    transition: opacity 0.15s;
+    position: relative;
+    min-width: 2px;
+  }
+  .band-segment:hover { opacity: 0.85; }
+
+  .segment-detail {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    display: none;
+    font-size: 0.9rem;
+  }
+  .segment-detail.visible { display: block; }
+  .segment-detail-row { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+  .segment-detail-label { color: var(--text-muted); }
+  .segment-detail-value { font-weight: 600; font-family: ui-monospace, "SF Mono", Menlo, monospace; color: var(--text); }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+  }
+
+  .power-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 24px;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .power-note strong { color: var(--accent); }
+
+  .hidden { display: none; }
+
+  @media (max-width: 600px) {
+    .band-segment { font-size: 0.6rem; padding: 0 2px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana iceriye atla</a>
+<nav id="site-nav"></nav>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema sec" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema secenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+
+<main id="main" tabindex="-1">
+<div class="tool-wrap">
+  <header class="page-header">
+    <h1>Bant Plani (IARU Region 1)</h1>
+    <p class="meta">Turkiye amator telsiz bant plani goruntuleyici. Segment uzerine tikla detaylari gor.</p>
+  </header>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="tab-row" id="tab-row">
+    <button class="tab-btn active" type="button" data-tab="hf">HF (160m - 10m)</button>
+    <button class="tab-btn" type="button" data-tab="vhf">VHF (2m)</button>
+    <button class="tab-btn" type="button" data-tab="uhf">UHF (70cm)</button>
+  </div>
+
+  <div id="bands-container"></div>
+
+  <div class="power-note">
+    <strong>Turkiye guc sinirlari:</strong> A sinifi 1500W, B sinifi 250W, C sinifi 100W maks. guc (PEP).
+  </div>
+</div>
+</main>
+
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Role Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Olcum</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayici</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Baslangic & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Cagri Isareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araclar</h4>
+      <ul>
+        <li><a href="/role-export/">Role CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayici</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/rf-los/">RF Gorus Hatti (LOS)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sinavi Simulatoru</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Cagri Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkinda</a></li>
+        <li><a href="/iletisim">Iletisim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikec (TB2KKD)</li>
+        <li><em>MIT lisansi, acik kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Turkiye amator telsiz toplulugu icin acik kaynak portal</p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+(function() {
+  var MODE_COLORS = {
+    'CW':       '#4ecca3',
+    'SSB':      '#3388ff',
+    'FM':       '#e94560',
+    'Digi':     '#bb86fc',
+    'Beacon':   '#f0a500',
+    'Satellite':'#03dac6',
+    'APRS':     '#ff7043',
+    'CW/SSB':   '#4ecca3',
+    'FM Simplex':'#e94560',
+    'FM Role':  '#d63384'
+  };
+
+  var BANDS = {
+    hf: [
+      {
+        name: '160m', start: 1.810, end: 2.000,
+        segments: [
+          { mode: 'CW',   start: 1.810, end: 1.838 },
+          { mode: 'Digi', start: 1.838, end: 1.843 },
+          { mode: 'SSB',  start: 1.843, end: 2.000 }
+        ]
+      },
+      {
+        name: '80m', start: 3.500, end: 3.800,
+        segments: [
+          { mode: 'CW',   start: 3.500, end: 3.570 },
+          { mode: 'Digi', start: 3.570, end: 3.600 },
+          { mode: 'SSB',  start: 3.600, end: 3.800 }
+        ]
+      },
+      {
+        name: '40m', start: 7.000, end: 7.200,
+        segments: [
+          { mode: 'CW',   start: 7.000, end: 7.040 },
+          { mode: 'Digi', start: 7.040, end: 7.060 },
+          { mode: 'SSB',  start: 7.060, end: 7.200 }
+        ]
+      },
+      {
+        name: '20m', start: 14.000, end: 14.350,
+        segments: [
+          { mode: 'CW',     start: 14.000, end: 14.070 },
+          { mode: 'Digi',   start: 14.070, end: 14.099 },
+          { mode: 'Beacon', start: 14.099, end: 14.101 },
+          { mode: 'SSB',    start: 14.101, end: 14.350 }
+        ]
+      },
+      {
+        name: '15m', start: 21.000, end: 21.450,
+        segments: [
+          { mode: 'CW',     start: 21.000, end: 21.070 },
+          { mode: 'Digi',   start: 21.070, end: 21.120 },
+          { mode: 'Beacon', start: 21.149, end: 21.151 },
+          { mode: 'SSB',    start: 21.151, end: 21.450 }
+        ]
+      },
+      {
+        name: '10m', start: 28.000, end: 29.700,
+        segments: [
+          { mode: 'CW',     start: 28.000, end: 28.070 },
+          { mode: 'Digi',   start: 28.070, end: 28.190 },
+          { mode: 'Beacon', start: 28.190, end: 28.225 },
+          { mode: 'SSB',    start: 28.225, end: 29.300 },
+          { mode: 'FM',     start: 29.300, end: 29.700 }
+        ]
+      }
+    ],
+    vhf: [
+      {
+        name: '2m', start: 144.000, end: 146.000,
+        segments: [
+          { mode: 'CW',         start: 144.000, end: 144.150 },
+          { mode: 'SSB',        start: 144.150, end: 144.400 },
+          { mode: 'Beacon',     start: 144.400, end: 144.490 },
+          { mode: 'Digi',       start: 144.490, end: 144.800 },
+          { mode: 'APRS',       start: 144.800, end: 144.810 },
+          { mode: 'FM Simplex', start: 145.000, end: 145.600 },
+          { mode: 'FM Role',    start: 145.600, end: 146.000 }
+        ]
+      }
+    ],
+    uhf: [
+      {
+        name: '70cm', start: 430.000, end: 440.000,
+        segments: [
+          { mode: 'CW/SSB',    start: 430.000, end: 432.000 },
+          { mode: 'Digi',      start: 432.000, end: 432.400 },
+          { mode: 'FM',        start: 433.000, end: 435.000 },
+          { mode: 'Satellite', start: 435.000, end: 438.000 },
+          { mode: 'FM Role',   start: 438.000, end: 440.000 }
+        ]
+      }
+    ]
+  };
+
+  function buildLegend() {
+    var container = document.getElementById('legend');
+    var modes = ['CW', 'SSB', 'FM', 'Digi', 'Beacon', 'Satellite', 'APRS'];
+    for (var i = 0; i < modes.length; i++) {
+      var item = document.createElement('div');
+      item.className = 'legend-item';
+      var swatch = document.createElement('div');
+      swatch.className = 'legend-swatch';
+      swatch.style.background = MODE_COLORS[modes[i]];
+      item.appendChild(swatch);
+      var label = document.createElement('span');
+      label.textContent = modes[i];
+      item.appendChild(label);
+      container.appendChild(item);
+    }
+  }
+
+  function renderBands(category) {
+    var container = document.getElementById('bands-container');
+    container.textContent = '';
+    var bands = BANDS[category];
+    if (!bands) return;
+
+    for (var b = 0; b < bands.length; b++) {
+      var band = bands[b];
+      var section = document.createElement('div');
+      section.className = 'band-section';
+
+      var title = document.createElement('h3');
+      title.className = 'band-title';
+      title.textContent = band.name;
+      section.appendChild(title);
+
+      var range = document.createElement('p');
+      range.className = 'band-range';
+      range.textContent = band.start.toFixed(3) + ' - ' + band.end.toFixed(3) + ' MHz';
+      section.appendChild(range);
+
+      var barContainer = document.createElement('div');
+      barContainer.className = 'band-bar-container';
+
+      var detailPanel = document.createElement('div');
+      detailPanel.className = 'segment-detail';
+
+      var totalBw = band.end - band.start;
+
+      for (var s = 0; s < band.segments.length; s++) {
+        var seg = band.segments[s];
+        var segBw = seg.end - seg.start;
+        var pct = (segBw / totalBw) * 100;
+
+        var segEl = document.createElement('div');
+        segEl.className = 'band-segment';
+        segEl.style.width = pct + '%';
+        segEl.style.background = MODE_COLORS[seg.mode] || '#666';
+        segEl.textContent = seg.mode;
+        segEl.dataset.index = String(s);
+        segEl.dataset.bandIndex = String(b);
+        barContainer.appendChild(segEl);
+      }
+
+      (function(bandData, detailEl, barEl) {
+        barEl.addEventListener('click', function(e) {
+          var segEl = e.target.closest('.band-segment');
+          if (!segEl) return;
+          var idx = parseInt(segEl.dataset.index, 10);
+          var seg = bandData.segments[idx];
+          if (!seg) return;
+
+          detailEl.textContent = '';
+          detailEl.classList.add('visible');
+
+          var rows = [
+            ['Mod', seg.mode],
+            ['Baslangic', seg.start.toFixed(3) + ' MHz'],
+            ['Bitis', seg.end.toFixed(3) + ' MHz'],
+            ['Bant genisligi', ((seg.end - seg.start) * 1000).toFixed(0) + ' kHz']
+          ];
+          for (var r = 0; r < rows.length; r++) {
+            var row = document.createElement('div');
+            row.className = 'segment-detail-row';
+            var lbl = document.createElement('span');
+            lbl.className = 'segment-detail-label';
+            lbl.textContent = rows[r][0];
+            var val = document.createElement('span');
+            val.className = 'segment-detail-value';
+            val.textContent = rows[r][1];
+            row.appendChild(lbl);
+            row.appendChild(val);
+            detailEl.appendChild(row);
+          }
+        });
+      })(band, detailPanel, barContainer);
+
+      section.appendChild(barContainer);
+      section.appendChild(detailPanel);
+      container.appendChild(section);
+    }
+  }
+
+  var activeTab = 'hf';
+  var tabRow = document.getElementById('tab-row');
+  tabRow.addEventListener('click', function(e) {
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    var btns = tabRow.querySelectorAll('.tab-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    btn.classList.add('active');
+    activeTab = btn.dataset.tab;
+    renderBands(activeTab);
+  });
+
+  buildLegend();
+  renderBands('hf');
+})();
+</script>
+</body>
+</html>

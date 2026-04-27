@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Röle Haritası — amator.tr</title>
+<meta name="description" content="Türkiye amatör telsiz röle haritası. VHF, UHF ve dijital röleleri interaktif harita üzerinde görüntüle. Frekans, CTCSS ton, mod ve durum bilgileri.">
+<meta name="keywords" content="röle haritası, amatör telsiz röle, Türkiye röle, VHF röle, UHF röle, DMR röle, ham radio repeater map">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/role-harita/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Röle Haritası — amator.tr">
+<meta property="og:description" content="Türkiye amatör telsiz rölelerini interaktif harita üzerinde görüntüle. VHF, UHF, dijital filtreler.">
+<meta property="og:url" content="https://amator.tr/araclar/role-harita/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+  body { display: flex; flex-direction: column; }
+  #site-nav { flex-shrink: 0; }
+  .map-wrapper { flex: 1; position: relative; min-height: 0; }
+  #map { width: 100%; height: 100%; }
+
+  .filter-bar {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .filter-btn {
+    padding: 6px 14px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+  }
+  .filter-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .info-banner-map {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    max-width: 90vw;
+    text-align: center;
+  }
+  .info-banner-map a { color: var(--accent); font-weight: 600; }
+
+  .stats-badge {
+    position: absolute;
+    top: 10px;
+    right: 60px;
+    z-index: 1000;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .stats-badge strong { color: var(--accent); }
+
+  .leaflet-popup-content-wrapper {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  }
+  .leaflet-popup-tip { background: var(--surface) !important; }
+  .leaflet-popup-content { margin: 10px 14px !important; font-size: 0.88rem; line-height: 1.5; }
+  .popup-name { font-weight: 700; font-size: 1rem; color: var(--accent); margin-bottom: 4px; }
+  .popup-city { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 6px; }
+  .popup-row { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
+  .popup-label { color: var(--text-muted); font-size: 0.82rem; }
+  .popup-value { font-weight: 600; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85rem; }
+  .popup-status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; margin-top: 4px; }
+  .popup-status.aktif { background: color-mix(in srgb, var(--success) 15%, var(--surface)); color: var(--success); }
+  .popup-status.pasif { background: color-mix(in srgb, var(--error) 15%, var(--surface)); color: var(--error); }
+
+  .leaflet-control-zoom a {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+  }
+  .leaflet-control-zoom a:hover { background: var(--surface-2) !important; }
+  .leaflet-control-attribution {
+    background: color-mix(in srgb, var(--surface) 85%, transparent) !important;
+    color: var(--text-muted) !important;
+  }
+  .leaflet-control-attribution a { color: var(--accent) !important; }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1001;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  .loading-overlay.hidden { display: none; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .filter-bar { top: 6px; padding: 4px 8px; gap: 4px; }
+    .filter-btn { padding: 5px 10px; font-size: 0.78rem; }
+    .stats-badge { top: auto; bottom: 70px; right: 10px; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana iceriye atla</a>
+<nav id="site-nav"></nav>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema sec" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema secenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+
+<main id="main" tabindex="-1" class="map-wrapper">
+  <div id="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <span>Role verileri yukleniyor...</span>
+  </div>
+
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" type="button" data-filter="all">Tumu</button>
+    <button class="filter-btn" type="button" data-filter="vhf">VHF</button>
+    <button class="filter-btn" type="button" data-filter="uhf">UHF</button>
+    <button class="filter-btn" type="button" data-filter="dijital">Dijital</button>
+  </div>
+
+  <div class="stats-badge" id="stats-badge">
+    Yükleniyor...
+  </div>
+
+  <div id="map"></div>
+
+  <div class="info-banner-map">
+    Detayli role listesi, CSV indirme ve cihaz programlama icin <a href="/role-export/">Role Export</a> sayfasini kullanin.
+  </div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+  var map = L.map('map', {
+    center: [39.0, 35.5],
+    zoom: 6,
+    zoomControl: true
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
+
+  var allMarkers = [];
+  var activeFilter = 'all';
+
+  function createIcon(color) {
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="36" viewBox="0 0 24 36">'
+      + '<path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="' + color + '"/>'
+      + '<circle cx="12" cy="12" r="6" fill="rgba(255,255,255,0.3)"/>'
+      + '<circle cx="12" cy="12" r="3" fill="#fff"/>'
+      + '</svg>';
+    return L.icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(svg),
+      iconSize: [24, 36],
+      iconAnchor: [12, 36],
+      popupAnchor: [0, -36]
+    });
+  }
+
+  var iconAktif = createIcon('#22c55e');
+  var iconPasif = createIcon('#ef4444');
+
+  function classifyRepeater(r) {
+    var mod = (r.mod || '').toLowerCase();
+    var tx = parseFloat(r.tx) || 0;
+    if (mod.indexOf('dmr') !== -1 || mod.indexOf('dstar') !== -1 || mod.indexOf('d-star') !== -1 || mod.indexOf('fusion') !== -1 || mod.indexOf('c4fm') !== -1 || mod.indexOf('tetra') !== -1) {
+      return 'dijital';
+    }
+    if (tx >= 430 && tx <= 440) return 'uhf';
+    if (tx >= 144 && tx <= 148) return 'vhf';
+    if (tx >= 430) return 'uhf';
+    return 'vhf';
+  }
+
+  function buildPopup(r) {
+    var container = document.createElement('div');
+
+    var nameDiv = document.createElement('div');
+    nameDiv.className = 'popup-name';
+    nameDiv.textContent = r.ad || 'Isimsiz Role';
+    container.appendChild(nameDiv);
+
+    var cityDiv = document.createElement('div');
+    cityDiv.className = 'popup-city';
+    cityDiv.textContent = r.sehir || '';
+    container.appendChild(cityDiv);
+
+    var fields = [
+      ['TX', r.tx ? r.tx + ' MHz' : '-'],
+      ['RX', r.rx ? r.rx + ' MHz' : '-'],
+      ['Ton', r.ton ? r.ton + ' Hz' : '-'],
+      ['Mod', r.mod || '-']
+    ];
+    for (var i = 0; i < fields.length; i++) {
+      var row = document.createElement('div');
+      row.className = 'popup-row';
+      var label = document.createElement('span');
+      label.className = 'popup-label';
+      label.textContent = fields[i][0];
+      var value = document.createElement('span');
+      value.className = 'popup-value';
+      value.textContent = fields[i][1];
+      row.appendChild(label);
+      row.appendChild(value);
+      container.appendChild(row);
+    }
+
+    var statusSpan = document.createElement('span');
+    statusSpan.className = 'popup-status ' + ((r.durum || '').toLowerCase() === 'aktif' ? 'aktif' : 'pasif');
+    statusSpan.textContent = r.durum || 'Bilinmiyor';
+    container.appendChild(statusSpan);
+
+    return container;
+  }
+
+  function applyFilter(filter) {
+    activeFilter = filter;
+    var visibleCount = 0;
+    for (var i = 0; i < allMarkers.length; i++) {
+      var m = allMarkers[i];
+      var show = filter === 'all' || m._roleCategory === filter;
+      if (show) {
+        if (!map.hasLayer(m)) map.addLayer(m);
+        visibleCount++;
+      } else {
+        if (map.hasLayer(m)) map.removeLayer(m);
+      }
+    }
+    updateStats(visibleCount, allMarkers.length);
+  }
+
+  function updateStats(visible, total) {
+    var badge = document.getElementById('stats-badge');
+    badge.textContent = '';
+    var strong = document.createElement('strong');
+    strong.textContent = visible;
+    badge.appendChild(strong);
+    badge.appendChild(document.createTextNode(' / ' + total + ' role'));
+  }
+
+  var filterBar = document.getElementById('filter-bar');
+  filterBar.addEventListener('click', function(e) {
+    var btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    var btns = filterBar.querySelectorAll('.filter-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    btn.classList.add('active');
+    applyFilter(btn.dataset.filter);
+  });
+
+  fetch('/api/role-export')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var loading = document.getElementById('loading');
+      loading.classList.add('hidden');
+
+      for (var i = 0; i < data.length; i++) {
+        var r = data[i];
+        var lat = parseFloat(r.lat);
+        var lon = parseFloat(r.lon);
+        if (!lat || !lon || isNaN(lat) || isNaN(lon)) continue;
+
+        var isAktif = (r.durum || '').toLowerCase() === 'aktif';
+        var icon = isAktif ? iconAktif : iconPasif;
+        var marker = L.marker([lat, lon], { icon: icon });
+        marker._roleCategory = classifyRepeater(r);
+        marker._roleData = r;
+        marker.bindPopup(function() { return buildPopup(this._roleData); }.bind(marker), { maxWidth: 280 });
+        marker.addTo(map);
+        allMarkers.push(marker);
+      }
+
+      updateStats(allMarkers.length, allMarkers.length);
+    })
+    .catch(function(err) {
+      var loading = document.getElementById('loading');
+      loading.textContent = '';
+      var errSpan = document.createElement('span');
+      errSpan.textContent = 'Role verileri yuklenemedi. Lutfen sayfayi yenileyin.';
+      errSpan.style.color = 'var(--error)';
+      loading.appendChild(errSpan);
+    });
+})();
+</script>
+</body>
+</html>

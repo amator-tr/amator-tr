@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDKPBD0EJX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kablo Kayip Hesaplayici — amator.tr</title>
+<meta name="description" content="Koaksiyel kablo kayip hesaplayici. RG-58, RG-213, LMR-400, Aircell 7, Ecoflex 15 kablo tipleri icin frekansa gore kayip hesaplama. Amator telsiz besleme hatti analizi.">
+<meta name="keywords" content="kablo kayip, coax loss, koaksiyel kablo, RG-58, RG-213, LMR-400, feedline loss, amator telsiz, ham radio, SWR">
+<meta name="author" content="Kaan Dikec (TB2KKD)">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://amator.tr/araclar/kablo-kayip/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kablo Kayip Hesaplayici — amator.tr">
+<meta property="og:description" content="Koaksiyel kablo kayip hesaplayici. Frekans ve kablo tipine gore kayip, kalan guc ve SWR etkisi.">
+<meta property="og:url" content="https://amator.tr/araclar/kablo-kayip/">
+<meta property="og:image" content="https://amator.tr/og/default.png">
+<meta property="og:locale" content="tr_TR">
+<link rel="stylesheet" href="/shared/css/themes.css">
+<link rel="stylesheet" href="/shared/css/base.css">
+<style>
+  .tool-wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 760px) {
+    .calc-grid { grid-template-columns: 360px 1fr; }
+  }
+  .calc-form, .calc-output {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .calc-form label {
+    display: block;
+    margin: 14px 0 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .calc-form select, .calc-form input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .calc-form select:focus, .calc-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .freq-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .freq-btn {
+    padding: 5px 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-family: inherit;
+    transition: background 0.15s, color 0.15s;
+  }
+  .freq-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .result-section { margin-bottom: 16px; }
+  .result-section h3 {
+    font-size: 1rem;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.92rem;
+  }
+  .result-label { color: var(--text-muted); }
+  .result-value {
+    font-weight: 600;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--accent);
+  }
+
+  .loss-bar-wrap {
+    margin: 16px 0;
+  }
+  .loss-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .loss-bar-outer {
+    width: 100%;
+    height: 20px;
+    background: var(--surface-2);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .loss-bar-inner {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+
+  .recommendation {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin-top: 16px;
+    font-size: 0.88rem;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+  }
+
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+  }
+
+  .cable-comparison {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .cable-comparison h3 { margin: 0 0 12px; font-size: 1rem; color: var(--text); }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .compare-table th, .compare-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .compare-table th {
+    background: var(--surface-2);
+    font-weight: 600;
+    color: var(--text);
+    position: sticky;
+    top: 0;
+  }
+  .compare-table td { color: var(--text-muted); }
+  .compare-table td.val {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .compare-table tr.highlight { background: color-mix(in srgb, var(--accent) 8%, var(--surface)); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana iceriye atla</a>
+<nav id="site-nav"></nav>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema sec" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema secenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+
+<main id="main" tabindex="-1">
+<div class="tool-wrap">
+  <header class="page-header">
+    <h1>Kablo Kayip Hesaplayici</h1>
+    <p class="meta">Koaksiyel kablo tipi, uzunluk ve frekansa gore besleme hatti kaybi hesapla.</p>
+  </header>
+
+  <div class="info-banner">
+    <strong>Nasil calisir?</strong> Koaksiyel kablolarda frekans arttikca kayip artar. Kayip, kablo tipi, uzunluk ve frekansa baglidir.
+    Logaritmik interpolasyon ile ara frekanslar icin kayip hesaplanir.
+  </div>
+
+  <section class="calc-grid">
+    <div class="calc-form">
+      <label for="cable-type">Kablo tipi</label>
+      <select id="cable-type">
+        <option value="rg58">RG-58</option>
+        <option value="rg213">RG-213</option>
+        <option value="lmr400" selected>LMR-400</option>
+        <option value="aircell7">Aircell 7</option>
+        <option value="rg174">RG-174</option>
+        <option value="ecoflex15">Ecoflex 15</option>
+      </select>
+
+      <label for="cable-length">Kablo uzunlugu (metre)</label>
+      <input type="number" id="cable-length" value="30" step="0.1" min="0.1" max="1000">
+
+      <label for="frequency">Frekans (MHz)</label>
+      <input type="number" id="frequency" value="145" step="0.001" min="0.5" max="6000">
+
+      <div class="freq-presets">
+        <button class="freq-btn" type="button" data-freq="3.5">3.5</button>
+        <button class="freq-btn" type="button" data-freq="7">7</button>
+        <button class="freq-btn" type="button" data-freq="14">14</button>
+        <button class="freq-btn" type="button" data-freq="21">21</button>
+        <button class="freq-btn" type="button" data-freq="28">28</button>
+        <button class="freq-btn" type="button" data-freq="50">50</button>
+        <button class="freq-btn" type="button" data-freq="145">145</button>
+        <button class="freq-btn" type="button" data-freq="433">433</button>
+      </div>
+
+      <label for="input-power">Giris gucu (Watt)</label>
+      <input type="number" id="input-power" value="100" step="1" min="0.1" max="5000">
+    </div>
+
+    <div class="calc-output">
+      <div class="result-section">
+        <h3>Sonuclar</h3>
+        <div class="result-row">
+          <span class="result-label">Toplam kayip</span>
+          <span class="result-value" id="total-loss">--</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Cikis gucu</span>
+          <span class="result-value" id="output-power">--</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Kalan guc</span>
+          <span class="result-value" id="remaining-pct">--</span>
+        </div>
+        <div class="result-row">
+          <span class="result-label">Kayip (100m basina)</span>
+          <span class="result-value" id="loss-per-100m">--</span>
+        </div>
+      </div>
+
+      <div class="loss-bar-wrap">
+        <div class="loss-bar-label">
+          <span>Giris</span>
+          <span id="bar-pct-label">--</span>
+          <span>Cikis</span>
+        </div>
+        <div class="loss-bar-outer">
+          <div class="loss-bar-inner" id="loss-bar" style="width:100%;background:var(--success);"></div>
+        </div>
+      </div>
+
+      <div class="recommendation" id="recommendation"></div>
+    </div>
+  </section>
+
+  <div class="cable-comparison" id="comparison">
+    <h3>Tum kablolarin karsilastirmasi (secili frekans ve uzunlukta)</h3>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Kablo</th>
+          <th>Kayip (dB)</th>
+          <th>Kalan guc</th>
+          <th>Cikis (W)</th>
+        </tr>
+      </thead>
+      <tbody id="compare-tbody"></tbody>
+    </table>
+  </div>
+</div>
+</main>
+
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Role Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Olcum</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayici</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Baslangic & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Cagri Isareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araclar</h4>
+      <ul>
+        <li><a href="/role-export/">Role CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayici</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/rf-los/">RF Gorus Hatti (LOS)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sinavi Simulatoru</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Cagri Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkinda</a></li>
+        <li><a href="/iletisim">Iletisim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikec (TB2KKD)</li>
+        <li><em>MIT lisansi, acik kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Turkiye amator telsiz toplulugu icin acik kaynak portal</p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+(function() {
+  /* Cable loss data: dB per 100m at reference frequencies */
+  /* We store reference points and interpolate using sqrt(f/f_ref) */
+  var CABLES = {
+    rg58:      { name: 'RG-58',       refs: [{f:100,loss:6.6},{f:400,loss:14.3},{f:1000,loss:24.4}] },
+    rg213:     { name: 'RG-213',      refs: [{f:100,loss:2.8},{f:400,loss:5.9},{f:1000,loss:10.1}] },
+    lmr400:    { name: 'LMR-400',     refs: [{f:100,loss:1.5},{f:400,loss:3.3},{f:1000,loss:5.4}] },
+    aircell7:  { name: 'Aircell 7',   refs: [{f:100,loss:2.3},{f:400,loss:4.8},{f:1000,loss:8.0}] },
+    rg174:     { name: 'RG-174',      refs: [{f:100,loss:11.0},{f:400,loss:23.0},{f:1000,loss:39.0}] },
+    ecoflex15: { name: 'Ecoflex 15',  refs: [{f:100,loss:1.0},{f:400,loss:2.1},{f:1000,loss:3.5}] }
+  };
+
+  function getLossPer100m(cableKey, freqMHz) {
+    var cable = CABLES[cableKey];
+    if (!cable) return 0;
+    var refs = cable.refs;
+
+    /* Find closest reference and interpolate using sqrt(f/fref) */
+    var closest = refs[0];
+    var minDist = Math.abs(Math.log(freqMHz) - Math.log(refs[0].f));
+    for (var i = 1; i < refs.length; i++) {
+      var d = Math.abs(Math.log(freqMHz) - Math.log(refs[i].f));
+      if (d < minDist) { minDist = d; closest = refs[i]; }
+    }
+    return closest.loss * Math.sqrt(freqMHz / closest.f);
+  }
+
+  var cableTypeEl = document.getElementById('cable-type');
+  var cableLengthEl = document.getElementById('cable-length');
+  var frequencyEl = document.getElementById('frequency');
+  var inputPowerEl = document.getElementById('input-power');
+  var totalLossEl = document.getElementById('total-loss');
+  var outputPowerEl = document.getElementById('output-power');
+  var remainingPctEl = document.getElementById('remaining-pct');
+  var lossPer100mEl = document.getElementById('loss-per-100m');
+  var lossBarEl = document.getElementById('loss-bar');
+  var barPctLabelEl = document.getElementById('bar-pct-label');
+  var recommendationEl = document.getElementById('recommendation');
+  var compareTbodyEl = document.getElementById('compare-tbody');
+
+  function calculate() {
+    var cableKey = cableTypeEl.value;
+    var length = parseFloat(cableLengthEl.value) || 0;
+    var freq = parseFloat(frequencyEl.value) || 0;
+    var inputW = parseFloat(inputPowerEl.value) || 0;
+
+    if (freq <= 0 || length <= 0 || inputW <= 0) {
+      totalLossEl.textContent = '--';
+      outputPowerEl.textContent = '--';
+      remainingPctEl.textContent = '--';
+      lossPer100mEl.textContent = '--';
+      recommendationEl.textContent = 'Gecerli degerler girin.';
+      return;
+    }
+
+    var lossPer100 = getLossPer100m(cableKey, freq);
+    var totalLoss = lossPer100 * (length / 100);
+    var ratio = Math.pow(10, -totalLoss / 10);
+    var outputW = inputW * ratio;
+    var pct = ratio * 100;
+
+    totalLossEl.textContent = totalLoss.toFixed(2) + ' dB';
+    outputPowerEl.textContent = outputW.toFixed(1) + ' W';
+    remainingPctEl.textContent = pct.toFixed(1) + '%';
+    lossPer100mEl.textContent = lossPer100.toFixed(2) + ' dB/100m';
+
+    /* Visual bar */
+    var barPct = Math.max(0, Math.min(100, pct));
+    lossBarEl.style.width = barPct + '%';
+    barPctLabelEl.textContent = pct.toFixed(1) + '% kalan';
+    if (pct >= 70) lossBarEl.style.background = 'var(--success)';
+    else if (pct >= 40) lossBarEl.style.background = 'var(--warning)';
+    else lossBarEl.style.background = 'var(--error)';
+
+    /* Recommendation */
+    var cableName = CABLES[cableKey].name;
+    recommendationEl.textContent = cableName + ' kablo, ' + freq + ' MHz frekansta ' + length + 'm uzunlukta '
+      + totalLoss.toFixed(2) + ' dB kayip verir. '
+      + inputW + 'W giriste cikista ' + outputW.toFixed(1) + ' watt kalir.';
+
+    if (totalLoss > 3) {
+      var warningText = document.createElement('span');
+      warningText.style.color = 'var(--warning)';
+      warningText.textContent = ' Kayip 3 dB uzerinde - daha kaliteli kablo veya daha kisa hat onerilir.';
+      recommendationEl.appendChild(warningText);
+    }
+
+    /* Comparison table */
+    compareTbodyEl.textContent = '';
+    var keys = Object.keys(CABLES);
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var lp = getLossPer100m(k, freq);
+      var tl = lp * (length / 100);
+      var r = Math.pow(10, -tl / 10);
+      var ow = inputW * r;
+      var p = r * 100;
+
+      var tr = document.createElement('tr');
+      if (k === cableKey) tr.className = 'highlight';
+
+      var tdName = document.createElement('td');
+      tdName.textContent = CABLES[k].name;
+      tr.appendChild(tdName);
+
+      var tdLoss = document.createElement('td');
+      tdLoss.className = 'val';
+      tdLoss.textContent = tl.toFixed(2) + ' dB';
+      tr.appendChild(tdLoss);
+
+      var tdPct = document.createElement('td');
+      tdPct.className = 'val';
+      tdPct.textContent = p.toFixed(1) + '%';
+      tr.appendChild(tdPct);
+
+      var tdOut = document.createElement('td');
+      tdOut.className = 'val';
+      tdOut.textContent = ow.toFixed(1) + ' W';
+      tr.appendChild(tdOut);
+
+      compareTbodyEl.appendChild(tr);
+    }
+  }
+
+  cableTypeEl.addEventListener('change', calculate);
+  cableLengthEl.addEventListener('input', calculate);
+  frequencyEl.addEventListener('input', calculate);
+  inputPowerEl.addEventListener('input', calculate);
+
+  document.querySelectorAll('.freq-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      frequencyEl.value = btn.dataset.freq;
+      calculate();
+    });
+  });
+
+  calculate();
+})();
+</script>
+</body>
+</html>
