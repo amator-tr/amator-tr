@@ -99,20 +99,8 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Ana içeriğe atla</a>
-<!-- @shared-nav-start -->
-<nav class="site-nav" aria-label="Ana navigasyon">
-  <div class="site-nav-inner">
-    <a href="/" class="site-nav-brand" aria-label="amator.tr ana sayfa">amator.tr</a>
-    <ul class="site-nav-links">
-      <li><a href="/tutorials/">Tutorial'lar</a></li>
-      <li><a href="/role-export/">Röle</a></li>
-      <li class="nav-dropdown"><a class="nav-dropdown-toggle">Araçlar</a><div class="nav-dropdown-menu"><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a><a href="/araclar/propagasyon-durumu/">HF Propagasyon</a><a href="/araclar/rf-los/">RF Görüş Hattı</a><a href="/araclar/lisans-sinavi/">Lisans Sınavı</a></div></li>
-      <li><a href="/sozluk/">Sözlük</a></li>
-      <li><a href="/hakkinda">Hakkında</a></li>
-    </ul>
-    <a href="https://cagri.amator.tr/" class="site-nav-cta" rel="noopener noreferrer" aria-label="Çağrı İşareti Defteri (yeni sekmede açılır)">Çağrı Defteri ↗</a>
-  </div>
-</nav>
+<nav id="site-nav"></nav>
+<script src="/shared/js/nav.js"></script>
 <button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="9"/>
@@ -121,8 +109,8 @@
 </button>
 <div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
 <script type="module" src="/shared/js/theme.js"></script>
+<script src="/shared/js/nav.js"></script>
 <script type="module" src="/shared/js/site-stats.js" defer></script>
-<!-- @shared-nav-end -->
 <main id="main" tabindex="-1">
 <div class="tool-wrap">
   <header class="page-header">

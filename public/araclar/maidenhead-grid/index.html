@@ -5,253 +5,465 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-YDKPBD0EJX");</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maidenhead Grid Harita &amp; RF Kapsama Analizi — amator.tr</title>
-<meta name="description" content="Interaktif Maidenhead grid square haritasi (QTH locator), yukseklik verisi ve RF gorush hatti kapsama analizi. Amator telsiz icin konum, mesafe ve bearing hesaplama.">
-<meta name="keywords" content="Maidenhead, grid locator, QTH, IARU grid, KN21, lat lon to grid, ham radio koordinat, DXCC, mesafe hesaplama, RF kapsama, amator telsiz">
-<meta name="author" content="TA1VAL (Talha Akkaya) / amator.tr">
+<title>Maidenhead Grid Hesaplayıcı (Lat/Lon, Mesafe, Bearing) — amator.tr</title>
+<meta name="description" content="Maidenhead grid locator (KN21vh) hesaplayıcı: enlem/boylam → grid, grid → koordinat, iki grid arası mesafe ve bearing. GPS ile otomatik konum.">
+<meta name="keywords" content="Maidenhead, grid locator, IARU grid, KN21, lat lon to grid, ham radio koordinat, DXCC, mesafe hesaplama">
+<meta name="author" content="Kaan Dikeç (TB2KKD)">
+<meta name="robots" content="index, follow">
 <link rel="canonical" href="https://amator.tr/araclar/maidenhead-grid/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Maidenhead Grid Harita &amp; RF Kapsama — amator.tr">
-<meta property="og:description" content="Interaktif Maidenhead grid square haritasi, yukseklik verisi ve RF kapsama analizi.">
+<meta property="og:title" content="Maidenhead Grid Hesaplayıcı — amator.tr">
+<meta property="og:description" content="Lat/Lon ↔ Grid çevirici, mesafe + bearing hesaplama, GPS otomatik konum.">
 <meta property="og:url" content="https://amator.tr/araclar/maidenhead-grid/">
 <meta property="og:image" content="https://amator.tr/og/default.png">
 <meta property="og:locale" content="tr_TR">
 <link rel="stylesheet" href="/shared/css/themes.css">
-<link rel="stylesheet" crossorigin href="/araclar/maidenhead-grid/assets/index-CxdsKplY.css">
+<link rel="stylesheet" href="/shared/css/base.css">
 <style>
-* { box-sizing: border-box; }
-html, body { overflow-x: clip; }
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  font-size: 16px;
-  display: block !important;
-  place-items: unset !important;
-  min-height: auto !important;
-}
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-:root {
-  color-scheme: dark !important;
-  color: var(--text) !important;
-  background-color: var(--bg) !important;
-}
-[data-theme="light"] { color-scheme: light !important; }
-
-.site-nav {
-  position: sticky; top: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  z-index: 10000;
-}
-.site-nav-inner {
-  display: flex; align-items: center; gap: 16px;
-  padding: 10px 16px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap;
-}
-.site-nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none; }
-.site-nav-links { display: flex; gap: 14px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; }
-.site-nav-links a { color: var(--text-muted); font-size: 0.9rem; }
-.site-nav-links a:hover, .site-nav-links a.active { color: var(--accent); text-decoration: none; }
-.site-nav-cta {
-  margin-left: auto; padding: 5px 12px;
-  border: 1px solid var(--accent); border-radius: 6px;
-  color: var(--accent); font-size: 0.85rem;
-}
-.site-nav-cta:hover { background: var(--accent); color: #fff; text-decoration: none; }
-
-.nav-dropdown { position: relative; }
-.nav-dropdown-toggle { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; }
-.nav-dropdown-toggle::after { content: ''; border: 4px solid transparent; border-top-color: currentColor; margin-top: 2px; }
-.nav-dropdown-menu {
-  display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-  padding: 6px; min-width: 200px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35); z-index: 10001;
-}
-.nav-dropdown:hover .nav-dropdown-menu { display: flex; flex-direction: column; gap: 2px; }
-.nav-dropdown-menu a {
-  display: block; padding: 7px 14px; border-radius: 6px;
-  color: var(--text-muted) !important; font-size: 0.88rem; white-space: nowrap;
-}
-.nav-dropdown-menu a:hover { background: var(--surface-2); color: var(--accent) !important; text-decoration: none; }
-.nav-dropdown-menu a.active { color: var(--accent) !important; font-weight: 600; }
-
-.source-credit {
-  position: fixed; bottom: 8px; left: 50%; transform: translateX(-50%); z-index: 10000;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-  padding: 6px 16px; font-size: 0.78rem; color: var(--text-muted);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3); white-space: nowrap;
-}
-.source-credit a { color: var(--accent); font-weight: 600; }
-
-.theme-fab {
-  position: fixed; right: 16px; bottom: 16px; width: 42px; height: 42px;
-  border-radius: 50%; background: var(--accent); color: #fff; border: none;
-  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.35); z-index: 10001; font-size: 1.1rem;
-  transition: transform 0.15s;
-}
-.theme-fab:hover { transform: scale(1.08); }
-.theme-menu {
-  position: fixed; right: 16px; bottom: 68px; min-width: 200px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  display: flex; flex-direction: column; gap: 2px; z-index: 10001;
-}
-.theme-menu[hidden] { display: none; }
-.theme-option {
-  display: flex; align-items: center; gap: 10px; padding: 8px 12px;
-  background: none; border: 1px solid transparent; border-radius: 8px;
-  color: var(--text); font-size: 0.9rem; text-align: left; cursor: pointer; font-family: inherit;
-}
-.theme-option:hover { background: var(--surface-2); }
-.theme-option.active { border-color: var(--accent); color: var(--accent); font-weight: 600; }
-.theme-swatch { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
-
-#root .app, #root > .app { height: calc(100vh - 44px); }
-
-/* =============================================
-   grid-square-locator Panel Theme Overrides
-   ============================================= */
-
-/* Map container */
-.map-container { background: var(--bg) !important; }
-
-/* Search control */
-.search-control { z-index: 1001 !important; }
-.search-input {
-  background: var(--surface) !important; color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-.search-input::placeholder { color: var(--text-muted) !important; }
-.search-expand-button, .find-me-button {
-  background: var(--surface) !important; color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-.search-expand-button:hover, .find-me-button:hover {
-  background: var(--surface-2) !important;
-}
-.search-results {
-  background: var(--surface) !important; border-color: var(--border) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
-}
-.search-result-item {
-  color: var(--text) !important; border-bottom-color: var(--border) !important;
-}
-.search-result-item:hover { background: var(--surface-2) !important; }
-.search-result-item.selected { background: color-mix(in srgb, var(--accent) 12%, var(--surface)) !important; }
-.search-result-name { color: var(--text) !important; }
-.search-spinner { border-top-color: var(--accent) !important; }
-
-/* Dock panel (bottom credit bar) — hide, we have our own */
-.dock-panel { display: none !important; }
-
-/* Grid popup */
-.grid-popup { color: var(--text) !important; }
-
-/* Leaflet controls */
-.leaflet-popup-content-wrapper {
-  background: var(--surface) !important; color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-}
-.leaflet-popup-tip { background: var(--surface) !important; }
-.leaflet-popup-content { color: var(--text) !important; }
-
-.leaflet-control-zoom a {
-  background: var(--surface) !important; color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-.leaflet-control-zoom a:hover { background: var(--surface-2) !important; }
-.leaflet-control-attribution {
-  background: color-mix(in srgb, var(--surface) 85%, transparent) !important;
-  color: var(--text-muted) !important;
-}
-.leaflet-control-attribution a { color: var(--accent) !important; }
-
-/* Layer control */
-.leaflet-control-layers {
-  background: var(--surface) !important; color: var(--text) !important;
-  border-color: var(--border) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-}
-.leaflet-control-layers-expanded {
-  background: var(--surface) !important; color: var(--text) !important;
-}
-.leaflet-control-layers label { color: var(--text) !important; }
-
-/* Coverage controls in popup */
-.popup-antenna-input {
-  background: var(--surface-2) !important; color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-.popup-coverage-button {
-  background: var(--accent) !important; color: #fff !important;
-  border: none !important;
-}
-.popup-coverage-button:hover { opacity: 0.9; }
-
-/* Geolocation button */
-.locate-button {
-  background: var(--surface) !important; color: var(--text) !important;
-  border-color: var(--border) !important;
-}
-.locate-button:hover { background: var(--surface-2) !important; }
-
-/* Toast */
-.toast {
-  background: var(--surface) !important; color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-}
-
-/* Map controls panel */
-.map-controls {
-  background: var(--surface) !important; color: var(--text) !important;
-  border: 1px solid var(--border) !important;
-}
-
-/* Override body root */
-#root { color: var(--text); background: var(--bg); }
-
-/* Search input container */
-.search-input-wrapper {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
-}
-
-@media (max-width: 600px) {
-  .site-nav-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .site-nav-cta { margin-left: 0; }
-  .site-nav-links { gap: 10px; }
-  #root .app, #root > .app { height: calc(100vh - 90px); }
-  .nav-dropdown-menu { left: 0; transform: none; }
-}
+  .tool-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  .tool-grid { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 900px) { .tool-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 0;
+  }
+  .tool-card h2 { margin: 0 0 12px; font-size: 1.15rem; color: var(--accent); }
+  label { display: block; margin: 10px 0 4px; font-size: 0.9rem; font-weight: 600; }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 1rem;
+  }
+  input:focus { outline: none; border-color: var(--accent); }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .btn-tool {
+    padding: 10px 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn-tool:hover { opacity: 0.9; }
+  .btn-tool.btn-secondary {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .result-box {
+    margin-top: 14px;
+    padding: 12px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.95rem;
+    word-break: break-word;
+    line-height: 1.6;
+  }
+  .result-box.error { color: var(--error); border-left: 3px solid var(--error); }
+  .grid-display {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .info-banner {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 0 6px 6px 0;
+  }
+  .preset-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .preset-btn {
+    padding: 4px 10px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .preset-btn:hover { color: var(--accent); border-color: var(--accent); }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
 <nav id="site-nav"></nav>
 <script src="/shared/js/nav.js"></script>
-
-<div id="root"></div>
-
-<div class="source-credit">
-  Orijinal kaynak: <a href="https://github.com/talhaakkaya/grid-square-locator" target="_blank" rel="noopener noreferrer">talhaakkaya/grid-square-locator</a> &mdash; <a href="https://www.qrz.com/db/TA1VAL" target="_blank" rel="noopener noreferrer">TA1VAL</a>
-</div>
-
-<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema sec">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="9"/>
     <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
   </svg>
 </button>
-<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema secenekleri" hidden></div>
-
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
 <script type="module" src="/shared/js/theme.js"></script>
-<script type="module" crossorigin src="/araclar/maidenhead-grid/assets/index-CHQMTWnJ.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+<!-- @shared-nav-end -->
+<main id="main" tabindex="-1">
+<div class="tool-wrap">
+  <header class="page-header">
+    <h1>Maidenhead Grid Hesaplayıcı</h1>
+    <p class="meta">Amatör telsiz grid locator (IARU) ↔ enlem/boylam dönüşümü, mesafe ve bearing.</p>
+  </header>
+
+  <div class="info-banner">
+    <strong>Maidenhead nedir?</strong> Dünyayı 18×18×10×10×24×24 hücreye bölen, 6-8 karakterli amatör radyo koordinat sistemi.
+    Türkiye <strong>KM-KN</strong> field'larında. Örn: İstanbul ≈ <code>KN41la</code>, Ankara ≈ <code>KM69kw</code>, İzmir ≈ <code>KM38nk</code>.
+    DX, FT8, contest ve POTA için gereklidir. <a href="/tutorials/dxcc-dx-hunting">DXCC tutorial →</a>
+    <br><strong>🗺️ <a href="/araclar/maidenhead-harita/">İnteraktif Grid Haritası</a></strong> — harita üzerinde grid square görselleştirme ve RF kapsama analizi (TA1VAL).
+  </div>
+
+  <div class="tool-grid">
+    <!-- Lat/Lon → Grid -->
+    <div class="tool-card">
+      <h2>Lat/Lon → Grid</h2>
+      <label for="lat">Enlem (Latitude)</label>
+      <input type="number" id="lat" step="0.000001" placeholder="41.015137" inputmode="decimal">
+      <label for="lon">Boylam (Longitude)</label>
+      <input type="number" id="lon" step="0.000001" placeholder="28.979530" inputmode="decimal">
+      <button class="btn-tool" type="button" id="btn-encode">Grid Hesapla</button>
+      <button class="btn-tool btn-secondary" type="button" id="btn-gps">📍 GPS ile Konum Al</button>
+      <div id="encode-result" class="result-box" hidden></div>
+      <div class="preset-grid">
+        <button class="preset-btn" type="button" data-lat="41.0151" data-lon="28.9795">İstanbul</button>
+        <button class="preset-btn" type="button" data-lat="39.9208" data-lon="32.8541">Ankara</button>
+        <button class="preset-btn" type="button" data-lat="38.4192" data-lon="27.1287">İzmir</button>
+        <button class="preset-btn" type="button" data-lat="40.1828" data-lon="29.0670">Bursa</button>
+        <button class="preset-btn" type="button" data-lat="36.8841" data-lon="30.7056">Antalya</button>
+        <button class="preset-btn" type="button" data-lat="37.0000" data-lon="35.3213">Adana</button>
+      </div>
+    </div>
+
+    <!-- Grid → Lat/Lon -->
+    <div class="tool-card">
+      <h2>Grid → Lat/Lon</h2>
+      <label for="grid">Maidenhead Grid (4, 6 veya 8 karakter)</label>
+      <input type="text" id="grid" placeholder="KN41la" maxlength="8" autocomplete="off" autocapitalize="characters">
+      <button class="btn-tool" type="button" id="btn-decode">Koordinata Çevir</button>
+      <div id="decode-result" class="result-box" hidden></div>
+    </div>
+
+    <!-- İki grid mesafe -->
+    <div class="tool-card" style="grid-column: 1 / -1;">
+      <h2>İki Grid Arası Mesafe + Bearing</h2>
+      <div class="row">
+        <div>
+          <label for="grid-a">Grid A (örn. KN41la — İstanbul)</label>
+          <input type="text" id="grid-a" placeholder="KN41la" maxlength="8" autocomplete="off" autocapitalize="characters">
+        </div>
+        <div>
+          <label for="grid-b">Grid B (örn. JN48os — Stuttgart)</label>
+          <input type="text" id="grid-b" placeholder="JN48os" maxlength="8" autocomplete="off" autocapitalize="characters">
+        </div>
+      </div>
+      <button class="btn-tool" type="button" id="btn-distance">Mesafe + Bearing Hesapla</button>
+      <div id="distance-result" class="result-box" hidden></div>
+    </div>
+  </div>
+
+  <div class="info-banner" style="margin-top: 20px;">
+    <strong>Format açıklaması:</strong>
+    <code>KN41</code> = Field (KN, 20°×10°) + Square (41, 2°×1°), ~150 km hassasiyet.
+    <code>KN41la</code> = + Subsquare (lj, 5'×2.5'), ~5 km hassasiyet (FT8/contest standart).
+    <code>KN41la11</code> = + Extended (8-char), ~250 m hassasiyet (DXcluster spotting).
+  </div>
+</div>
+</main>
+<!-- @shared-footer-start -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <h4>📡 Telsiz</h4>
+      <ul>
+        <li><a href="/tutorials/uv-k5-programlama">UV-K5 Programlama</a></li>
+        <li><a href="/tutorials/baofeng-uv-5r-programlama">Baofeng UV-5R</a></li>
+        <li><a href="/tutorials/dmr-nedir-anytone-d878uv">DMR / Anytone D878UV</a></li>
+        <li><a href="/tutorials/role-nedir">Röle Nedir?</a></li>
+        <li><a href="/tutorials/ctcss-dcs-nedir">CTCSS / DCS</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📶 Anten</h4>
+      <ul>
+        <li><a href="/tutorials/anten-yapimi-temel">J-Pole / Slim Jim</a></li>
+        <li><a href="/tutorials/hf-dipole-efhw-anten">HF Dipole + EFHW</a></li>
+        <li><a href="/tutorials/yagi-anten-yapimi">Yagi DK7ZB</a></li>
+        <li><a href="/tutorials/nanovna-anten-olcumu">NanoVNA Ölçüm</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Boy Hesaplayıcı</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>💻 Dijital</h4>
+      <ul>
+        <li><a href="/tutorials/ft8-dijital-mod">FT8 + WSJT-X</a></li>
+        <li><a href="/tutorials/aprs-nedir-nasil-kullanilir">APRS 144.800</a></li>
+        <li><a href="/tutorials/winlink-email-over-radio">WinLink E-posta</a></li>
+        <li><a href="/tutorials/echolink-allstar-voip">Echolink VoIP</a></li>
+        <li><a href="/tutorials/rtl-sdr-ile-telsiz-dinleme">RTL-SDR Dinleme</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>📚 Başlangıç & DX</h4>
+      <ul>
+        <li><a href="/tutorials/cagri-isareti-nasil-alinir">Çağrı İşareti</a></li>
+        <li><a href="/tutorials/mors-kodu-ogrenme">Mors Kodu</a></li>
+        <li><a href="/tutorials/hf-propagasyon-temelleri">HF Propagasyon</a></li>
+        <li><a href="/tutorials/dxcc-dx-hunting">DXCC</a></li>
+        <li><a href="/tutorials/pota-parks-on-the-air">POTA</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>🛠️ Araçlar</h4>
+      <ul>
+        <li><a href="/role-export/">Röle CSV Exporter</a></li>
+        <li><a href="/araclar/anten-hesaplayici/">Anten Hesaplayıcı</a></li>
+        <li><a href="/araclar/ctcss-ton-bulucu/">CTCSS / DCS Bulucu</a></li>
+        <li><a href="/araclar/maidenhead-grid/">Maidenhead Grid</a></li>
+        <li><a href="/araclar/propagasyon-durumu/">HF Propagasyon (Live)</a></li>
+        <li><a href="/araclar/rf-los/">RF Görüş Hattı (LOS)</a></li>
+        <li><a href="/araclar/lisans-sinavi/">Lisans Sınavı Simülatörü</a></li>
+        <li><a href="https://cagri.amator.tr/" rel="noopener noreferrer">Çağrı Defteri ↗</a></li>
+        <li><a href="/feed.xml">RSS Feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ℹ️ Site</h4>
+      <ul>
+        <li><a href="/hakkinda">Hakkında</a></li>
+        <li><a href="/iletisim">İletişim</a></li>
+        <li><a href="https://github.com/amator-tr/amator-tr-source" rel="noopener noreferrer">GitHub Source ↗</a></li>
+        <li><strong>Yazar:</strong> Kaan Dikeç (TB2KKD)</li>
+        <li><em>MIT lisansı, açık kaynak</em></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p><strong>amator.tr</strong> — Türkiye amatör telsiz topluluğu için açık kaynak portal · Anahtar kelimeler:
+    <em>amatör telsiz, amator telsiz, ham radio Türkiye, amatör radyo, telsiz CSV, çağrı işareti, BTK lisans, KEGM sınavı, TRAC, röle frekansları, UV-K5 türkçe, Baofeng programlama, DMR Brandmeister, FT8, APRS, mors kodu, anten yapımı, NanoVNA, DXCC, propagasyon</em></p>
+  </div>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"amator.tr","url":"https://amator.tr","logo":"https://amator.tr/og/default.png","sameAs":["https://github.com/amator-tr","https://github.com/amator-tr/amator-tr-source","https://cagri.amator.tr/"]}
+  </script>
+</footer>
+<!-- @shared-footer-end -->
+
+<script>
+function encodeGrid(lat, lon, precision) {
+  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+  const adjLat = lat + 90;
+  const adjLon = lon + 180;
+  const fieldLon = Math.floor(adjLon / 20);
+  const fieldLat = Math.floor(adjLat / 10);
+  const squareLon = Math.floor((adjLon % 20) / 2);
+  const squareLat = Math.floor(adjLat % 10);
+  const subLon = Math.floor(((adjLon % 2) * 60) / 5);
+  const subLat = Math.floor(((adjLat % 1) * 60) / 2.5);
+  let g = String.fromCharCode(65 + fieldLon) + String.fromCharCode(65 + fieldLat);
+  g += String(squareLon) + String(squareLat);
+  if (precision >= 6) {
+    g += String.fromCharCode(97 + subLon) + String.fromCharCode(97 + subLat);
+  }
+  if (precision >= 8) {
+    const ex2Lon = (adjLon - fieldLon * 20 - squareLon * 2 - (subLon * 5) / 60) * 120;
+    const ex2Lat = (adjLat - fieldLat * 10 - squareLat - (subLat * 2.5) / 60) * 240;
+    g += String(Math.floor(ex2Lon)) + String(Math.floor(ex2Lat));
+  }
+  return g;
+}
+
+function decodeGrid(grid) {
+  const g = String(grid || "").trim().toUpperCase();
+  if (!/^[A-R]{2}[0-9]{2}([A-X]{2}([0-9]{2})?)?$/.test(g)) return null;
+  let lon = (g.charCodeAt(0) - 65) * 20 - 180;
+  let lat = (g.charCodeAt(1) - 65) * 10 - 90;
+  lon += parseInt(g[2], 10) * 2;
+  lat += parseInt(g[3], 10);
+  let cellLon = 2;
+  let cellLat = 1;
+  if (g.length >= 6) {
+    const sl = g.toLowerCase();
+    lon += (sl.charCodeAt(4) - 97) * (5 / 60);
+    lat += (sl.charCodeAt(5) - 97) * (2.5 / 60);
+    cellLon = 5 / 60;
+    cellLat = 2.5 / 60;
+  }
+  if (g.length >= 8) {
+    lon += parseInt(g[6], 10) * (5 / 600);
+    lat += parseInt(g[7], 10) * (2.5 / 600);
+    cellLon = 5 / 600;
+    cellLat = 2.5 / 600;
+  }
+  return {
+    lat: lat,
+    lon: lon,
+    centerLat: lat + cellLat / 2,
+    centerLon: lon + cellLon / 2,
+    cellLat: cellLat,
+    cellLon: cellLon,
+  };
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const toRad = function (x) { return (x * Math.PI) / 180; };
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function bearing(lat1, lon1, lat2, lon2) {
+  const toRad = function (x) { return (x * Math.PI) / 180; };
+  const toDeg = function (x) { return (x * 180) / Math.PI; };
+  const phi1 = toRad(lat1);
+  const phi2 = toRad(lat2);
+  const lambda = toRad(lon2 - lon1);
+  const y = Math.sin(lambda) * Math.cos(phi2);
+  const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(lambda);
+  return (toDeg(Math.atan2(y, x)) + 360) % 360;
+}
+
+function compass(deg) {
+  const dirs = ["K", "KKD", "KD", "DKD", "D", "DGD", "GD", "GGD", "G", "GGB", "GB", "BGB", "B", "BKB", "KB", "KKB"];
+  return dirs[Math.round(deg / 22.5) % 16];
+}
+
+function setResult(id, html, isError) {
+  const el = document.getElementById(id);
+  el.hidden = false;
+  el.classList.toggle("error", !!isError);
+  el.textContent = "";
+  if (Array.isArray(html)) {
+    for (const node of html) el.appendChild(node);
+  } else {
+    el.textContent = String(html);
+  }
+}
+
+function strong(text) {
+  const s = document.createElement("strong");
+  s.textContent = text;
+  return s;
+}
+function span(text, cls) {
+  const s = document.createElement("span");
+  s.textContent = text;
+  if (cls) s.className = cls;
+  return s;
+}
+function br() { return document.createElement("br"); }
+
+document.getElementById("btn-encode").addEventListener("click", function () {
+  const lat = parseFloat(document.getElementById("lat").value);
+  const lon = parseFloat(document.getElementById("lon").value);
+  if (isNaN(lat) || isNaN(lon)) {
+    setResult("encode-result", "Geçerli enlem ve boylam gir.", true);
+    return;
+  }
+  const g6 = encodeGrid(lat, lon, 6);
+  const g8 = encodeGrid(lat, lon, 8);
+  if (!g6) {
+    setResult("encode-result", "Aralık dışı: lat ∈ [-90, 90], lon ∈ [-180, 180].", true);
+    return;
+  }
+  setResult("encode-result", [
+    span("Grid (6-char): ", null), span(g6, "grid-display"), br(),
+    span("Grid (8-char): ", null), span(g8, "grid-display"), br(),
+    strong("Enlem/Boylam: "), span(lat.toFixed(6) + "°, " + lon.toFixed(6) + "°"),
+  ]);
+});
+
+document.getElementById("btn-gps").addEventListener("click", function () {
+  if (!navigator.geolocation) {
+    setResult("encode-result", "Tarayıcı geolocation desteklemiyor.", true);
+    return;
+  }
+  setResult("encode-result", "Konum alınıyor...");
+  navigator.geolocation.getCurrentPosition(
+    function (pos) {
+      document.getElementById("lat").value = pos.coords.latitude.toFixed(6);
+      document.getElementById("lon").value = pos.coords.longitude.toFixed(6);
+      document.getElementById("btn-encode").click();
+    },
+    function (err) {
+      setResult("encode-result", "Konum alınamadı: " + err.message, true);
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+});
+
+document.querySelectorAll(".preset-btn").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    document.getElementById("lat").value = btn.dataset.lat;
+    document.getElementById("lon").value = btn.dataset.lon;
+    document.getElementById("btn-encode").click();
+  });
+});
+
+document.getElementById("btn-decode").addEventListener("click", function () {
+  const grid = document.getElementById("grid").value;
+  const r = decodeGrid(grid);
+  if (!r) {
+    setResult("decode-result", "Geçersiz grid. Format: KN41 / KN41la / KN41la11", true);
+    return;
+  }
+  setResult("decode-result", [
+    strong("Grid: "), span(grid.toUpperCase()), br(),
+    strong("Merkez: "), span(r.centerLat.toFixed(6) + "°, " + r.centerLon.toFixed(6) + "°"), br(),
+    strong("SW köşe: "), span(r.lat.toFixed(6) + "°, " + r.lon.toFixed(6) + "°"), br(),
+    strong("Hücre boyutu: "), span(r.cellLat.toFixed(4) + "° × " + r.cellLon.toFixed(4) + "°"), br(),
+    span("Google Maps: ", null),
+    (function () {
+      const a = document.createElement("a");
+      a.href = "https://www.google.com/maps?q=" + r.centerLat + "," + r.centerLon;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = "haritada aç ↗";
+      return a;
+    })(),
+  ]);
+});
+
+document.getElementById("btn-distance").addEventListener("click", function () {
+  const a = decodeGrid(document.getElementById("grid-a").value);
+  const b = decodeGrid(document.getElementById("grid-b").value);
+  if (!a || !b) {
+    setResult("distance-result", "Her iki grid de geçerli olmalı (örn. KN41la, JN48os).", true);
+    return;
+  }
+  const d = haversine(a.centerLat, a.centerLon, b.centerLat, b.centerLon);
+  const bAB = bearing(a.centerLat, a.centerLon, b.centerLat, b.centerLon);
+  const bBA = bearing(b.centerLat, b.centerLon, a.centerLat, a.centerLon);
+  setResult("distance-result", [
+    strong("Mesafe: "), span(d.toFixed(1) + " km (" + (d * 0.621371).toFixed(1) + " mi)"), br(),
+    strong("A → B bearing: "), span(bAB.toFixed(1) + "° (" + compass(bAB) + ")"), br(),
+    strong("B → A bearing: "), span(bBA.toFixed(1) + "° (" + compass(bBA) + ")"), br(),
+    span("(Kısa yol / great-circle, anten yönlendirme için)", null),
+  ]);
+});
+
+// Default örnekleri otomatik doldur
+document.getElementById("grid-a").value = "KN41la";
+document.getElementById("grid-b").value = "JN48os";
+</script>
 </body>
 </html>
