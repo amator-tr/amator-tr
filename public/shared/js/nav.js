@@ -5,15 +5,6 @@
  * 3. Dropdown click handler baglar
  */
 (function() {
-  // CSS inject — her sayfada ayni nav gorunumu garanti
-  if (!document.getElementById('nav-css')) {
-    var link = document.createElement('link');
-    link.id = 'nav-css';
-    link.rel = 'stylesheet';
-    link.href = '/shared/css/nav.css';
-    document.head.appendChild(link);
-  }
-
   var TOOLS = [
     { href: '/araclar/anten-hesaplayici/', label: 'Anten Hesaplayıcı' },
     { href: '/araclar/ctcss-ton-bulucu/', label: 'CTCSS / DCS Bulucu' },
@@ -121,6 +112,9 @@
     nav.appendChild(inner);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);
+  // script tagi her zaman nav elementinden SONRA oldugu icin element zaten DOM'da
+  var navEl = document.getElementById('site-nav');
+  if (navEl) build();
+  else if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);
   else build();
 })();
