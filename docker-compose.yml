@@ -48,3 +48,47 @@ services:
     entrypoint: ["node", "scripts/backup.js"]
     profiles:
       - tools
+
+  cms-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: amator_cms
+      POSTGRES_USER: cms_admin
+      POSTGRES_PASSWORD: ${CMS_DB_PASSWORD}
+    volumes:
+      - cms-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cms_admin -d amator_cms"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cms:
+    build:
+      context: ../admin-panel
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - PORT=4895
+      - DATABASE_URL=postgresql://cms_admin:${CMS_DB_PASSWORD}@cms-db:5432/amator_cms
+      - AI_PROXY_URL=${AI_PROXY_URL:-https://ai-proxy.dikeckaan.workers.dev}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ADMIN_SESSION_SECRET=${ADMIN_SESSION_SECRET}
+      - TUTORIALS_PATH=/app/tutorials
+    volumes:
+      - ./public/tutorials:/app/tutorials:ro
+    ports:
+      - "4895:4895"
+    depends_on:
+      cms-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4895/robots.txt"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  cms-pgdata:
