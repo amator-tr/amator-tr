@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>"{{TAG}}" etiketli tutorial'lar — amator.tr</title>
+<meta name="description" content="amator.tr'de '{{TAG}}' etiketli {{COUNT}} tutorial — amatör telsiz rehberleri.">
+<link rel="canonical" href="https://amator.tr/tutorials/tag/{{TAG_SLUG}}/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="{{TAG}} — amator.tr tutorial'ları">
+<meta property="og:url" content="https://amator.tr/tutorials/tag/{{TAG_SLUG}}/">
+<style>{{STYLES}}</style>
+<script type="application/ld+json">{{COLLECTION_LD}}</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<nav id="site-nav"></nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+
+<main id="main" tabindex="-1">
+<header class="page-header">
+  <p class="meta"><a href="/tutorials/">← Tüm tutorial'lar</a></p>
+  <h1>"{{TAG}}" etiketli tutorial'lar</h1>
+  <p class="meta">{{COUNT}} sonuç</p>
+</header><section class="tutorials-list">
+{{CARDS}}
+</section>
+</main>
+{{FOOTER}}
+</body>
+</html>

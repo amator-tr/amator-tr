@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url><loc>https://amator.tr/</loc><lastmod>2026-04-26</lastmod><priority>1.0</priority></url>
-  <url><loc>https://amator.tr/tutorials/</loc><lastmod>2026-04-26</lastmod><priority>0.8</priority></url>
-  <url><loc>https://amator.tr/role-export/</loc><lastmod>2026-04-26</lastmod><priority>0.9</priority></url>
-  <url><loc>https://amator.tr/araclar/anten-hesaplayici/</loc><lastmod>2026-04-26</lastmod><priority>0.8</priority></url>
-  <url><loc>https://amator.tr/araclar/ctcss-ton-bulucu/</loc><lastmod>2026-04-26</lastmod><priority>0.7</priority></url>
-  <url><loc>https://amator.tr/araclar/maidenhead-grid/</loc><lastmod>2026-04-26</lastmod><priority>0.7</priority></url>
-  <url><loc>https://amator.tr/araclar/propagasyon-durumu/</loc><lastmod>2026-04-26</lastmod><priority>0.7</priority></url>
-  <url><loc>https://amator.tr/araclar/lisans-sinavi/</loc><lastmod>2026-04-26</lastmod><priority>0.8</priority></url>
-  <url><loc>https://amator.tr/sozluk</loc><lastmod>2026-04-26</lastmod><priority>0.8</priority></url>
-  <url><loc>https://amator.tr/hakkinda</loc><lastmod>2026-04-26</lastmod><priority>0.5</priority></url>
-  <url><loc>https://amator.tr/iletisim</loc><lastmod>2026-04-26</lastmod><priority>0.3</priority></url>
+  <url><loc>https://amator.tr/</loc><lastmod>2026-05-09</lastmod><priority>1.0</priority></url>
+  <url><loc>https://amator.tr/tutorials/</loc><lastmod>2026-05-09</lastmod><priority>0.8</priority></url>
+  <url><loc>https://amator.tr/role-export/</loc><lastmod>2026-05-09</lastmod><priority>0.9</priority></url>
+  <url><loc>https://amator.tr/araclar/anten-hesaplayici/</loc><lastmod>2026-05-09</lastmod><priority>0.8</priority></url>
+  <url><loc>https://amator.tr/araclar/ctcss-ton-bulucu/</loc><lastmod>2026-05-09</lastmod><priority>0.7</priority></url>
+  <url><loc>https://amator.tr/araclar/maidenhead-grid/</loc><lastmod>2026-05-09</lastmod><priority>0.7</priority></url>
+  <url><loc>https://amator.tr/araclar/propagasyon-durumu/</loc><lastmod>2026-05-09</lastmod><priority>0.7</priority></url>
+  <url><loc>https://amator.tr/araclar/lisans-sinavi/</loc><lastmod>2026-05-09</lastmod><priority>0.8</priority></url>
+  <url><loc>https://amator.tr/sozluk</loc><lastmod>2026-05-09</lastmod><priority>0.8</priority></url>
+  <url><loc>https://amator.tr/hakkinda</loc><lastmod>2026-05-09</lastmod><priority>0.5</priority></url>
+  <url><loc>https://amator.tr/iletisim</loc><lastmod>2026-05-09</lastmod><priority>0.3</priority></url>
   <url>
     <loc>https://amator.tr/tutorials/afet-acil-durum-haberlesmesi</loc>
     <lastmod>2026-04-26</lastmod>
@@ -29,7 +29,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/amator-radyo-kadin-operatorler.png</image:loc>
       <image:title>Amatör Radyoda Kadın Operatörler (YL) — Türkiye ve Dünya</image:title>
-      <image:caption>Amatör radyoda Young Lady (YL) operatörler — tarihçe, Türkiye&apos;de ilk YL&apos;ler, YL contests, kadın amatör organizasyonları, çocuk amatör topluluğu, ailem hobisine alır mı?</image:caption>
+      <image:caption>Amatör radyoda Young Lady (YL) operatörler — tarihçe, Türkiye&#39;de ilk YL&#39;ler, YL contests, kadın amatör organizasyonları, çocuk amatör topluluğu, ailem hobisine alır mı?</image:caption>
     </image:image>
   </url>
   <url>
@@ -49,7 +49,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/amator-telsizcilik-nedir.png</image:loc>
       <image:title>Amatör Telsizcilik Nedir? Tarihçe, Lisans, Yapılan Şeyler</image:title>
-      <image:caption>Amatör telsizcilik (ham radio) nedir, nasıl başlandı, ITU/IARU/TRAC ile düzenleniyor. Lisans sınıfları, yapılan aktiviteler (DX, contest, EmComm, dijital), Türkiye&apos;de durum.</image:caption>
+      <image:caption>Amatör telsizcilik (ham radio) nedir, nasıl başlandı, ITU/IARU/TRAC ile düzenleniyor. Lisans sınıfları, yapılan aktiviteler (DX, contest, EmComm, dijital), Türkiye&#39;de durum.</image:caption>
     </image:image>
   </url>
   <url>
@@ -108,8 +108,8 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://amator.tr/og/aprs-nedir-nasil-kullanilir.png</image:loc>
-      <image:title>APRS Nedir? Konum İzleme, Mesajlaşma ve Türkiye&apos;de 144.800 MHz</image:title>
-      <image:caption>APRS (Automatic Packet Reporting System) nedir, nasıl çalışır, donanım (telsiz + TNC + GPS) gereksinimleri, aprs.fi kullanımı, Türkiye&apos;de 144.800 MHz frekansı ve iGate altyapısı.</image:caption>
+      <image:title>APRS Nedir? Konum İzleme, Mesajlaşma ve Türkiye&#39;de 144.800 MHz</image:title>
+      <image:caption>APRS (Automatic Packet Reporting System) nedir, nasıl çalışır, donanım (telsiz + TNC + GPS) gereksinimleri, aprs.fi kullanımı, Türkiye&#39;de 144.800 MHz frekansı ve iGate altyapısı.</image:caption>
     </image:image>
   </url>
   <url>
@@ -168,8 +168,8 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://amator.tr/og/cagri-isareti-nasil-alinir.png</image:loc>
-      <image:title>Türkiye&apos;de Çağrı İşareti Nasıl Alınır? (BTK + KEGM 2026)</image:title>
-      <image:caption>BTK/KEGM amatör telsiz sınavı, A/B/C lisans sınıfları, TA/TB/TC/YM prefiks anlamları, başvuru süreci, ücretler ve kıdem sistemi — Türkiye&apos;de çağrı işareti almak için tam kılavuz.</image:caption>
+      <image:title>Türkiye&#39;de Çağrı İşareti Nasıl Alınır? (BTK + KEGM 2026)</image:title>
+      <image:caption>BTK/KEGM amatör telsiz sınavı, A/B/C lisans sınıfları, TA/TB/TC/YM prefiks anlamları, başvuru süreci, ücretler ve kıdem sistemi — Türkiye&#39;de çağrı işareti almak için tam kılavuz.</image:caption>
     </image:image>
   </url>
   <url>
@@ -289,7 +289,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/dxcc-dx-hunting.png</image:loc>
       <image:title>DXCC ve DX Hunting — 100 Ülke Diplomasından Beyond</image:title>
-      <image:caption>DXCC — DX Century Club, ARRL&apos;nin amatör telsiz uzun mesafe diploması. 100 entity koleksiyonu, mode/band kategorileri, LoTW + QSL kart süreci, DX cluster&apos;lar ve avlanma teknikleri.</image:caption>
+      <image:caption>DXCC — DX Century Club, ARRL&#39;nin amatör telsiz uzun mesafe diploması. 100 entity koleksiyonu, mode/band kategorileri, LoTW + QSL kart süreci, DX cluster&#39;lar ve avlanma teknikleri.</image:caption>
     </image:image>
   </url>
   <url>
@@ -348,8 +348,8 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://amator.tr/og/ft4-hizli-dijital-mod.png</image:loc>
-      <image:title>FT4 — FT8&apos;in Hızlı Kuzeni, Contest İçin Optimize Dijital Mod</image:title>
-      <image:caption>FT4 dijital mod rehberi. FT8&apos;den 2x hızlı (7.5 sn slot), contest için optimize, weak signal performansı, frekanslar, WSJT-X kurulumu, ne zaman FT4 ne zaman FT8.</image:caption>
+      <image:title>FT4 — FT8&#39;in Hızlı Kuzeni, Contest İçin Optimize Dijital Mod</image:title>
+      <image:caption>FT4 dijital mod rehberi. FT8&#39;den 2x hızlı (7.5 sn slot), contest için optimize, weak signal performansı, frekanslar, WSJT-X kurulumu, ne zaman FT4 ne zaman FT8.</image:caption>
     </image:image>
   </url>
   <url>
@@ -419,7 +419,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/ionosfer-katmanlari-detay.png</image:loc>
       <image:title>İyonosfer Katmanları ve Radyo Dalgalarının Yolculuğu (D, E, F1, F2)</image:title>
-      <image:caption>İyonosfer katmanlarının fiziği — D, E, F1, F2 katmanlarının özellikleri, MUF/LUF/FOT, sporadic E, gri çizgi, solar cycle etkisi. HF DX&apos;in fiziksel altyapısı.</image:caption>
+      <image:caption>İyonosfer katmanlarının fiziği — D, E, F1, F2 katmanlarının özellikleri, MUF/LUF/FOT, sporadic E, gri çizgi, solar cycle etkisi. HF DX&#39;in fiziksel altyapısı.</image:caption>
     </image:image>
   </url>
   <url>
@@ -539,7 +539,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/nanovna-anten-olcumu.png</image:loc>
       <image:title>NanoVNA ile Anten Ölçümü — SWR, Smith Chart, Kalibrasyon</image:title>
-      <image:caption>NanoVNA — $100&apos;lık vector network analyzer ile anten SWR ölçümü, OSL kalibrasyon, Smith chart okuma, anten ayar sürecinde adım adım pratik kullanım.</image:caption>
+      <image:caption>NanoVNA — $100&#39;lık vector network analyzer ile anten SWR ölçümü, OSL kalibrasyon, Smith chart okuma, anten ayar sürecinde adım adım pratik kullanım.</image:caption>
     </image:image>
   </url>
   <url>
@@ -559,7 +559,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/net-control-operatorluk.png</image:loc>
       <image:title>Net Control Operatörlüğü — Trafik Yönetiminin Sanatı</image:title>
-      <image:caption>Net Control görevini üstlenmek — direktiv vs konuşma neti, check-in sırası, traffic priority, formal mesaj iletim, kontest net&apos;lerinde rol.</image:caption>
+      <image:caption>Net Control görevini üstlenmek — direktiv vs konuşma neti, check-in sırası, traffic priority, formal mesaj iletim, kontest net&#39;lerinde rol.</image:caption>
     </image:image>
   </url>
   <url>
@@ -578,8 +578,8 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://amator.tr/og/packet-radio-ax25-aprs-evrim.png</image:loc>
-      <image:title>Packet Radio ve AX.25 Protokolü — APRS&apos;in Kökenleri</image:title>
-      <image:caption>Packet radio tarihi, AX.25 protokolü, TNC (Terminal Node Controller), 1200/9600 baud, BBS sistemleri. APRS&apos;in 1980&apos;lerden gelişimi, Türkiye packet aktiviteleri.</image:caption>
+      <image:title>Packet Radio ve AX.25 Protokolü — APRS&#39;in Kökenleri</image:title>
+      <image:caption>Packet radio tarihi, AX.25 protokolü, TNC (Terminal Node Controller), 1200/9600 baud, BBS sistemleri. APRS&#39;in 1980&#39;lerden gelişimi, Türkiye packet aktiviteleri.</image:caption>
     </image:image>
   </url>
   <url>
@@ -689,7 +689,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/rf-guvenligi-ve-saglik.png</image:loc>
       <image:title>RF Güvenliği ve Sağlık — Amatör Operatörün Bilmesi Gerekenler</image:title>
-      <image:caption>RF maruziyeti, FCC/ICNIRP/Türkiye limitleri, anten mesafe hesabı, OET-65, kalp pili / hamilelik / çocuk önlemleri, RF burn&apos;ları, topraklama ve yıldırım koruması.</image:caption>
+      <image:caption>RF maruziyeti, FCC/ICNIRP/Türkiye limitleri, anten mesafe hesabı, OET-65, kalp pili / hamilelik / çocuk önlemleri, RF burn&#39;ları, topraklama ve yıldırım koruması.</image:caption>
     </image:image>
   </url>
   <url>
@@ -719,7 +719,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/rtl-sdr-ile-telsiz-dinleme.png</image:loc>
       <image:title>RTL-SDR ile Telsiz Dinleme — Lisanssız Başlangıç Rehberi</image:title>
-      <image:caption>$30&apos;lık bir USB dongle ile 500 kHz - 1.75 GHz arası tüm radyo spektrumunu dinleyin. RTL-SDR donanımı, SDR# / SDR++ / GQRX kurulumu, ilk sinyal yakalama ve uygulama alanları.</image:caption>
+      <image:caption>$30&#39;lık bir USB dongle ile 500 kHz - 1.75 GHz arası tüm radyo spektrumunu dinleyin. RTL-SDR donanımı, SDR# / SDR++ / GQRX kurulumu, ilk sinyal yakalama ve uygulama alanları.</image:caption>
     </image:image>
   </url>
   <url>
@@ -728,8 +728,8 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://amator.tr/og/rtty-tarihce-pratik.png</image:loc>
-      <image:title>RTTY (Radio TeleType) — 1920&apos;lerin Dijital Modu, Hâlâ Yaşıyor</image:title>
-      <image:caption>RTTY (Radio TeleType) tarihçesi ve pratik kullanım. 45 baud, 170 Hz shift, Baudot kod, MMTTY/fldigi yazılımı, RTTY contest&apos;leri, modern ham radio&apos;da hâlâ aktif.</image:caption>
+      <image:title>RTTY (Radio TeleType) — 1920&#39;lerin Dijital Modu, Hâlâ Yaşıyor</image:title>
+      <image:caption>RTTY (Radio TeleType) tarihçesi ve pratik kullanım. 45 baud, 170 Hz shift, Baudot kod, MMTTY/fldigi yazılımı, RTTY contest&#39;leri, modern ham radio&#39;da hâlâ aktif.</image:caption>
     </image:image>
   </url>
   <url>
@@ -848,8 +848,8 @@
     <priority>0.7</priority>
     <image:image>
       <image:loc>https://amator.tr/og/trac-amator-radyo-turkiye-tarihi.png</image:loc>
-      <image:title>TRAC ve Türkiye&apos;de Amatör Radyo Tarihi (1962-2026)</image:title>
-      <image:caption>Türkiye Radyo Amatörleri Cemiyeti (TRAC) 1962&apos;den günümüze. Türkiye&apos;de amatör telsizciliğin gelişimi, BTK düzenlemeleri, IARU üyeliği, ünlü TR operatörleri, kadın amatörler.</image:caption>
+      <image:title>TRAC ve Türkiye&#39;de Amatör Radyo Tarihi (1962-2026)</image:title>
+      <image:caption>Türkiye Radyo Amatörleri Cemiyeti (TRAC) 1962&#39;den günümüze. Türkiye&#39;de amatör telsizciliğin gelişimi, BTK düzenlemeleri, IARU üyeliği, ünlü TR operatörleri, kadın amatörler.</image:caption>
     </image:image>
   </url>
   <url>
@@ -869,7 +869,7 @@
     <image:image>
       <image:loc>https://amator.tr/og/uv-k5-programlama.png</image:loc>
       <image:title>Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)</image:title>
-      <image:caption>Quansheng UV-K5&apos;i F4HWN custom firmware ile flashlemek, armel&apos;in özel CHIRP driver&apos;ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.</image:caption>
+      <image:caption>Quansheng UV-K5&#39;i F4HWN custom firmware ile flashlemek, armel&#39;in özel CHIRP driver&#39;ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.</image:caption>
     </image:image>
   </url>
   <url>

@@ -91,5 +91,5 @@ export const VALID_TUTORIAL_SLUGS = new Set([
   "winlink-email-over-radio",
   "wspr-zayif-sinyal-yayini",
   "yagi-anten-yapimi",
-  "yagi-dk7zb-tasarim-derin"
+  "yagi-dk7zb-tasarim-derin",
 ]);

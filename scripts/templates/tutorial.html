@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE_ATTR}} — amator.tr</title>
+<meta name="description" content="{{DESCRIPTION_ATTR}}">
+<meta name="keywords" content="{{KEYWORDS_ATTR}}">
+<meta name="author" content="{{AUTHOR_ATTR}}">
+<link rel="canonical" href="https://amator.tr/tutorials/{{SLUG}}">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{TITLE_ATTR}}">
+<meta property="og:description" content="{{DESCRIPTION_ATTR}}">
+<meta property="og:url" content="https://amator.tr/tutorials/{{SLUG}}">
+<meta property="og:image" content="https://amator.tr/og/{{OG_IMAGE}}">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="amator.tr">
+<meta property="article:author" content="{{AUTHOR_SHORT_ATTR}}">
+<meta property="article:published_time" content="{{PUBLISHED_ISO}}">
+<meta property="article:modified_time" content="{{UPDATED_ISO}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="amator.tr Tutorials" href="/feed.xml">
+<style>{{STYLES}}</style>
+{{JSON_LD}}
+</head>
+<body>
+<a class="skip-link" href="#main">Ana içeriğe atla</a>
+<nav id="site-nav"></nav>
+<button id="theme-fab" class="theme-fab" type="button" aria-label="Tema seç" aria-haspopup="menu">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="M12 3 A9 9 0 0 0 12 21 Z" fill="currentColor" stroke="none"/>
+  </svg>
+</button>
+<div id="theme-menu" class="theme-menu" role="menu" aria-label="Tema seçenekleri" hidden></div>
+<script type="module" src="/shared/js/theme.js"></script>
+<link rel="stylesheet" href="/shared/css/nav.css">
+<script src="/shared/js/nav.js"></script>
+<script type="module" src="/shared/js/site-stats.js" defer></script>
+
+<main id="main" tabindex="-1">
+<div class="article-layout">
+<article class="prose">
+<nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Ana Sayfa</a> › <a href="/tutorials/">Tutorial'lar</a> › <span>{{TITLE_HTML}}</span></nav>
+<header><h1>{{TITLE_HTML}}</h1>
+<p class="meta"><time datetime="{{PUBLISHED_DATE}}">{{PUBLISHED_DATE}}</time> · {{READING_TIME}} dk okuma · {{WORD_COUNT}} kelime</p>
+</header>
+{{BODY}}
+</article>
+</div>
+{{PREV_NEXT}}
+<script type="module" src="/shared/js/reading-progress.js" defer></script>
+<script type="module" src="/shared/js/toc.js" defer></script>
+<script type="module" src="/shared/js/code-copy.js" defer></script>
+<script type="module" src="/shared/js/lightbox.js" defer></script>
+<script type="module" src="/shared/js/helpful.js" defer></script>
+</main>
+{{FOOTER}}
+</body>
+</html>
