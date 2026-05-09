@@ -8,6 +8,7 @@ import { existsSync } from 'node:fs';
 const REPO_ROOT = path.resolve(process.env.REPO_ROOT || process.cwd());
 const ALLOWED_ROOTS = [
   path.join(REPO_ROOT, 'content', 'tutorials'),
+  path.join(REPO_ROOT, 'content', 'pages'),
   path.join(REPO_ROOT, 'public', 'tutorials'),
   path.join(REPO_ROOT, 'public', 'og'),
   path.join(REPO_ROOT, 'public'),

@@ -8,6 +8,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 
 const CONTENT_DIR = path.resolve('content/tutorials');
+const PAGES_DIR = path.resolve('content/pages');
 
 function asKeywordsString(keywords) {
   if (Array.isArray(keywords)) return keywords.join(', ');
@@ -22,44 +23,67 @@ function asISODate(value) {
 }
 
 export function backfillArticles(rawDb) {
-  if (!fs.existsSync(CONTENT_DIR)) return { inserted: 0, skipped: 0 };
-
-  const insert = rawDb.prepare(`
+  // Tutorial backfill (content/tutorials -> articles type='tutorial')
+  const insertTutorial = rawDb.prepare(`
     INSERT OR IGNORE INTO articles
-      (slug, title, description, keywords, article_section, status,
+      (slug, type, title, description, keywords, article_section, status,
        markdown_source, frontmatter_yaml, published_at, updated_at, created_by)
-    VALUES (?, ?, ?, ?, ?, 'published', ?, ?, ?, ?, NULL)
+    VALUES (?, 'tutorial', ?, ?, ?, ?, 'published', ?, ?, ?, ?, NULL)
   `);
 
-  const files = fs.readdirSync(CONTENT_DIR).filter(f => f.endsWith('.md'));
+  // Page backfill (content/pages -> articles type='page')
+  const insertPage = rawDb.prepare(`
+    INSERT OR IGNORE INTO articles
+      (slug, type, title, description, keywords, article_section, status,
+       markdown_source, frontmatter_yaml, published_at, updated_at, created_by)
+    VALUES (?, 'page', ?, ?, '', '', 'published', ?, ?, ?, ?, NULL)
+  `);
+
   let inserted = 0, skipped = 0;
 
-  const tx = rawDb.transaction(() => {
+  function processDir(dir, kind) {
+    if (!fs.existsSync(dir)) return;
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('.md'));
     for (const file of files) {
       const slug = file.replace(/\.md$/, '');
-      const raw = fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
+      const raw = fs.readFileSync(path.join(dir, file), 'utf8');
       const parsed = matter(raw);
       const fm = parsed.data || {};
       const body = parsed.content || '';
-
-      // gray-matter parse'i frontmatter'in YAML kaynagini saklamiyor —
-      // round-trip icin matter.stringify kullanilacak. Backfill'de YAML
-      // raw'i tekrar serialize edip saklariz; admin update'inde de bu yol.
       const fmYaml = matter.stringify('', fm).replace(/^---\n|\n---\n?$/g, '').trim();
+      const today = new Date().toISOString().slice(0, 10);
 
-      const result = insert.run(
-        slug,
-        String(fm.title || slug),
-        String(fm.description || ''),
-        asKeywordsString(fm.keywords),
-        String(fm.article_section || ''),
-        body,
-        fmYaml,
-        asISODate(fm.published_at),
-        asISODate(fm.updated_at || fm.published_at),
-      );
+      let result;
+      if (kind === 'page') {
+        result = insertPage.run(
+          slug,
+          String(fm.title || slug),
+          String(fm.description || ''),
+          body,
+          fmYaml,
+          asISODate(fm.published_at) || today,
+          asISODate(fm.updated_at || fm.published_at) || today,
+        );
+      } else {
+        result = insertTutorial.run(
+          slug,
+          String(fm.title || slug),
+          String(fm.description || ''),
+          asKeywordsString(fm.keywords),
+          String(fm.article_section || ''),
+          body,
+          fmYaml,
+          asISODate(fm.published_at),
+          asISODate(fm.updated_at || fm.published_at),
+        );
+      }
       if (result.changes > 0) inserted++; else skipped++;
     }
+  }
+
+  const tx = rawDb.transaction(() => {
+    processDir(CONTENT_DIR, 'tutorial');
+    processDir(PAGES_DIR, 'page');
   });
   tx();
 

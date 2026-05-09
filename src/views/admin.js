@@ -57,8 +57,10 @@ tr:hover td{background:var(--s2)}
 .badge-archived{background:rgba(156,163,175,.15);color:var(--t3)}
 /* EasyMDE: koyu temayla uyumlu hale getir */
 .editor-toolbar{background:var(--s2)!important;border-color:var(--b1)!important;border-radius:8px 8px 0 0!important}
-.editor-toolbar a{color:var(--t2)!important}
-.editor-toolbar a:hover, .editor-toolbar a.active{background:var(--s1)!important;border-color:var(--b1)!important}
+.editor-toolbar a, .editor-toolbar button{color:var(--t2)!important;background:transparent!important;border:1px solid transparent!important}
+.editor-toolbar a:hover, .editor-toolbar a.active, .editor-toolbar button:hover, .editor-toolbar button.active{background:var(--s1)!important;border-color:var(--b1)!important;color:var(--t1)!important}
+.editor-toolbar i.separator{border-color:var(--b1)!important}
+.editor-toolbar a.disabled, .editor-toolbar button.disabled, .editor-toolbar a.disabled:hover, .editor-toolbar button.disabled:hover{opacity:.4;background:transparent!important;cursor:not-allowed}
 .CodeMirror{background:var(--s2)!important;color:var(--t1)!important;border-color:var(--b1)!important;font-family:ui-monospace,Menlo,monospace!important;font-size:14px!important;line-height:1.6!important}
 .CodeMirror-cursor{border-left-color:var(--p)!important}
 .editor-statusbar{color:var(--t3)!important;background:var(--s2)!important;border-top:1px solid var(--b1)!important;padding:6px 10px!important}
@@ -208,12 +210,15 @@ tr:hover td{background:var(--s2)}
 <div class="panel" id="p-articles">
 <div id="artListView">
 <div class="card">
-<div class="card-h" style="display:flex;justify-content:space-between;align-items:center">
-<span>Makaleler</span>
-<button class="act-btn act-btn-g" id="artNewBtn">Yeni Makale</button>
+<div class="card-h" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+<span>Makaleler &amp; Sayfalar</span>
+<div style="display:flex;gap:6px">
+<button class="act-btn act-btn-g" id="artNewBtn">+ Makale</button>
+<button class="act-btn" id="pageNewBtn" style="border-color:rgba(124,58,237,.25);color:var(--p)">+ Sayfa</button>
 </div>
-<div class="search-box"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="artSearch" placeholder="Slug veya baslik ara..."><select id="artStatusFilter" style="margin-left:8px;padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t1);font-size:12px"><option value="">Tumu</option><option value="draft">Taslak</option><option value="published">Yayinda</option><option value="archived">Arsiv</option></select></div>
-<div class="responsive-table"><table><thead><tr><th>Slug</th><th>Baslik</th><th>Durum</th><th>Yayin</th><th>Guncelleme</th><th>Islem</th></tr></thead><tbody id="artListBody"></tbody></table></div>
+</div>
+<div class="search-box"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="artSearch" placeholder="Slug veya baslik ara..."><select id="artTypeFilter" style="margin-left:8px;padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t1);font-size:12px"><option value="">Tum tipler</option><option value="tutorial">Makale</option><option value="page">Sayfa</option></select><select id="artStatusFilter" style="margin-left:8px;padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t1);font-size:12px"><option value="">Tum durumlar</option><option value="draft">Taslak</option><option value="published">Yayinda</option><option value="archived">Arsiv</option></select></div>
+<div class="responsive-table"><table><thead><tr><th>Slug</th><th>Tip</th><th>Baslik</th><th>Durum</th><th>Yayin</th><th>Guncelleme</th><th>Islem</th></tr></thead><tbody id="artListBody"></tbody></table></div>
 </div>
 </div>
 
@@ -223,13 +228,14 @@ tr:hover td{background:var(--s2)}
 <span id="artEditTitle">Yeni Makale</span>
 <button class="act-btn" id="artBackBtn">← Listeye Don</button>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+<div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Tip</label><select id="artType" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"><option value="tutorial">Makale (tutorial)</option><option value="page">Sayfa (page)</option></select></div>
 <div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Slug (a-z 0-9 -)</label><input type="text" id="artSlug" placeholder="ornek-slug" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
-<div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Yayin Tarihi</label><input type="date" id="artPublishedAt" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
+<div id="artPublishedAtWrap"><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Yayin Tarihi</label><input type="date" id="artPublishedAt" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
 </div>
 <input type="text" id="artTitle" placeholder="Baslik" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none;margin-bottom:10px">
 <textarea id="artDescription" placeholder="Aciklama (max 300 karakter)" rows="2" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none;resize:vertical;font-family:inherit;margin-bottom:10px"></textarea>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
+<div id="artTutorialFieldsWrap" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
 <div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Anahtar Kelimeler (virgulle ayir)</label><input type="text" id="artKeywords" placeholder="anten, hf, dipole" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
 <div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Bolum (article_section)</label><input type="text" id="artSection" placeholder="anten" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
 </div>
@@ -589,15 +595,24 @@ function loadArticles(){
   document.getElementById('artListView').style.display='';
   document.getElementById('artEditView').style.display='none';
   var status=document.getElementById('artStatusFilter').value;
+  var type=document.getElementById('artTypeFilter').value;
   var q=document.getElementById('artSearch').value.trim();
-  var url='/api/admin/articles?'+(status?'status='+encodeURIComponent(status):'')+(q?'&q='+encodeURIComponent(q):'');
+  var params=[];
+  if(status)params.push('status='+encodeURIComponent(status));
+  if(type)params.push('type='+encodeURIComponent(type));
+  if(q)params.push('q='+encodeURIComponent(q));
+  var url='/api/admin/articles'+(params.length?'?'+params.join('&'):'');
   fetch(url).then(function(r){return r.json()}).then(function(d){
     var body=document.getElementById('artListBody');
     body.textContent='';
-    if(!d.articles||!d.articles.length){var tr=document.createElement('tr');tr.appendChild(createEl('td',{className:'empty',colspan:'6'},'Makale yok'));body.appendChild(tr);return}
+    if(!d.articles||!d.articles.length){var tr=document.createElement('tr');tr.appendChild(createEl('td',{className:'empty',colspan:'7'},'Kayit yok'));body.appendChild(tr);return}
     d.articles.forEach(function(a){
       var tr=document.createElement('tr');
       tr.appendChild(textTd(a.slug,'mono'));
+      var typeBadge=createEl('span',{className:'badge'},(a.type||'tutorial')==='page'?'Sayfa':'Makale');
+      typeBadge.style.background=(a.type==='page')?'rgba(124,58,237,.15)':'rgba(59,130,246,.15)';
+      typeBadge.style.color=(a.type==='page')?'var(--p)':'#3b82f6';
+      tr.appendChild(htmlTd(typeBadge));
       tr.appendChild(textTd(a.title));
       var st=createEl('span',{className:'badge badge-'+a.status},a.status==='published'?'Yayinda':a.status==='draft'?'Taslak':'Arsiv');
       tr.appendChild(htmlTd(st));
@@ -626,10 +641,16 @@ function loadArticles(){
   });
 }
 
-function openArticleEditor(slug){
+function applyTypeUI(type){
+  var isPage=(type==='page');
+  document.getElementById('artTutorialFieldsWrap').style.display=isPage?'none':'grid';
+  document.getElementById('artPublishedAtWrap').style.display=isPage?'none':'';
+}
+
+function openArticleEditor(slug,defaultType){
   if(slug){
     fetch('/api/admin/articles/'+encodeURIComponent(slug)).then(function(r){return r.json()}).then(function(d){
-      if(!d.article){toast('Makale bulunamadi',false);return}
+      if(!d.article){toast('Kayit bulunamadi',false);return}
       artCurrentSlug=d.article.slug;
       artCurrentRow=d.article;
       showEditView(d.article);
@@ -637,15 +658,18 @@ function openArticleEditor(slug){
   }else{
     artCurrentSlug=null;
     artCurrentRow=null;
-    showEditView(null);
+    showEditView(null,defaultType||'tutorial');
   }
 }
 
-function showEditView(a){
+function showEditView(a,defaultType){
   destroyMDE();
   document.getElementById('artListView').style.display='none';
   document.getElementById('artEditView').style.display='';
-  document.getElementById('artEditTitle').textContent=a?('Duzenle: '+a.slug):'Yeni Makale';
+  var type=a?(a.type||'tutorial'):(defaultType||'tutorial');
+  document.getElementById('artType').value=type;
+  document.getElementById('artType').disabled=!!a;
+  document.getElementById('artEditTitle').textContent=a?('Duzenle: '+a.slug+' ('+(type==='page'?'sayfa':'makale')+')'):(type==='page'?'Yeni Sayfa':'Yeni Makale');
   document.getElementById('artSlug').value=a?a.slug:'';
   document.getElementById('artSlug').disabled=!!a;
   document.getElementById('artTitle').value=a?(a.title||''):'';
@@ -658,12 +682,14 @@ function showEditView(a){
   document.getElementById('artDeleteBtn').style.display=(a&&a.status!=='published')?'':'none';
   document.getElementById('artPreviewCard').style.display='none';
   document.getElementById('artStatus').textContent='';
+  applyTypeUI(type);
   initMDE();
 }
 
 function collectFields(){
   return {
     slug:document.getElementById('artSlug').value.trim(),
+    type:document.getElementById('artType').value,
     title:document.getElementById('artTitle').value.trim(),
     description:document.getElementById('artDescription').value.trim(),
     keywords:document.getElementById('artKeywords').value.split(',').map(function(s){return s.trim()}).filter(Boolean),
@@ -674,8 +700,11 @@ function collectFields(){
 }
 
 document.getElementById('artStatusFilter').addEventListener('change',loadArticles);
+document.getElementById('artTypeFilter').addEventListener('change',loadArticles);
 document.getElementById('artSearch').addEventListener('input',function(){clearTimeout(window._artT);window._artT=setTimeout(loadArticles,250)});
-document.getElementById('artNewBtn').addEventListener('click',function(){openArticleEditor(null)});
+document.getElementById('artNewBtn').addEventListener('click',function(){openArticleEditor(null,'tutorial')});
+document.getElementById('pageNewBtn').addEventListener('click',function(){openArticleEditor(null,'page')});
+document.getElementById('artType').addEventListener('change',function(){applyTypeUI(this.value)});
 document.getElementById('artBackBtn').addEventListener('click',function(){destroyMDE();loadArticles()});
 
 document.getElementById('artDeleteBtn').addEventListener('click',function(){

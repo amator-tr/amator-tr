@@ -11,7 +11,7 @@ export function validateSlug(slug) {
   return null;
 }
 
-export function validateFrontmatter(fm) {
+export function validateFrontmatter(fm, type = 'tutorial') {
   const errors = [];
   if (!fm) return ['Frontmatter bos'];
 
@@ -21,23 +21,26 @@ export function validateFrontmatter(fm) {
   if (!fm.description || typeof fm.description !== 'string' || !fm.description.trim()) errors.push('description gerekli');
   else if (fm.description.length > 300) errors.push('description 300 karakteri asamaz');
 
-  if (!Array.isArray(fm.keywords) || fm.keywords.length === 0) errors.push('keywords (en az 1) gerekli');
-  else if (fm.keywords.some(k => typeof k !== 'string' || !k.trim())) errors.push('keywords tum elemanlar string olmali');
+  // Pages icin keywords/article_section/published_at/faq opsiyonel.
+  if (type === 'tutorial') {
+    if (!Array.isArray(fm.keywords) || fm.keywords.length === 0) errors.push('keywords (en az 1) gerekli');
+    else if (fm.keywords.some(k => typeof k !== 'string' || !k.trim())) errors.push('keywords tum elemanlar string olmali');
 
-  if (!fm.article_section || typeof fm.article_section !== 'string') errors.push('article_section gerekli');
+    if (!fm.article_section || typeof fm.article_section !== 'string') errors.push('article_section gerekli');
 
-  const dateRe = /^\d{4}-\d{2}-\d{2}$/;
-  const published = fm.published_at instanceof Date
-    ? fm.published_at.toISOString().slice(0, 10)
-    : String(fm.published_at || '');
-  if (!dateRe.test(published)) errors.push('published_at YYYY-MM-DD formatinda gerekli');
+    const dateRe = /^\d{4}-\d{2}-\d{2}$/;
+    const published = fm.published_at instanceof Date
+      ? fm.published_at.toISOString().slice(0, 10)
+      : String(fm.published_at || '');
+    if (!dateRe.test(published)) errors.push('published_at YYYY-MM-DD formatinda gerekli');
 
-  if (fm.faq !== undefined) {
-    if (!Array.isArray(fm.faq)) errors.push('faq dizi olmali');
-    else for (const [i, item] of fm.faq.entries()) {
-      if (!item || typeof item !== 'object') { errors.push(`faq[${i}] obje olmali`); continue; }
-      if (!item.q || typeof item.q !== 'string') errors.push(`faq[${i}].q gerekli`);
-      if (!item.a || typeof item.a !== 'string') errors.push(`faq[${i}].a gerekli`);
+    if (fm.faq !== undefined) {
+      if (!Array.isArray(fm.faq)) errors.push('faq dizi olmali');
+      else for (const [i, item] of fm.faq.entries()) {
+        if (!item || typeof item !== 'object') { errors.push(`faq[${i}] obje olmali`); continue; }
+        if (!item.q || typeof item.q !== 'string') errors.push(`faq[${i}].q gerekli`);
+        if (!item.a || typeof item.a !== 'string') errors.push(`faq[${i}].a gerekli`);
+      }
     }
   }
 

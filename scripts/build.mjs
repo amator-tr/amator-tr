@@ -24,6 +24,8 @@ import { loadCache, saveCache, hashArticle, shellHash } from './lib/cache.mjs';
 
 const ROOT = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), '..');
 const CONTENT_DIR = path.join(ROOT, 'content/tutorials');
+const CONTENT_PAGES = path.join(ROOT, 'content/pages');
+const PUBLIC_DIR = path.join(ROOT, 'public');
 const PUBLIC_TUTORIALS = path.join(ROOT, 'public/tutorials');
 const PUBLIC_TAGS = path.join(PUBLIC_TUTORIALS, 'tag');
 const TEMPLATES = path.join(ROOT, 'scripts/templates');
@@ -118,6 +120,17 @@ function discoverArticles() {
   });
 }
 
+function discoverPages() {
+  if (!fs.existsSync(CONTENT_PAGES)) return [];
+  const files = fs.readdirSync(CONTENT_PAGES).filter(f => f.endsWith('.md'));
+  return files.map(f => {
+    const slug = f.replace(/\.md$/, '');
+    const raw = fs.readFileSync(path.join(CONTENT_PAGES, f), 'utf8');
+    const { data: frontmatter, content: body } = matter(raw);
+    return { slug, frontmatter, body };
+  });
+}
+
 // Order by date DESC, slug ASC within same date — matches the canonical
 // prev/next semantics ("Önceki" = older, "Sonraki" = newer).
 function feedOrder(articles) {
@@ -180,6 +193,38 @@ function buildArticleHTML({ article, prev, next, shell, prevNextHTML }) {
     JSON_LD: ld,
     BODY: body,
     PREV_NEXT: prevNextHTML,
+    FOOTER: shell.footer,
+  });
+}
+
+function buildPageHTML(page, shell) {
+  const meta = page.frontmatter;
+  const slug = page.slug;
+  const ogImage = meta.og_image_override || 'default.png';
+  const body = renderBody(page.body);
+
+  const ld = renderLDBlocks([
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: meta.title,
+      description: meta.description,
+      url: `${SITE_URL}/${slug}/`,
+      inLanguage: 'tr-TR',
+      isPartOf: { '@type': 'WebSite', name: 'amator.tr', url: SITE_URL },
+    },
+  ]);
+
+  return fillTemplate(shell.page, {
+    TITLE_ATTR: escAttr(meta.title),
+    TITLE_HTML: escText(meta.title),
+    DESCRIPTION_ATTR: escAttr(meta.description || ''),
+    AUTHOR_ATTR: escAttr(AUTHOR_FULL),
+    SLUG: slug,
+    OG_IMAGE: ogImage,
+    STYLES: shell.styles,
+    JSON_LD: ld,
+    BODY: body,
     FOOTER: shell.footer,
   });
 }
@@ -371,6 +416,7 @@ function main() {
   // Load shell (templates + styles + footer)
   const shell = {
     tutorial: readTemplate('tutorial.html'),
+    page: readTemplate('page.html'),
     index: readTemplate('index.html'),
     tag: readTemplate('tag.html'),
     sitemap: readTemplate('sitemap.xml'),
@@ -454,11 +500,21 @@ function main() {
   fs.writeFileSync(VALID_SLUGS_PATH, buildValidSlugs(articles));
   console.log(`[regen] src/valid-slugs.js`);
 
-  // SSI source: statik HTML sayfalari (index.html, hakkinda.html, vs.) bu dosyayi
+  // SSI source: statik HTML sayfalari (index.html, 404.html, vs.) bu dosyayi
   // <!--#include virtual="/_includes/footer.html" --> ile cekiyor. Tek kaynak.
   ensureDir(PUBLIC_INCLUDES);
   fs.writeFileSync(FOOTER_INCLUDE_PATH, shell.footer);
   console.log(`[regen] public/_includes/footer.html`);
+
+  // Pages: content/pages/<slug>.md -> public/<slug>/index.html
+  const pages = discoverPages();
+  for (const page of pages) {
+    const dir = path.join(PUBLIC_DIR, page.slug);
+    ensureDir(dir);
+    fs.writeFileSync(path.join(dir, 'index.html'), buildPageHTML(page, shell));
+    console.log(`[page] ${page.slug}`);
+  }
+  if (pages.length) console.log(`[regen] ${pages.length} pages`);
 
   // Orphan sweep: HTML files for slugs that no longer have an MD source
   const knownSlugs = new Set(articles.map(a => a.slug));

@@ -48,8 +48,25 @@ function buildFrontmatter(row, body) {
   return fm;
 }
 
-function articleFiles(slug) {
+function normalizeType(t) {
+  return t === 'page' ? 'page' : 'tutorial';
+}
+
+function articleFiles(slug, type = 'tutorial') {
+  if (type === 'page') {
+    return {
+      type: 'page',
+      md: repoPath('content', 'pages', `${slug}.md`),
+      html: repoPath('public', slug, 'index.html'),
+      htmlDir: repoPath('public', slug),
+      og: null,
+      sitemap: repoPath('public', 'sitemap.xml'),
+      feed: repoPath('public', 'feed.xml'),
+      validSlugs: repoPath('src', 'valid-slugs.js'),
+    };
+  }
   return {
+    type: 'tutorial',
     md: repoPath('content', 'tutorials', `${slug}.md`),
     html: repoPath('public', 'tutorials', `${slug}.html`),
     og: repoPath('public', 'og', `${slug}.png`),
@@ -60,17 +77,16 @@ function articleFiles(slug) {
   };
 }
 
-function commitFilesForPublish(slug) {
-  const f = articleFiles(slug);
-  // .build-cache.json .gitignore'da; commit'e dahil edilmez.
-  return [
-    f.md,
-    f.og,
-    repoPath('public', 'tutorials'),
-    f.sitemap,
-    f.feed,
-    f.validSlugs,
-  ];
+function commitFilesForPublish(slug, type = 'tutorial') {
+  const f = articleFiles(slug, type);
+  if (type === 'page') {
+    return [f.md, f.htmlDir, f.sitemap, f.feed, f.validSlugs];
+  }
+  return [f.md, f.og, repoPath('public', 'tutorials'), f.sitemap, f.feed, f.validSlugs];
+}
+
+function publishedUrl(slug, type) {
+  return type === 'page' ? `https://amator.tr/${slug}/` : `https://amator.tr/tutorials/${slug}`;
 }
 
 // --- routes ------------------------------------------------------------
@@ -79,10 +95,12 @@ function commitFilesForPublish(slug) {
 articles.get('/api/admin/articles', adminMiddleware(), async (c) => {
   const status = c.req.query('status') || '';
   const q = c.req.query('q') || '';
-  let sql = `SELECT id, slug, title, description, status, published_at, updated_at, created_at FROM articles`;
+  const type = c.req.query('type') || '';
+  let sql = `SELECT id, slug, title, description, status, type, published_at, updated_at, created_at FROM articles`;
   const where = [];
   const params = [];
   if (status && ['draft', 'published', 'archived'].includes(status)) { where.push('status = ?'); params.push(status); }
+  if (type && ['tutorial', 'page'].includes(type)) { where.push('type = ?'); params.push(type); }
   if (q) { where.push('(slug LIKE ? OR title LIKE ?)'); params.push(`%${q}%`, `%${q}%`); }
   if (where.length) sql += ' WHERE ' + where.join(' AND ');
   sql += ' ORDER BY COALESCE(updated_at, created_at) DESC LIMIT 200';
@@ -117,10 +135,11 @@ articles.post('/api/admin/articles', adminMiddleware(), async (c) => {
   const slug = String(body.slug || '').trim();
   const slugErr = validateSlug(slug);
   if (slugErr) return c.json({ error: slugErr }, 400);
+  const type = normalizeType(body.type);
 
   const exists = await c.env.DB.prepare('SELECT id FROM articles WHERE slug = ?').bind(slug).first();
   if (exists) return c.json({ error: 'Slug zaten kullaniliyor' }, 409);
-  if (existsSync(repoPath('content', 'tutorials', `${slug}.md`))) {
+  if (existsSync(articleFiles(slug, type).md)) {
     return c.json({ error: 'Slug filesystem\'de mevcut' }, 409);
   }
 
@@ -131,21 +150,21 @@ articles.post('/api/admin/articles', adminMiddleware(), async (c) => {
     article_section: body.article_section || '',
     published_at: body.published_at || new Date().toISOString().slice(0, 10),
   };
-  const errors = validateFrontmatter(fmInput);
+  const errors = validateFrontmatter(fmInput, type);
   if (errors.length) return c.json({ error: 'Frontmatter hatali', details: errors }, 400);
 
   const fmYaml = frontmatterYaml({ ...fmInput, ...(body.faq ? { faq: body.faq } : {}) });
   await c.env.DB.prepare(`
-    INSERT INTO articles (slug, title, description, keywords, article_section, status,
+    INSERT INTO articles (slug, type, title, description, keywords, article_section, status,
                           markdown_source, frontmatter_yaml, published_at, updated_at, created_by)
-    VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?)
   `).bind(
-    slug, fmInput.title, fmInput.description, fmInput.keywords.join(', '),
+    slug, type, fmInput.title, fmInput.description, fmInput.keywords.join(', '),
     fmInput.article_section, body.body || '', fmYaml,
     fmInput.published_at, fmInput.published_at, c.get('userId')
   ).run();
-  await logActivity(c.env.DB, c.get('userId'), 'create_article', slug);
-  return c.json({ ok: true, slug });
+  await logActivity(c.env.DB, c.get('userId'), 'create_article', `${slug} (${type})`);
+  return c.json({ ok: true, slug, type });
 });
 
 // Draft guncelle
@@ -156,6 +175,7 @@ articles.put('/api/admin/articles/:slug', adminMiddleware(), async (c) => {
   if (!row) return c.json({ error: 'Makale bulunamadi' }, 404);
 
   const body = await c.req.json().catch(() => ({}));
+  const type = normalizeType(row.type);
   const fmInput = {
     title: body.title ?? row.title,
     description: body.description ?? row.description,
@@ -163,7 +183,7 @@ articles.put('/api/admin/articles/:slug', adminMiddleware(), async (c) => {
     article_section: body.article_section ?? row.article_section,
     published_at: body.published_at ?? row.published_at,
   };
-  const errors = validateFrontmatter(fmInput);
+  const errors = validateFrontmatter(fmInput, type);
   if (errors.length) return c.json({ error: 'Frontmatter hatali', details: errors }, 400);
 
   const fmYaml = frontmatterYaml({ ...fmInput, ...(body.faq ? { faq: body.faq } : {}) });
@@ -183,6 +203,7 @@ articles.put('/api/admin/articles/:slug', adminMiddleware(), async (c) => {
 // Onizleme — dosya yazmaz, build cagirmaz
 articles.post('/api/admin/articles/preview', adminMiddleware(), async (c) => {
   const body = await c.req.json().catch(() => ({}));
+  const type = normalizeType(body.type);
   const fmInput = {
     title: body.title || '',
     description: body.description || '',
@@ -191,7 +212,7 @@ articles.post('/api/admin/articles/preview', adminMiddleware(), async (c) => {
     published_at: body.published_at || '2026-01-01',
   };
   if (body.faq) fmInput.faq = body.faq;
-  const warnings = validateFrontmatter(fmInput);
+  const warnings = validateFrontmatter(fmInput, type);
   const { html, wordCount, readMinutes } = renderPreview({ body: body.body || '' });
   return c.json({ html, wordCount, readMinutes, warnings });
 });
@@ -213,8 +234,6 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
   if (reqBody.faq && Array.isArray(reqBody.faq) && reqBody.faq.length) fm.faq = reqBody.faq;
   const bodyMd = String(reqBody.body || '');
 
-  const errors = validateFrontmatter(fm);
-  if (errors.length) return c.json({ error: 'Frontmatter hatali', details: errors }, 400);
   if (!bodyMd.trim()) return c.json({ error: 'Markdown govde bos' }, 400);
 
   const user = await c.env.DB.prepare('SELECT username FROM users WHERE id = ?').bind(c.get('userId')).first();
@@ -224,18 +243,29 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
     const result = await withPublishLock(async () => {
       // Upsert: row yoksa draft olarak ac
       let row = await c.env.DB.prepare('SELECT * FROM articles WHERE slug = ?').bind(slug).first();
+      // Mevcut row'un type'i one cikar; yoksa istek body'sinden, o da yoksa tutorial.
+      const type = row ? normalizeType(row.type) : normalizeType(reqBody.type);
+
+      // Pages icin published_at opsiyonel — bos ise bugun.
+      if (type === 'page' && !fm.published_at) {
+        fm.published_at = new Date().toISOString().slice(0, 10);
+      }
+
+      const errors = validateFrontmatter(fm, type);
+      if (errors.length) throw Object.assign(new Error('Frontmatter hatali'), { status: 400, details: errors });
+
       const fmYaml = frontmatterYaml(fm);
 
       if (!row) {
-        if (existsSync(repoPath('content', 'tutorials', `${slug}.md`))) {
+        if (existsSync(articleFiles(slug, type).md)) {
           throw Object.assign(new Error("Slug filesystem'de mevcut"), { status: 409 });
         }
         await c.env.DB.prepare(`
-          INSERT INTO articles (slug, title, description, keywords, article_section, status,
+          INSERT INTO articles (slug, type, title, description, keywords, article_section, status,
                                 markdown_source, frontmatter_yaml, published_at, updated_at, created_by)
-          VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?)
         `).bind(
-          slug, fm.title, fm.description, fm.keywords.join(', '),
+          slug, type, fm.title, fm.description, fm.keywords.join(', '),
           fm.article_section, bodyMd, fmYaml, fm.published_at, fm.published_at, c.get('userId')
         ).run();
         row = await c.env.DB.prepare('SELECT * FROM articles WHERE slug = ?').bind(slug).first();
@@ -243,10 +273,10 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
         throw Object.assign(new Error(`Bu durumdan yayinlanamaz: ${row.status}`), { status: 400 });
       }
 
-      const f = articleFiles(slug);
+      const f = articleFiles(slug, type);
       const filesBefore = {
         md: existsSync(f.md) ? await safeRead(f.md) : null,
-        ogExisted: existsSync(f.og),
+        ogExisted: f.og ? existsSync(f.og) : false,
       };
       const headBefore = await gitHeadSha();
 
@@ -269,8 +299,8 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
       const mdContent = buildMarkdownFile({ frontmatter: fm, body: bodyMd });
       await safeWrite(f.md, mdContent);
 
-      // 2) OG yoksa uret
-      if (!existsSync(f.og)) {
+      // 2) OG yoksa uret (sadece tutorial — pages default OG kullanir)
+      if (f.og && !existsSync(f.og)) {
         const png = generateOgImagePng({ title: fm.title, slug });
         await safeWrite(f.og, png);
       }
@@ -287,8 +317,8 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
       //    once index'i temizler, sonra disk'i restore eder, sonra build'i
       //    tekrar calistirir, sonra reset --hard headBefore.
       try {
-        await gitAdd(commitFilesForPublish(slug));
-        await gitCommit({ message: `publish: ${slug} by ${username}` });
+        await gitAdd(commitFilesForPublish(slug, type));
+        await gitCommit({ message: `publish: ${slug} (${type}) by ${username}` });
         await gitPush();
       } catch (err) {
         const rollbackErrors = [];
@@ -298,7 +328,7 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
           else await safeUnlink(f.md);
         } catch (e) { rollbackErrors.push('md_restore:' + e.message); }
         try {
-          if (!filesBefore.ogExisted) await safeUnlink(f.og);
+          if (f.og && !filesBefore.ogExisted) await safeUnlink(f.og);
         } catch (e) { rollbackErrors.push('og_unlink:' + e.message); }
         try { await runBuild(); } catch (e) { rollbackErrors.push('rebuild:' + e.message); }
         try { await gitResetHard(headBefore); } catch (e) { rollbackErrors.push('reset:' + e.message); }
@@ -317,7 +347,7 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
       `).bind(fm.published_at, row.id).run();
 
       const headAfter = await gitHeadSha();
-      return { ok: true, slug, url: `https://amator.tr/tutorials/${slug}`, commit: headAfter };
+      return { ok: true, slug, type, url: publishedUrl(slug, type), commit: headAfter };
     });
 
     await logActivity(c.env.DB, c.get('userId'), 'publish_article', slug);
@@ -364,7 +394,8 @@ articles.post('/api/admin/articles/:slug/unpublish', adminMiddleware(), async (c
         throw Object.assign(new Error(`Bu durumdan kaldirilamaz: ${row.status}`), { status: 400 });
       }
 
-      const f = articleFiles(slug);
+      const type = normalizeType(row.type);
+      const f = articleFiles(slug, type);
       const headBefore = await gitHeadSha();
       const mdBefore = existsSync(f.md) ? await safeRead(f.md) : null;
 
@@ -374,7 +405,14 @@ articles.post('/api/admin/articles/:slug/unpublish', adminMiddleware(), async (c
 
       // .md ve OG sil; pipeline orphan sweep ile HTML'i temizleyecek
       await safeUnlink(f.md);
-      await safeUnlink(f.og);
+      if (f.og) await safeUnlink(f.og);
+      // Pages icin orphan sweep yok — html dizinini de elle sil
+      if (type === 'page') {
+        try {
+          const fs = await import('node:fs/promises');
+          await fs.rm(f.htmlDir, { recursive: true, force: true });
+        } catch {}
+      }
 
       const build = await runBuild();
       if (!build.ok) {
@@ -384,8 +422,8 @@ articles.post('/api/admin/articles/:slug/unpublish', adminMiddleware(), async (c
       }
 
       try {
-        await gitAdd(commitFilesForPublish(slug));
-        await gitCommit({ message: `unpublish: ${slug} by ${username}` });
+        await gitAdd(commitFilesForPublish(slug, type));
+        await gitCommit({ message: `unpublish: ${slug} (${type}) by ${username}` });
         await gitPush();
       } catch (err) {
         const rollbackErrors = [];
