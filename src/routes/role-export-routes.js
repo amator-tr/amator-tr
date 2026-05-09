@@ -132,10 +132,14 @@ async function timingSafeEqual(a, b) {
 }
 
 // ─── Rate limiting (simple in-memory counter) ───────────────────────────────
-
+//
+// PROTECTED_PASSWORD sozluk kelimesi olabilir (.env varsayilan deger
+// "tanidik" idi); 1dk/5 deneme botnet ile bypass edilirdi (saatte 300
+// deneme). 15dk/5 deneme pencerede 20/saat'e indirir + nginx limit_req
+// auth_zone (10r/m) ek bir kati saglar.
 const rateLimitMap = new Map();
 const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 60_000;
+const WINDOW_MS = 15 * 60_000;
 
 function checkRateLimit(ip) {
   const now = Date.now();
