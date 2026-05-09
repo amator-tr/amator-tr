@@ -19,6 +19,11 @@ import adminArticlesRoutes from './routes/admin-articles-routes.js';
 
 const app = new Hono();
 
+// NOT: script-src 'unsafe-inline' agresif refactor olmadan kaldirilamaz —
+// auth template'leri, EasyMDE bootstrap, GTM ve Turnstile init inline
+// script'lere bagli. Defense-in-depth: object-src 'none', upgrade-insecure,
+// frame-ancestors 'none', form-action 'self' ile clickjacking + downgrade
+// + form hijack ataclari kapali. Tam koruma icin bkz. SECURITY_AUDIT F7.
 const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com",
@@ -30,6 +35,8 @@ const CSP = [
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
 ].join('; ');
 
 app.use('*', async (c, next) => {
@@ -37,9 +44,14 @@ app.use('*', async (c, next) => {
   c.header('Content-Security-Policy', CSP);
   c.header('X-Content-Type-Options', 'nosniff');
   c.header('X-Frame-Options', 'DENY');
-  c.header('X-XSS-Protection', '1; mode=block');
+  // X-XSS-Protection modern tarayicilarda no-op (Chrome/Edge/Safari kaldirdi),
+  // legacy IE'de tehlikeli olabilir; setlemiyoruz.
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
   c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  // Cross-origin isolation: opener / embedder relaxation ile clickjacking +
+  // pop-up tab-nabbing savunmasi.
+  c.header('Cross-Origin-Opener-Policy', 'same-origin');
+  c.header('Cross-Origin-Resource-Policy', 'same-origin');
 });
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
