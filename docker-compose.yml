@@ -3,6 +3,12 @@ services:
     build: .
     restart: unless-stopped
     env_file: .env
+    # Container ic siralanma SUID/setcap escalasyonunu engelle.
+    security_opt:
+      - no-new-privileges:true
+    # Bkz. SECURITY_AUDIT F6: Dockerfile USER root, ayri commit'te non-root
+    # user'a gecirilmesi planlandi (host .git uid + SSH key path uyumu icin
+    # test gerekir).
     volumes:
       - ./data:/app/data
       # Admin yayinlama: pipeline kaynagi, ciktisi, build cache, .git ve
@@ -40,6 +46,8 @@ services:
   web:
     image: nginx:alpine
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ./public:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
@@ -54,6 +62,8 @@ services:
   proxy:
     image: nginx:alpine
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ./proxy.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
