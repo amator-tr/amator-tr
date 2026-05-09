@@ -5,6 +5,24 @@ services:
     env_file: .env
     volumes:
       - ./data:/app/data
+      # Admin yayinlama: pipeline kaynagi, ciktisi, build cache, .git ve
+      # auto-emit edilen valid-slugs dosyasi. nginx web servisi ./public'i
+      # readonly mount ediyor — ayri mount, ayri mode.
+      - ./content:/app/content
+      - ./public:/app/public
+      - ./scripts:/app/scripts
+      - ./.git:/app/.git
+      - ./src/valid-slugs.js:/app/src/valid-slugs.js
+      # SSH deploy key (chmod 600 host'ta). Yoksa container yuklenir ama
+      # publish push'unda gecersiz key hatasi gorur — admin akisi calismaz.
+      - ${DEPLOY_KEY_PATH:-/dev/null}:/root/.ssh/deploy_key:ro
+    environment:
+      GIT_AUTHOR_NAME: ${GIT_AUTHOR_NAME:-Admin Publish}
+      GIT_AUTHOR_EMAIL: ${GIT_AUTHOR_EMAIL:-admin@amator.tr}
+      GIT_COMMITTER_NAME: ${GIT_AUTHOR_NAME:-Admin Publish}
+      GIT_COMMITTER_EMAIL: ${GIT_AUTHOR_EMAIL:-admin@amator.tr}
+      GIT_SSH_COMMAND: "ssh -i /root/.ssh/deploy_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      REPO_ROOT: /app
     ports:
       - "4541:3000"
     healthcheck:

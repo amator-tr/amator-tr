@@ -1,8 +1,11 @@
 import { getRawDB } from './db.js';
 import { readFileSync, readdirSync } from 'fs';
-import { resolve, join } from 'path';
+import { resolve, join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { backfillArticles } from './articles/backfill.js';
 
-const MIGRATIONS_DIR = resolve(import.meta.dirname, '../migrations');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const MIGRATIONS_DIR = resolve(__dirname, '../migrations');
 
 const db = getRawDB();
 
@@ -39,4 +42,12 @@ for (const file of files) {
 }
 
 console.log(count ? `${count} migration(s) applied.` : 'Database is up to date.');
+
+try {
+  const { inserted, skipped } = backfillArticles(db);
+  if (inserted > 0) console.log(`Articles backfill: ${inserted} inserted, ${skipped} skipped.`);
+} catch (err) {
+  console.error('Articles backfill failed:', err.message);
+}
+
 process.exit(0);

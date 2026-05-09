@@ -1,6 +1,9 @@
 FROM node:20-alpine
 
-RUN apk add --no-cache python3 make g++
+# python3/make/g++ better-sqlite3 native build icin.
+# git/openssh admin yayinlama akisi (commit + push) icin.
+# ttf-dejavu OG SVG -> PNG metin renderi icin (resvg-js loadSystemFonts).
+RUN apk add --no-cache python3 make g++ git openssh-client ttf-dejavu
 
 WORKDIR /app
 

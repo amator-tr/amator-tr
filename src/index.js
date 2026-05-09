@@ -9,6 +9,7 @@ import adminRoutes from './routes/admin-routes.js';
 import qsoRoutes from './routes/qso-routes.js';
 import morseRoutes from './routes/morse-routes.js';
 import statsRoutes from './routes/stats-routes.js';
+import adminArticlesRoutes from './routes/admin-articles-routes.js';
 
 const app = new Hono();
 
@@ -36,7 +37,7 @@ app.use('*', async (c, next) => {
 });
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
-const CSRF_SKIP = ['/api/stats/ping', '/api/stats/download', '/api/stats/helpful'];
+const CSRF_SKIP = ['/api/stats/ping', '/api/stats/download', '/api/stats/helpful', '/api/role-export/auth/verify'];
 app.use('*', async (c, next) => {
   if (SAFE_METHODS.has(c.req.method)) return next();
   if (CSRF_SKIP.includes(c.req.path)) {
@@ -67,6 +68,7 @@ app.use('*', authMiddleware(getCookie));
 app.route('/', authRoutes);
 app.route('/', mainRoutes);
 app.route('/', adminRoutes);
+app.route('/', adminArticlesRoutes);
 app.route('/', qsoRoutes);
 app.route('/', morseRoutes);
 app.route('/', statsRoutes);

@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# .env dosyasını yükle
-if [ -f .env ]; then
-  set -a
-  source .env
-  set +a
-else
-  echo ".env dosyası bulunamadı!"
-  exit 1
-fi
+# .env'den sadece Cloudflare cache purge için gerekli değişkenleri oku.
+# Tüm dosyayı source etmiyoruz çünkü EMAIL_FROM gibi `<>` içeren değerler
+# bash'te syntax hatası verir.
+read_env() {
+  local key="$1"
+  [ -f .env ] || return 0
+  local line
+  line=$(grep -E "^${key}=" .env | tail -n1) || true
+  [ -z "$line" ] && return 0
+  local val="${line#*=}"
+  # Çevreleyen tırnakları soy
+  val="${val%\"}"; val="${val#\"}"
+  val="${val%\'}"; val="${val#\'}"
+  printf '%s' "$val"
+}
+
+CLOUDFLARE_ZONE_ID=$(read_env CLOUDFLARE_ZONE_ID)
+CLOUDFLARE_API_TOKEN=$(read_env CLOUDFLARE_API_TOKEN)
 
 echo "Git pull..."
 BEFORE=$(git rev-parse HEAD)
@@ -17,7 +26,9 @@ git pull --ff-only
 AFTER=$(git rev-parse HEAD)
 
 if [ "$BEFORE" = "$AFTER" ]; then
-  echo "Değişiklik yok — deploy atlanıyor."
+  echo "Yeni commit yok — compose up (env_file değişiklikleri için recreate)."
+  docker compose up -d --remove-orphans
+  echo "Tamamlandı."
   exit 0
 fi
 

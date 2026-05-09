@@ -46,6 +46,9 @@ tr:hover td{background:var(--s2)}
 .badge-user{background:var(--pg);color:var(--p2)}
 .badge-ok{background:var(--gg);color:var(--g)}
 .badge-fail{background:var(--rg);color:var(--r)}
+.badge-published{background:var(--gg);color:var(--g)}
+.badge-draft{background:var(--yg);color:var(--y)}
+.badge-archived{background:rgba(156,163,175,.15);color:var(--t3)}
 .act-btn{padding:4px 10px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--b1);background:var(--s2);color:var(--t2);transition:.15s}
 .act-btn:hover{border-color:var(--b2);background:var(--s3)}
 .act-btn-r{color:var(--r);border-color:rgba(239,68,68,.15)}
@@ -131,6 +134,7 @@ tr:hover td{background:var(--s2)}
 <div class="tab active" data-tab="users">Kullanicilar</div>
 <div class="tab" data-tab="settings">Ayarlar</div>
 <div class="tab" data-tab="announcements">Duyurular</div>
+<div class="tab" data-tab="articles">Makaleler</div>
 <div class="tab" data-tab="activity">Aktiviteler</div>
 <div class="tab" data-tab="logs">Giris Loglari</div>
 <div class="tab" data-tab="operators">Tum Operatorler</div>
@@ -180,6 +184,52 @@ tr:hover td{background:var(--s2)}
 <div class="card-h">Mevcut Duyurular</div>
 <div id="annList"></div>
 </div></div>
+
+<div class="panel" id="p-articles">
+<div id="artListView">
+<div class="card">
+<div class="card-h" style="display:flex;justify-content:space-between;align-items:center">
+<span>Makaleler</span>
+<button class="act-btn act-btn-g" id="artNewBtn">Yeni Makale</button>
+</div>
+<div class="search-box"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="artSearch" placeholder="Slug veya baslik ara..."><select id="artStatusFilter" style="margin-left:8px;padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t1);font-size:12px"><option value="">Tumu</option><option value="draft">Taslak</option><option value="published">Yayinda</option><option value="archived">Arsiv</option></select></div>
+<div class="responsive-table"><table><thead><tr><th>Slug</th><th>Baslik</th><th>Durum</th><th>Yayin</th><th>Guncelleme</th><th>Islem</th></tr></thead><tbody id="artBody"></tbody></table></div>
+</div>
+</div>
+
+<div id="artEditView" style="display:none">
+<div class="card">
+<div class="card-h" style="display:flex;justify-content:space-between;align-items:center">
+<span id="artEditTitle">Yeni Makale</span>
+<button class="act-btn" id="artBackBtn">← Listeye Don</button>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+<div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Slug (a-z 0-9 -)</label><input type="text" id="artSlug" placeholder="ornek-slug" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
+<div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Yayin Tarihi</label><input type="date" id="artPublishedAt" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
+</div>
+<input type="text" id="artTitle" placeholder="Baslik" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none;margin-bottom:10px">
+<textarea id="artDescription" placeholder="Aciklama (max 300 karakter)" rows="2" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none;resize:vertical;font-family:inherit;margin-bottom:10px"></textarea>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
+<div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Anahtar Kelimeler (virgulle ayir)</label><input type="text" id="artKeywords" placeholder="anten, hf, dipole" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
+<div><label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Bolum (article_section)</label><input type="text" id="artSection" placeholder="anten" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none"></div>
+</div>
+<label style="display:block;font-size:12px;color:var(--t3);margin-bottom:4px">Markdown Govde</label>
+<textarea id="artBody" placeholder="# Baslik&#10;&#10;Markdown icerigi..." rows="20" style="width:100%;padding:12px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none;resize:vertical;font-family:ui-monospace,Menlo,monospace;line-height:1.5"></textarea>
+<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+<button class="act-btn" id="artPreviewBtn">Onizle</button>
+<button class="act-btn" id="artSaveDraftBtn">Taslak Kaydet</button>
+<button class="act-btn act-btn-g" id="artPublishBtn">Yayinla</button>
+<button class="act-btn" id="artUnpublishBtn" style="color:var(--y);border-color:rgba(251,191,36,.15);display:none">Yayindan Kaldir</button>
+</div>
+<div id="artStatus" style="margin-top:12px;font-size:12px;color:var(--t3)"></div>
+</div>
+<div class="card" id="artPreviewCard" style="display:none">
+<div class="card-h">Onizleme</div>
+<div id="artPreviewMeta" style="font-size:12px;color:var(--t3);margin-bottom:8px"></div>
+<div id="artPreviewBox" style="background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:16px;max-height:600px;overflow:auto;font-size:14px;line-height:1.6"></div>
+</div>
+</div>
+</div>
 
 <div class="panel" id="p-activity">
 <div class="card">
@@ -244,6 +294,7 @@ document.getElementById('p-'+t.dataset.tab).classList.add('active');
 if(t.dataset.tab==='users')loadUsers();
 if(t.dataset.tab==='settings')loadSettings();
 if(t.dataset.tab==='announcements')loadAnnouncements();
+if(t.dataset.tab==='articles')loadArticles();
 if(t.dataset.tab==='activity')loadActivity(1);
 if(t.dataset.tab==='logs')loadLogs(1);
 if(t.dataset.tab==='operators')loadOperators();
@@ -481,6 +532,150 @@ document.getElementById('annAdd').addEventListener('click',function(){
   if(!title||!content){toast('Baslik ve icerik gerekli',false);return}
   fetch('/api/admin/announcements',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:title,content:content,type:type})})
     .then(function(r){return r.json()}).then(function(d){if(d.ok){toast('Duyuru yayinlandi',true);document.getElementById('annTitle').value='';document.getElementById('annContent').value='';loadAnnouncements()}else toast(d.error,false)});
+});
+
+/* ARTICLES */
+var artCurrentSlug=null;
+var artCurrentRow=null;
+
+function loadArticles(){
+  document.getElementById('artListView').style.display='';
+  document.getElementById('artEditView').style.display='none';
+  var status=document.getElementById('artStatusFilter').value;
+  var q=document.getElementById('artSearch').value.trim();
+  var url='/api/admin/articles?'+(status?'status='+encodeURIComponent(status):'')+(q?'&q='+encodeURIComponent(q):'');
+  fetch(url).then(function(r){return r.json()}).then(function(d){
+    var body=document.getElementById('artBody');
+    body.textContent='';
+    if(!d.articles||!d.articles.length){var tr=document.createElement('tr');tr.appendChild(createEl('td',{className:'empty',colspan:'6'},'Makale yok'));body.appendChild(tr);return}
+    d.articles.forEach(function(a){
+      var tr=document.createElement('tr');
+      tr.appendChild(textTd(a.slug,'mono'));
+      tr.appendChild(textTd(a.title));
+      var st=createEl('span',{className:'badge badge-'+a.status},a.status==='published'?'Yayinda':a.status==='draft'?'Taslak':'Arsiv');
+      tr.appendChild(htmlTd(st));
+      tr.appendChild(textTd(a.published_at||'-'));
+      tr.appendChild(textTd(toIST(a.updated_at||a.created_at),'mono'));
+      var editBtn=createEl('button',{className:'act-btn'},'Duzenle');
+      editBtn.addEventListener('click',function(){openArticleEditor(a.slug)});
+      tr.appendChild(htmlTd(editBtn));
+      body.appendChild(tr);
+    });
+  });
+}
+
+function openArticleEditor(slug){
+  if(slug){
+    fetch('/api/admin/articles/'+encodeURIComponent(slug)).then(function(r){return r.json()}).then(function(d){
+      if(!d.article){toast('Makale bulunamadi',false);return}
+      artCurrentSlug=d.article.slug;
+      artCurrentRow=d.article;
+      showEditView(d.article);
+    });
+  }else{
+    artCurrentSlug=null;
+    artCurrentRow=null;
+    showEditView(null);
+  }
+}
+
+function showEditView(a){
+  document.getElementById('artListView').style.display='none';
+  document.getElementById('artEditView').style.display='';
+  document.getElementById('artEditTitle').textContent=a?('Duzenle: '+a.slug):'Yeni Makale';
+  document.getElementById('artSlug').value=a?a.slug:'';
+  document.getElementById('artSlug').disabled=!!a;
+  document.getElementById('artTitle').value=a?(a.title||''):'';
+  document.getElementById('artDescription').value=a?(a.description||''):'';
+  document.getElementById('artKeywords').value=a?(a.keywords||''):'';
+  document.getElementById('artSection').value=a?(a.article_section||''):'';
+  document.getElementById('artPublishedAt').value=a?(a.published_at||''):new Date().toISOString().slice(0,10);
+  document.getElementById('artBody').value=a?(a.markdown_source||''):'';
+  document.getElementById('artUnpublishBtn').style.display=(a&&a.status==='published')?'':'none';
+  document.getElementById('artPreviewCard').style.display='none';
+  document.getElementById('artStatus').textContent='';
+}
+
+function collectFields(){
+  return {
+    slug:document.getElementById('artSlug').value.trim(),
+    title:document.getElementById('artTitle').value.trim(),
+    description:document.getElementById('artDescription').value.trim(),
+    keywords:document.getElementById('artKeywords').value.split(',').map(function(s){return s.trim()}).filter(Boolean),
+    article_section:document.getElementById('artSection').value.trim(),
+    published_at:document.getElementById('artPublishedAt').value,
+    body:document.getElementById('artBody').value,
+  };
+}
+
+document.getElementById('artStatusFilter').addEventListener('change',loadArticles);
+document.getElementById('artSearch').addEventListener('input',function(){clearTimeout(window._artT);window._artT=setTimeout(loadArticles,250)});
+document.getElementById('artNewBtn').addEventListener('click',function(){openArticleEditor(null)});
+document.getElementById('artBackBtn').addEventListener('click',loadArticles);
+
+document.getElementById('artPreviewBtn').addEventListener('click',function(){
+  var f=collectFields();
+  document.getElementById('artStatus').textContent='Onizleme yukleniyor...';
+  fetch('/api/admin/articles/preview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(f)})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.error){toast(d.error,false);document.getElementById('artStatus').textContent='';return}
+      document.getElementById('artPreviewCard').style.display='';
+      document.getElementById('artPreviewMeta').textContent=d.wordCount+' kelime · ~'+d.readMinutes+' dk okuma'+(d.warnings&&d.warnings.length?' · UYARI: '+d.warnings.join(', '):'');
+      /* d.html sanitize-html allowlist'ten gecti, innerHTML guvenli */
+      document.getElementById('artPreviewBox').innerHTML=d.html;
+      document.getElementById('artStatus').textContent='';
+    }).catch(function(e){toast('Onizleme basarisiz',false);document.getElementById('artStatus').textContent=''});
+});
+
+document.getElementById('artSaveDraftBtn').addEventListener('click',function(){
+  var f=collectFields();
+  if(!f.slug){toast('Slug gerekli',false);return}
+  document.getElementById('artStatus').textContent='Kaydediliyor...';
+  var url='/api/admin/articles'+(artCurrentSlug?'/'+encodeURIComponent(artCurrentSlug):'');
+  var method=artCurrentSlug?'PUT':'POST';
+  fetch(url,{method:method,headers:{'Content-Type':'application/json'},body:JSON.stringify(f)})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.error){toast(d.error+(d.details?': '+d.details.join(', '):''),false);document.getElementById('artStatus').textContent='';return}
+      toast('Taslak kaydedildi',true);
+      artCurrentSlug=f.slug;
+      document.getElementById('artStatus').textContent='Kaydedildi';
+      document.getElementById('artSlug').disabled=true;
+    });
+});
+
+document.getElementById('artPublishBtn').addEventListener('click',function(){
+  if(!artCurrentSlug){toast('Once taslak kaydet',false);return}
+  if(!confirm('"'+artCurrentSlug+'" yayinlanacak. Git commit + push tetiklenecek. Devam?'))return;
+  var f=collectFields();
+  document.getElementById('artStatus').textContent='Yayinlaniyor (build + git push)...';
+  fetch('/api/admin/articles/'+encodeURIComponent(artCurrentSlug)+'/publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({faq:null})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.error){
+        var msg=d.error;
+        if(d.details&&d.details.stderr)msg+=': '+d.details.stderr.split('\n')[0];
+        else if(Array.isArray(d.details))msg+=': '+d.details.join(', ');
+        toast(msg,false);
+        document.getElementById('artStatus').textContent='HATA: '+msg;
+        return;
+      }
+      toast('Yayinlandi: '+d.url,true);
+      document.getElementById('artStatus').textContent='Yayinlandi · commit '+(d.commit?d.commit.slice(0,7):'?')+' · '+d.url;
+      document.getElementById('artUnpublishBtn').style.display='';
+    }).catch(function(e){toast('Istek basarisiz',false);document.getElementById('artStatus').textContent='HATA: '+e.message});
+});
+
+document.getElementById('artUnpublishBtn').addEventListener('click',function(){
+  if(!artCurrentSlug)return;
+  var pw=prompt('Yayindan kaldirmak icin mevcut admin sifrenizi girin:');
+  if(!pw)return;
+  document.getElementById('artStatus').textContent='Yayindan kaldiriliyor...';
+  fetch('/api/admin/articles/'+encodeURIComponent(artCurrentSlug)+'/unpublish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.error){toast(d.error,false);document.getElementById('artStatus').textContent='HATA: '+d.error;return}
+      toast('Yayindan kaldirildi',true);
+      document.getElementById('artStatus').textContent='Arsivlendi · commit '+(d.commit?d.commit.slice(0,7):'?');
+      document.getElementById('artUnpublishBtn').style.display='none';
+    });
 });
 
 /* ACTIVITY LOG */
