@@ -193,7 +193,7 @@ tr:hover td{background:var(--s2)}
 <button class="act-btn act-btn-g" id="artNewBtn">Yeni Makale</button>
 </div>
 <div class="search-box"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="artSearch" placeholder="Slug veya baslik ara..."><select id="artStatusFilter" style="margin-left:8px;padding:6px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;color:var(--t1);font-size:12px"><option value="">Tumu</option><option value="draft">Taslak</option><option value="published">Yayinda</option><option value="archived">Arsiv</option></select></div>
-<div class="responsive-table"><table><thead><tr><th>Slug</th><th>Baslik</th><th>Durum</th><th>Yayin</th><th>Guncelleme</th><th>Islem</th></tr></thead><tbody id="artBody"></tbody></table></div>
+<div class="responsive-table"><table><thead><tr><th>Slug</th><th>Baslik</th><th>Durum</th><th>Yayin</th><th>Guncelleme</th><th>Islem</th></tr></thead><tbody id="artListBody"></tbody></table></div>
 </div>
 </div>
 
@@ -545,7 +545,7 @@ function loadArticles(){
   var q=document.getElementById('artSearch').value.trim();
   var url='/api/admin/articles?'+(status?'status='+encodeURIComponent(status):'')+(q?'&q='+encodeURIComponent(q):'');
   fetch(url).then(function(r){return r.json()}).then(function(d){
-    var body=document.getElementById('artBody');
+    var body=document.getElementById('artListBody');
     body.textContent='';
     if(!d.articles||!d.articles.length){var tr=document.createElement('tr');tr.appendChild(createEl('td',{className:'empty',colspan:'6'},'Makale yok'));body.appendChild(tr);return}
     d.articles.forEach(function(a){
@@ -631,16 +631,28 @@ document.getElementById('artSaveDraftBtn').addEventListener('click',function(){
   var f=collectFields();
   if(!f.slug){toast('Slug gerekli',false);return}
   document.getElementById('artStatus').textContent='Kaydediliyor...';
-  var url='/api/admin/articles'+(artCurrentSlug?'/'+encodeURIComponent(artCurrentSlug):'');
-  var method=artCurrentSlug?'PUT':'POST';
-  fetch(url,{method:method,headers:{'Content-Type':'application/json'},body:JSON.stringify(f)})
-    .then(function(r){return r.json()}).then(function(d){
-      if(d.error){toast(d.error+(d.details?': '+d.details.join(', '):''),false);document.getElementById('artStatus').textContent='';return}
-      toast('Taslak kaydedildi',true);
-      artCurrentSlug=f.slug;
-      document.getElementById('artStatus').textContent='Kaydedildi';
-      document.getElementById('artSlug').disabled=true;
-    });
+  function trySave(method,url){
+    return fetch(url,{method:method,headers:{'Content-Type':'application/json'},body:JSON.stringify(f)})
+      .then(function(r){return r.json().then(function(d){return {status:r.status,data:d}})});
+  }
+  var initialMethod=artCurrentSlug?'PUT':'POST';
+  var initialUrl='/api/admin/articles'+(artCurrentSlug?'/'+encodeURIComponent(artCurrentSlug):'');
+  trySave(initialMethod,initialUrl).then(function(res){
+    /* 409 = slug zaten var; PUT'a fallback */
+    if(res.status===409&&initialMethod==='POST'){
+      return trySave('PUT','/api/admin/articles/'+encodeURIComponent(f.slug));
+    }
+    return res;
+  }).then(function(res){
+    if(res.data&&res.data.error){
+      var msg=res.data.error+(Array.isArray(res.data.details)?': '+res.data.details.join(', '):'');
+      toast(msg,false);document.getElementById('artStatus').textContent='HATA: '+msg;return;
+    }
+    toast('Taslak kaydedildi',true);
+    artCurrentSlug=f.slug;
+    document.getElementById('artStatus').textContent='Kaydedildi';
+    document.getElementById('artSlug').disabled=true;
+  }).catch(function(e){toast('Istek basarisiz',false);document.getElementById('artStatus').textContent='HATA: '+e.message});
 });
 
 document.getElementById('artPublishBtn').addEventListener('click',function(){
