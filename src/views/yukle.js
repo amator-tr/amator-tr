@@ -168,6 +168,19 @@ input[type=file]{display:none}
 </div>
 </div>
 
+<div class="pw-modal" id="bulkRiskyModal">
+<div class="pw-box" style="max-width:480px">
+<h3 style="color:var(--y)">⚠ Birden fazla riskli uzanti</h3>
+<p id="bulkRiskyMsg" style="margin-bottom:8px"></p>
+<div id="bulkRiskyList" style="max-height:160px;overflow:auto;background:var(--s2);border:1px solid var(--b1);border-radius:6px;padding:8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2);margin-bottom:14px"></div>
+<p style="font-size:11px;color:var(--t3);margin-bottom:14px">"Tumunu yukle" — hepsi 'diger' klasorune gider, magic-byte atlanir.</p>
+<div class="pw-btns" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">
+<button class="pw-cancel" id="brkCancel" type="button">Iptal (hepsini atla)</button>
+<button class="pw-save" id="brkConfirm" type="button" style="background:var(--y);color:#000">Tumunu yukle</button>
+</div>
+</div>
+</div>
+
 <script>
 function $(s){return document.querySelector(s)}
 function $$(s){return document.querySelectorAll(s)}
@@ -223,15 +236,57 @@ fileInput.addEventListener('change',function(){handleFiles(fileInput.files);file
 var CHUNK_THRESHOLD = 90 * 1024 * 1024; // 90 MB - CF 100MB sinirinin biraz altinda
 var MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB
 
+// Server-side allowlist'in mirror'i — toplu secimde 'risky' on-classification.
+// Server validation hala yapilir; bu sadece UI'in tek modal'la sormasini saglar.
+var KNOWN_EXTS = new Set([
+  'png','jpg','jpeg','webp','gif',
+  'pdf','txt','csv','doc','docx','xls','xlsx',
+  'mp3','wav','ogg','m4a',
+  'mp4','webm','mov','mkv',
+  'zip','tar','gz','7z','rar',
+  'exe','msi','dmg','deb','rpm'
+]);
+function getFileExt(name){var i=name.lastIndexOf('.');return i<0?'':name.slice(i+1).toLowerCase()}
+function isKnownExt(ext){return KNOWN_EXTS.has(ext)}
+
 function handleFiles(files){
-  Array.from(files).forEach(function(f){
-    if(f.size > MAX_FILE_SIZE){
+  files=Array.from(files);
+  // Boyut filtresi
+  var oksize=[];
+  files.forEach(function(f){
+    if(f.size>MAX_FILE_SIZE){
       var item=mkQueueItem(f);
       item.classList.add('q-err');
       item.querySelector('.q-status').textContent='> 5GB';
+    } else {
+      oksize.push(f);
+    }
+  });
+  // Risky vs safe ayrimi
+  var safe=[],risky=[];
+  oksize.forEach(function(f){
+    if(isKnownExt(getFileExt(f.name)))safe.push(f);
+    else risky.push(f);
+  });
+  // Safe dosyalari direkt yukle
+  safe.forEach(function(f){uploadFile(f)});
+  // Risky 0 ise bitti
+  if(risky.length===0)return;
+  // Risky 1 ise eski tek-modal akisi (server 400 ile risky_unknown_ext doner, modal acilir)
+  if(risky.length===1){uploadFile(risky[0]);return}
+  // Risky >=2 — tek batch modal
+  askBulkRisky(risky, function(decision){
+    if(decision==='cancel'){
+      risky.forEach(function(f){
+        var item=mkQueueItem(f);
+        item.classList.add('q-err');
+        item.querySelector('.q-status').textContent='ATLANDI';
+        clearCancelBtn(item);
+      });
       return;
     }
-    uploadFile(f);
+    // 'all' — hepsi force=true ile
+    risky.forEach(function(f){uploadFile(f, undefined, true)});
   });
 }
 
@@ -538,6 +593,30 @@ function closeRisky(ok){
 }
 $('#rkCancel').addEventListener('click',function(){closeRisky(false)});
 $('#rkConfirm').addEventListener('click',function(){closeRisky(true)});
+
+var pendingBulkRisky=null;
+function askBulkRisky(files, callback){
+  pendingBulkRisky={callback:callback};
+  var exts={};
+  files.forEach(function(f){
+    var e=getFileExt(f.name)||'(uzanti yok)';
+    exts[e]=(exts[e]||0)+1;
+  });
+  var extSummary=Object.keys(exts).map(function(e){return '.'+e+'×'+exts[e]}).join(', ');
+  $('#bulkRiskyMsg').innerHTML='<strong>'+files.length+' dosyanin uzantisi listede yok</strong> ('+escHTML(extSummary)+').';
+  var listHtml=files.map(function(f){return escHTML(f.name)+' <span style="color:var(--t3)">· '+fmtSize(f.size)+'</span>'}).join('<br>');
+  $('#bulkRiskyList').innerHTML=listHtml;
+  $('#bulkRiskyModal').classList.add('open');
+}
+function closeBulkRisky(decision){
+  $('#bulkRiskyModal').classList.remove('open');
+  if(pendingBulkRisky && pendingBulkRisky.callback){
+    var cb=pendingBulkRisky.callback;pendingBulkRisky=null;
+    cb(decision);
+  }
+}
+$('#brkCancel').addEventListener('click',function(){closeBulkRisky('cancel')});
+$('#brkConfirm').addEventListener('click',function(){closeBulkRisky('all')});
 
 function loadList(){
   var cat=$('#catFilter').value;var q=$('#search').value.trim();
