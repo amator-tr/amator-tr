@@ -636,12 +636,5 @@
       <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
       <description>$30&#39;lık bir USB dongle ile 500 kHz - 1.75 GHz arası tüm radyo spektrumunu dinleyin. RTL-SDR donanımı, SDR# / SDR++ / GQRX kurulumu, ilk sinyal yakalama ve uygulama alanları.</description>
     </item>
-    <item>
-      <title>Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)</title>
-      <link>https://amator.tr/tutorials/uv-k5-programlama</link>
-      <guid isPermaLink="true">https://amator.tr/tutorials/uv-k5-programlama</guid>
-      <pubDate>Sat, 25 Apr 2026 00:00:00 GMT</pubDate>
-      <description>Quansheng UV-K5&#39;i F4HWN custom firmware ile flashlemek, armel&#39;in özel CHIRP driver&#39;ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.</description>
-    </item>
   </channel>
 </rss>

@@ -863,16 +863,6 @@
     </image:image>
   </url>
   <url>
-    <loc>https://amator.tr/tutorials/uv-k5-programlama</loc>
-    <lastmod>2026-04-25</lastmod>
-    <priority>0.7</priority>
-    <image:image>
-      <image:loc>https://amator.tr/og/uv-k5-programlama.png</image:loc>
-      <image:title>Quansheng UV-K5 Programlama Rehberi (F4HWN Firmware)</image:title>
-      <image:caption>Quansheng UV-K5&#39;i F4HWN custom firmware ile flashlemek, armel&#39;in özel CHIRP driver&#39;ı ile programlamak, röle CSV yüklemek ve EEPROM yedeği almak için tam rehber.</image:caption>
-    </image:image>
-  </url>
-  <url>
     <loc>https://amator.tr/tutorials/websdr-uzaktan-dinleme</loc>
     <lastmod>2026-04-26</lastmod>
     <priority>0.7</priority>
