@@ -83,7 +83,6 @@ export const VALID_TUTORIAL_SLUGS = new Set([
   "swl-dinleyici-disiplini",
   "swr-temel-bilgisi",
   "telsiz-guc-kaynaklari-rehberi",
-  "test",
   "toprak-dalgalari-haberlesme",
   "trac-amator-radyo-turkiye-tarihi",
   "universite-amator-radyo-kulupleri",
