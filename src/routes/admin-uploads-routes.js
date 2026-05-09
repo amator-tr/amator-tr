@@ -178,20 +178,18 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
   const buf = Buffer.from(ab);
   if (buf.length === 0) return c.json({ error: 'Dosya bos' }, 400);
 
-  // Magic-byte detect (allowlist'tekiler icin uyum zorunlu;
-  // force ile gelen unknown ext'lerde skip — admin'in inisiyatifi).
+  // Magic-byte detect — sadece audit log icin, reddetme yapilmiyor.
+  // Admin-only upload context: file-type bircok formati guvenilir tanimaz
+  // (DMG koly trailer eksik, PNG metadata weird, vs.). False-rejection
+  // can sikiyor, magic-byte info'yu log'a dusur, kabul et.
   let detected = null;
   try {
     detected = await fileTypeFromBuffer(buf);
   } catch { detected = null; }
 
   if (extKnown && !magicMatchesExt(ext, detected)) {
-    await logActivity(c.env.DB, userId, 'upload_rejected_magic_mismatch',
-      `${file.name}: ext=${ext} detected=${detected?.mime || 'null'}`);
-    return c.json({
-      error: 'Dosya icerigi uzantisiyla uyusmuyor',
-      details: { ext, detected: detected?.mime || null }
-    }, 400);
+    await logActivity(c.env.DB, userId, 'upload_magic_warn',
+      `${file.name}: ext=${ext} detected=${detected?.mime || 'null'} (kabul edildi)`);
   }
 
   const category = extKnown ? categoryFor(ext) : 'diger';
@@ -390,7 +388,7 @@ uploads.post('/api/dosyalar/upload/finalize', adminMiddleware(), async (c) => {
     return c.json({ error: 'Eksik chunk', received: session.received, expected: session.totalSize }, 400);
   }
 
-  // Magic-byte: ilk 16KB (force=true unknown ext'lerde skip)
+  // Magic-byte: ilk 16KB — sadece audit log icin (reddetme YAPMA)
   let detected = null;
   if (session.extKnown) {
     try {
@@ -399,19 +397,12 @@ uploads.post('/api/dosyalar/upload/finalize', adminMiddleware(), async (c) => {
       const { bytesRead } = await fh.read(head, 0, 16384, 0);
       await fh.close();
       detected = await fileTypeFromBuffer(head.subarray(0, bytesRead));
-    } catch (err) {
-      return c.json({ error: 'Magic-byte okuma hatasi: ' + err.message }, 500);
+    } catch {
+      detected = null;
     }
-
     if (!magicMatchesExt(session.ext, detected)) {
-      await fs.unlink(tempPath).catch(() => {});
-      uploadSessions.delete(uploadId);
-      await logActivity(c.env.DB, userId, 'upload_chunked_rejected_magic',
-        `${session.filename}: ext=${session.ext} detected=${detected?.mime || 'null'}`);
-      return c.json({
-        error: 'Dosya icerigi uzantisiyla uyusmuyor',
-        details: { ext: session.ext, detected: detected?.mime || null },
-      }, 400);
+      await logActivity(c.env.DB, userId, 'upload_chunked_magic_warn',
+        `${session.filename}: ext=${session.ext} detected=${detected?.mime || 'null'} (kabul edildi)`);
     }
   }
 
