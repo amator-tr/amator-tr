@@ -652,7 +652,7 @@ document.getElementById('artPublishBtn').addEventListener('click',function(){
     .then(function(r){return r.json()}).then(function(d){
       if(d.error){
         var msg=d.error;
-        if(d.details&&d.details.stderr)msg+=': '+d.details.stderr.split('\n')[0];
+        if(d.details&&d.details.stderr)msg+=': '+d.details.stderr.split('\\n')[0];
         else if(Array.isArray(d.details))msg+=': '+d.details.join(', ');
         toast(msg,false);
         document.getElementById('artStatus').textContent='HATA: '+msg;
