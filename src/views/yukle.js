@@ -43,6 +43,8 @@ input[type=file]{display:none}
 .q-item.q-ok{border-color:rgba(45,212,191,.3)}
 .q-item.q-err{border-color:rgba(239,68,68,.3)}
 .q-status{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.q-cancel-btn{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;border:1px solid var(--b1);background:var(--s2);color:var(--t2);cursor:pointer;margin-left:8px}
+.q-cancel-btn:hover{border-color:var(--r);color:var(--r)}
 .q-ok .q-status{color:var(--g)}
 .q-err .q-status{color:var(--r)}
 .q-result{grid-column:1 / -1;margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
@@ -236,11 +238,24 @@ function handleFiles(files){
 function mkQueueItem(f){
   var div=document.createElement('div');
   div.className='q-item';
-  div.innerHTML='<div><div class="qname"></div><div class="qbar"><div></div></div></div><span class="q-status">…</span>';
+  div.innerHTML='<div><div class="qname"></div><div class="qbar"><div></div></div></div><div style="display:flex;align-items:center"><span class="q-status">…</span><button type="button" class="q-cancel-btn">Iptal</button></div>';
   div.querySelector('.qname').textContent=f.name+' · '+fmtSize(f.size);
+  // ctx: aktif xhr referansi + cancel flag
+  div._ctx={cancelled:false, xhr:null};
+  div.querySelector('.q-cancel-btn').addEventListener('click',function(){
+    div._ctx.cancelled=true;
+    if(div._ctx.xhr){try{div._ctx.xhr.abort()}catch(e){}}
+    div.classList.add('q-err');
+    div.querySelector('.q-status').textContent='IPTAL';
+    div.querySelector('.qbar > div').style.background='var(--r)';
+    this.remove();
+  });
   queue.insertBefore(div,queue.firstChild);
   return div;
 }
+function isCancelled(item){return item && item._ctx && item._ctx.cancelled}
+function setActiveXhr(item, xhr){if(item && item._ctx)item._ctx.xhr=xhr}
+function clearCancelBtn(item){var b=item.querySelector('.q-cancel-btn');if(b)b.remove()}
 
 function uploadFile(f, onConflict, force){
   var item=mkQueueItem(f);
@@ -273,6 +288,7 @@ function doChunkedUpload(f, item, onConflict, force){
     body:JSON.stringify(initBody)
   }).then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
     .then(function(o){
+      if(isCancelled(item))return;
       if(o.status===409 && o.j.exists){
         status.textContent='CAKISMA';bar.style.width='100%';bar.style.background='var(--y)';
         askConflict(f, o.j, function(choice){
@@ -310,6 +326,7 @@ function doChunkedUpload(f, item, onConflict, force){
 }
 
 function sendChunks(f, item, uploadId, chunkSize, totalChunks, idx, onConflict, startTime){
+  if(isCancelled(item))return;
   var bar=item.querySelector('.qbar > div');
   var status=item.querySelector('.q-status');
 
@@ -332,6 +349,7 @@ function sendChunks(f, item, uploadId, chunkSize, totalChunks, idx, onConflict, 
   xhr.setRequestHeader('X-Upload-Id',uploadId);
   xhr.setRequestHeader('X-Chunk-Index',String(idx));
   xhr.setRequestHeader('X-Total-Chunks',String(totalChunks));
+  setActiveXhr(item, xhr);
   xhr.upload.onprogress=function(e){
     if(e.lengthComputable){
       var totalDone=start+e.loaded;
@@ -340,6 +358,7 @@ function sendChunks(f, item, uploadId, chunkSize, totalChunks, idx, onConflict, 
     }
   };
   xhr.onload=function(){
+    if(isCancelled(item))return;
     var json={};try{json=JSON.parse(xhr.responseText||'{}')}catch(e){}
     if(xhr.status>=200 && xhr.status<300 && json.ok){
       sendChunks(f, item, uploadId, chunkSize, totalChunks, idx+1, onConflict, startTime);
@@ -350,11 +369,12 @@ function sendChunks(f, item, uploadId, chunkSize, totalChunks, idx, onConflict, 
       item.appendChild(r);
     }
   };
-  xhr.onerror=function(){item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)'};
+  xhr.onerror=function(){if(isCancelled(item))return;item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)'};
   xhr.send(blob);
 }
 
 function finalizeChunked(f, item, uploadId, onConflict, startTime){
+  if(isCancelled(item))return;
   var bar=item.querySelector('.qbar > div');
   var status=item.querySelector('.q-status');
 
@@ -364,7 +384,9 @@ function finalizeChunked(f, item, uploadId, onConflict, startTime){
     body:JSON.stringify({upload_id:uploadId})
   }).then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
     .then(function(o){
+      if(isCancelled(item))return;
       if(o.status>=200 && o.status<300 && o.j.ok){
+        clearCancelBtn(item);
         item.classList.add('q-ok');status.textContent=o.j.overwrote?'YAZILDI':(o.j.renamed?'AD DEGISTI':'OK');
         bar.style.width='100%';
         // Final stats: ortalama hiz + toplam sure
@@ -420,6 +442,7 @@ function doUpload(f, item, onConflict, force){
   var xhr=new XMLHttpRequest();
   xhr.open('POST',url,true);
   xhr.withCredentials=true;
+  setActiveXhr(item, xhr);
   var startTime=Date.now();
   xhr.upload.onprogress=function(e){
     if(e.lengthComputable){
@@ -428,8 +451,10 @@ function doUpload(f, item, onConflict, force){
     }
   };
   xhr.onload=function(){
+    if(isCancelled(item))return;
     var json={};try{json=JSON.parse(xhr.responseText||'{}')}catch(e){}
     if(xhr.status>=200 && xhr.status<300 && json.ok){
+      clearCancelBtn(item);
       item.classList.add('q-ok');status.textContent=json.overwrote?'YAZILDI':(json.renamed?'AD DEGISTI':'OK');bar.style.width='100%';
       // Final stats
       var elapsed=(Date.now()-startTime)/1000;
@@ -471,7 +496,7 @@ function doUpload(f, item, onConflict, force){
       item.appendChild(r);
     }
   };
-  xhr.onerror=function(){item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)'};
+  xhr.onerror=function(){if(isCancelled(item))return;item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)'};
   xhr.send(fd);
 }
 

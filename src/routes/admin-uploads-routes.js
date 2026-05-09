@@ -77,21 +77,8 @@ async function reauthAdmin(c) {
   return { ok: true, body };
 }
 
-// 5/min/admin in-memory rate limiter.
-const rlMap = new Map(); // userId -> { window: ts, count: n }
-const RL_WINDOW_MS = 60_000;
-const RL_MAX = 5;
-function rateLimit(userId) {
-  const now = Date.now();
-  const slot = rlMap.get(userId);
-  if (!slot || now - slot.window > RL_WINDOW_MS) {
-    rlMap.set(userId, { window: now, count: 1 });
-    return true;
-  }
-  if (slot.count >= RL_MAX) return false;
-  slot.count++;
-  return true;
-}
+// App-level rate-limit yok — sadece admin yukleyebilir (adminMiddleware),
+// nginx 'api_zone' (120r/m IP basi) baseline DoS korumasi olarak kalir.
 
 function publicUrl(category, filename) {
   return `${PUBLIC_BASE}/${category}/${encodeURIComponent(filename)}`;
@@ -155,9 +142,6 @@ uploads.get('/api/dosyalar/list', adminMiddleware(), async (c) => {
 //   - overwrite: ayni path'e yazar, eski DB row'u replace eder
 uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
   const userId = c.get('userId');
-  if (!rateLimit(userId)) {
-    return c.json({ error: 'Cok fazla yukleme — bir dakika bekleyin' }, 429);
-  }
 
   const onConflictRaw = (c.req.query('on_conflict') || 'error').toLowerCase();
   const onConflict = ['error', 'rename', 'overwrite'].includes(onConflictRaw) ? onConflictRaw : 'error';
@@ -304,7 +288,6 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
 
 uploads.post('/api/dosyalar/upload/init', adminMiddleware(), async (c) => {
   const userId = c.get('userId');
-  if (!rateLimit(userId)) return c.json({ error: 'Rate limit' }, 429);
 
   let body;
   try { body = await c.req.json(); } catch { return c.json({ error: 'JSON parse hatasi' }, 400); }
