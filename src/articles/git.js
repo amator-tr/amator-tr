@@ -51,6 +51,12 @@ export async function gitResetHard(ref = 'HEAD') {
   await git(['reset', '--hard', ref]);
 }
 
+// Index'teki tum stage'i geri al (calisma agacini bozmaz). Rollback'in
+// ilk adimi — gitAdd partial-stage edip throw ettigi durumda kullanilir.
+export async function gitRestoreStaged() {
+  await git(['reset', '--mixed', 'HEAD']);
+}
+
 export async function gitStatusIsClean() {
   const { stdout } = await git(['status', '--porcelain']);
   return stdout.trim().length === 0;

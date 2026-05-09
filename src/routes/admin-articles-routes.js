@@ -13,7 +13,7 @@ import { buildMarkdownFile, frontmatterYaml } from '../articles/serialize.js';
 import { renderPreview, sanitize } from '../articles/preview.js';
 import { generateOgImagePng } from '../articles/og.js';
 import { runBuild } from '../articles/build.js';
-import { gitAdd, gitCommit, gitPush, gitHeadSha, gitResetHard } from '../articles/git.js';
+import { gitAdd, gitCommit, gitPush, gitHeadSha, gitResetHard, gitRestoreStaged } from '../articles/git.js';
 import { validateSlug, validateFrontmatter } from '../articles/validate.js';
 
 const REPO_ROOT = path.resolve(process.env.REPO_ROOT || process.cwd());
@@ -244,7 +244,10 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
       }
 
       const f = articleFiles(slug);
-      const filesBefore = { md: existsSync(f.md) ? await safeRead(f.md) : null };
+      const filesBefore = {
+        md: existsSync(f.md) ? await safeRead(f.md) : null,
+        ogExisted: existsSync(f.og),
+      };
       const headBefore = await gitHeadSha();
 
       // Snapshot prior DB state
@@ -280,17 +283,29 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
         throw Object.assign(new Error('Build basarisiz'), { status: 500, details: { stderr: build.stderr, stdout: build.stdout } });
       }
 
-      // 4) Git
+      // 4) Git: gitAdd partial-stage edebilir; her hata sonrasi rollback
+      //    once index'i temizler, sonra disk'i restore eder, sonra build'i
+      //    tekrar calistirir, sonra reset --hard headBefore.
       try {
         await gitAdd(commitFilesForPublish(slug));
         await gitCommit({ message: `publish: ${slug} by ${username}` });
         await gitPush();
       } catch (err) {
-        if (filesBefore.md !== null) await safeWrite(f.md, filesBefore.md);
-        else await safeUnlink(f.md);
-        await runBuild();
-        try { await gitResetHard(headBefore); } catch {}
-        throw Object.assign(new Error('Git push basarisiz'), { status: 500, details: { stderr: err.stderr || err.message } });
+        const rollbackErrors = [];
+        try { await gitRestoreStaged(); } catch (e) { rollbackErrors.push('unstage:' + e.message); }
+        try {
+          if (filesBefore.md !== null) await safeWrite(f.md, filesBefore.md);
+          else await safeUnlink(f.md);
+        } catch (e) { rollbackErrors.push('md_restore:' + e.message); }
+        try {
+          if (!filesBefore.ogExisted) await safeUnlink(f.og);
+        } catch (e) { rollbackErrors.push('og_unlink:' + e.message); }
+        try { await runBuild(); } catch (e) { rollbackErrors.push('rebuild:' + e.message); }
+        try { await gitResetHard(headBefore); } catch (e) { rollbackErrors.push('reset:' + e.message); }
+        throw Object.assign(new Error('Yayinlama basarisiz'), {
+          status: 500,
+          details: { stderr: err.stderr || err.message, rollback: rollbackErrors }
+        });
       }
 
       // 5) status='published'
@@ -358,10 +373,15 @@ articles.post('/api/admin/articles/:slug/unpublish', adminMiddleware(), async (c
         await gitCommit({ message: `unpublish: ${slug} by ${username}` });
         await gitPush();
       } catch (err) {
-        if (mdBefore !== null) await safeWrite(f.md, mdBefore);
-        await runBuild();
-        try { await gitResetHard(headBefore); } catch {}
-        throw Object.assign(new Error('Git push basarisiz'), { status: 500, details: { stderr: err.stderr || err.message } });
+        const rollbackErrors = [];
+        try { await gitRestoreStaged(); } catch (e) { rollbackErrors.push('unstage:' + e.message); }
+        try { if (mdBefore !== null) await safeWrite(f.md, mdBefore); } catch (e) { rollbackErrors.push('md_restore:' + e.message); }
+        try { await runBuild(); } catch (e) { rollbackErrors.push('rebuild:' + e.message); }
+        try { await gitResetHard(headBefore); } catch (e) { rollbackErrors.push('reset:' + e.message); }
+        throw Object.assign(new Error('Yayindan kaldirma basarisiz'), {
+          status: 500,
+          details: { stderr: err.stderr || err.message, rollback: rollbackErrors }
+        });
       }
 
       await c.env.DB.prepare(`UPDATE articles SET status = 'archived', updated_at = datetime('now') WHERE id = ?`).bind(row.id).run();
