@@ -33,11 +33,25 @@ export async function verifyTurnstile(token, secret, remoteIp) {
 
 /**
  * Form'dan gelen Turnstile token'i okur ve doğrular.
- * Eğer Turnstile yapılandırılmamışsa (secret yok), true döner — geliştirme/deneme için.
+ *
+ * - Geliştirme (NODE_ENV !== 'production') ve TURNSTILE_SECRET tanımsız ise
+ *   true döner — local dev'de captcha çözmek zorunda kalmamak için.
+ * - Üretimde TURNSTILE_SECRET eksikse fail-closed (false) ve uyarı logu —
+ *   yanlışlıkla CAPTCHA'yi devre dışı bırakmaya karşı.
  */
+let warnedNoSecret = false;
 export async function checkTurnstile(c, body) {
   const secret = c.env.TURNSTILE_SECRET;
-  if (!secret) return true; // dev fallback
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      if (!warnedNoSecret) {
+        console.error('[turnstile] TURNSTILE_SECRET tanimsiz, fail-closed.');
+        warnedNoSecret = true;
+      }
+      return false;
+    }
+    return true;
+  }
   const token = body['cf-turnstile-response'];
   const ip = c.req.header('cf-connecting-ip') || '';
   return await verifyTurnstile(token, secret, ip);
