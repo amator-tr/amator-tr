@@ -558,11 +558,24 @@ auth.get('/logout', (c) => {
 });
 
 // --- GitHub OAuth ---
+// Origin oncelik sirasi:
+//   1. APP_URL env (en guvenilir, prod icin scheme dahil tam URL)
+//   2. X-Forwarded-Proto + Host (CF Tunnel/reverse proxy senaryolari)
+//   3. c.req.url origin (local dev fallback)
+// CF Tunnel origin'e HTTP geciyor — c.req.url 'http://' dondurur, GitHub
+// OAuth App ise 'https://' kayitli, redirect_uri uyusmazligi olur.
+function publicOrigin(c) {
+  if (c.env.APP_URL) return c.env.APP_URL.replace(/\/+$/, '');
+  const host = c.req.header('host');
+  const proto = c.req.header('x-forwarded-proto') || 'https';
+  if (host) return `${proto}://${host}`;
+  return new URL(c.req.url).origin;
+}
+
 auth.get('/auth/github', (c) => {
   const clientId = c.env.GITHUB_CLIENT_ID;
   if (!clientId) return c.text('GitHub OAuth yapilandirilmamis', 500);
-  const origin = new URL(c.req.url).origin;
-  const callbackUrl = `${origin}/auth/github/callback`;
+  const callbackUrl = `${publicOrigin(c)}/auth/github/callback`;
   const state = [...new Uint8Array(crypto.getRandomValues(new Uint8Array(16)))].map(b => b.toString(16).padStart(2, '0')).join('');
   setCookie(c, 'oauth_state', state, cookieOpts({ sameSite: 'Lax', maxAge: 600 }));
   const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=read:user&state=${state}`;
