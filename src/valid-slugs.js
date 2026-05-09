@@ -86,6 +86,7 @@ export const VALID_TUTORIAL_SLUGS = new Set([
   "toprak-dalgalari-haberlesme",
   "trac-amator-radyo-turkiye-tarihi",
   "universite-amator-radyo-kulupleri",
+  "uv-k5-programlama",
   "websdr-uzaktan-dinleme",
   "winlink-email-over-radio",
   "wspr-zayif-sinyal-yayini",
