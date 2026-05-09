@@ -405,12 +405,16 @@ document.getElementById('userSearch').addEventListener('input',function(){
 loadUsers();
 
 function changeRole(id,role){
-fetch('/api/admin/users/'+id+'/role',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:role})})
+var pw=prompt('Rol degistirme icin mevcut sifrenizi girin:');
+if(!pw)return;
+fetch('/api/admin/users/'+id+'/role',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:role,password:pw})})
 .then(function(r){return r.json()}).then(function(d){if(d.ok){toast('Rol guncellendi',true);loadUsers()}else toast(d.error,false)})}
 
 function deleteUser(id,name){
 if(!confirm(name+' kullanicisini ve tum verilerini silmek istediginize emin misiniz?'))return;
-fetch('/api/admin/users/'+id,{method:'DELETE'}).then(function(r){return r.json()}).then(function(d){if(d.ok){toast('Kullanici silindi',true);loadUsers()}else toast(d.error,false)})}
+var pw=prompt('Kullanici silmek icin mevcut sifrenizi girin:');
+if(!pw)return;
+fetch('/api/admin/users/'+id,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})}).then(function(r){return r.json()}).then(function(d){if(d.ok){toast('Kullanici silindi',true);loadUsers()}else toast(d.error,false)})}
 
 /* SETTINGS */
 function loadSettings(){
@@ -511,7 +515,9 @@ document.getElementById('pwModal').addEventListener('click',function(ev){if(ev.t
 document.getElementById('pwSave').addEventListener('click',function(){
   var pw=document.getElementById('pwInput').value;
   if(pw.length<8){toast('Sifre en az 8 karakter',false);return}
-  fetch('/api/admin/users/'+pwTargetId+'/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
+  var adminPw=prompt('Onaylamak icin KENDI mevcut sifrenizi girin:');
+  if(!adminPw)return;
+  fetch('/api/admin/users/'+pwTargetId+'/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({new_password:pw,current_password:adminPw})})
     .then(function(r){return r.json()}).then(function(d){if(d.ok){toast('Sifre sifirlandi',true);document.getElementById('pwModal').classList.remove('open')}else toast(d.error,false)});
 });
 

@@ -5,10 +5,11 @@ import { validatePassword, logActivity } from '../helpers.js';
 
 // Tehlikeli admin işlemlerinde mevcut şifreyi tekrar iste — çalınmış oturumda
 // data exfiltration / wipe riskini düşürür.
-async function reauthAdmin(c) {
+async function reauthAdmin(c, opts = {}) {
+  const passwordField = opts.passwordField || 'password';
   let body;
   try { body = await c.req.json(); } catch { return { ok: false, status: 400, err: 'Gecersiz istek' }; }
-  const password = body.password || '';
+  const password = body[passwordField] || '';
   if (!password) return { ok: false, status: 401, err: 'Mevcut sifre gerekli' };
   const user = await c.env.DB.prepare('SELECT password_hash, password_salt, password_iterations FROM users WHERE id = ?').bind(c.get('userId')).first();
   if (!user) return { ok: false, status: 401, err: 'Kullanici bulunamadi' };
@@ -39,8 +40,10 @@ admin.get('/api/admin/users', adminMiddleware(), async (c) => {
 admin.post('/api/admin/users/:id/role', adminMiddleware(), async (c) => {
   const targetId = parseInt(c.req.param('id'));
   if (isNaN(targetId)) return c.json({ error: 'Gecersiz ID' }, 400);
-  const body = await c.req.json();
-  const newRole = body.role;
+  // Re-auth: calinmis admin oturumu rol yukseltme yapamasin.
+  const auth = await reauthAdmin(c);
+  if (!auth.ok) return c.json({ error: auth.err }, auth.status);
+  const newRole = auth.body.role;
   if (!['admin', 'user'].includes(newRole)) return c.json({ error: 'Gecersiz rol' }, 400);
   if (newRole === 'user') {
     const adminCount = await c.env.DB.prepare("SELECT COUNT(*) as cnt FROM users WHERE role = 'admin'").first();
@@ -50,6 +53,7 @@ admin.post('/api/admin/users/:id/role', adminMiddleware(), async (c) => {
     }
   }
   await c.env.DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(newRole, targetId).run();
+  await logActivity(c.env.DB, c.get('userId'), 'rol_degistir', `User ${targetId} -> ${newRole}`);
   return c.json({ ok: true });
 });
 
@@ -58,12 +62,16 @@ admin.delete('/api/admin/users/:id', adminMiddleware(), async (c) => {
   const targetId = parseInt(c.req.param('id'));
   if (isNaN(targetId)) return c.json({ error: 'Gecersiz ID' }, 400);
   if (targetId === c.get('userId')) return c.json({ error: 'Kendinizi silemezsiniz' }, 400);
+  // Re-auth: calinmis admin oturumu kullanici tablosunu silemesin.
+  const auth = await reauthAdmin(c);
+  if (!auth.ok) return c.json({ error: auth.err }, auth.status);
   const db = c.env.DB;
   await db.batch([
     db.prepare('DELETE FROM operatorler WHERE user_id = ?').bind(targetId),
     db.prepare('DELETE FROM activity_log WHERE user_id = ?').bind(targetId),
     db.prepare('DELETE FROM users WHERE id = ?').bind(targetId),
   ]);
+  await logActivity(db, c.get('userId'), 'kullanici_sil', `User ${targetId}`);
   return c.json({ ok: true });
 });
 
@@ -109,12 +117,16 @@ admin.get('/api/admin/operators', adminMiddleware(), async (c) => {
 admin.post('/api/admin/users/:id/reset-password', adminMiddleware(), async (c) => {
   const targetId = parseInt(c.req.param('id'));
   if (isNaN(targetId)) return c.json({ error: 'Gecersiz ID' }, 400);
-  const body = await c.req.json();
-  const newPw = body.password || '';
+  // Re-auth: yeni parola alanini admin'in mevcut sifresiyle ayni body'de
+  // dogrula (`current_password` + `new_password`).
+  const auth = await reauthAdmin(c, { passwordField: 'current_password' });
+  if (!auth.ok) return c.json({ error: auth.err }, auth.status);
+  const newPw = auth.body.new_password || '';
   if (!validatePassword(newPw)) return c.json({ error: 'Sifre en az 8 karakter ve en az 1 rakam/ozel karakter icermeli' }, 400);
   const salt = generateSalt();
   const hash = await hashPassword(newPw, salt);
   await c.env.DB.prepare('UPDATE users SET password_hash = ?, password_salt = ?, password_iterations = ? WHERE id = ?').bind(hash, salt, CURRENT_ITERATIONS, targetId).run();
+  await logActivity(c.env.DB, c.get('userId'), 'admin_sifre_reset', `User ${targetId}`);
   return c.json({ ok: true });
 });
 
