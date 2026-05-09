@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# .env dosyasi sirlari iceriyor — host'ta 0600 izni zorla.
+if [ -f .env ]; then
+  chmod 600 .env
+fi
+
 # .env'den sadece Cloudflare cache purge için gerekli değişkenleri oku.
 # Tüm dosyayı source etmiyoruz çünkü EMAIL_FROM gibi `<>` içeren değerler
 # bash'te syntax hatası verir.
