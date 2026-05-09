@@ -44,18 +44,34 @@ app.use('*', async (c, next) => {
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 const CSRF_SKIP = ['/api/stats/ping', '/api/stats/download', '/api/stats/helpful', '/api/role-export/auth/verify'];
+
+// Origin/Referer header'indaki URL'in origin'ini (scheme+host+port) parse et.
+// Geçersizse null döner. `startsWith` ile karşılaştırma yapma — saldırgan
+// `https://cagri.amator.tr.evil.com` gönderirse prefix-eşleşme bypass olur.
+function parseOrigin(value) {
+  if (!value) return null;
+  try { return new URL(value).origin; } catch { return null; }
+}
+
 app.use('*', async (c, next) => {
   if (SAFE_METHODS.has(c.req.method)) return next();
+  const expected = c.env.APP_URL || 'https://cagri.amator.tr';
+  const allowed = new Set([expected, 'https://amator.tr']);
+
   if (CSRF_SKIP.includes(c.req.path)) {
-    const origin = c.req.header('Origin') || '';
-    if (origin && !origin.startsWith('https://amator.tr')) {
+    const rawOrigin = c.req.header('Origin');
+    // Same-origin form submit'te bazı tarayıcılar Origin göndermez; cookie'siz
+    // public stats endpoint'leri için Origin yoksa serbest bırak.
+    if (!rawOrigin) return next();
+    const origin = parseOrigin(rawOrigin);
+    if (!origin || !allowed.has(origin)) {
       return c.json({ error: 'CSRF kontrol basarisiz' }, 403);
     }
     return next();
   }
-  const origin = c.req.header('Origin') || c.req.header('Referer') || '';
-  const expected = c.env.APP_URL || 'https://cagri.amator.tr';
-  if (!origin.startsWith(expected)) {
+
+  const origin = parseOrigin(c.req.header('Origin')) || parseOrigin(c.req.header('Referer'));
+  if (!origin || !allowed.has(origin)) {
     return c.json({ error: 'CSRF kontrol basarisiz' }, 403);
   }
   return next();
