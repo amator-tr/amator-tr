@@ -148,12 +148,20 @@ Kurallar:
       } else continue;
 
       if (!Array.isArray(items)) items = [items];
-      const parsed = items.map(p => ({
-        operator: (p.operator || '').toLocaleUpperCase('tr-TR'),
-        cagri_isareti: (p.cagri_isareti || '').toUpperCase(),
-        qth: p.qth || '',
-        hakkinda: p.hakkinda || '',
-      }));
+      // Safety cap: AI 100+ obje return ettiyse muhtemelen prompt injection
+      if (items.length > 50) items = items.slice(0, 50);
+      // Sema guard: object olmayan / __proto__ enjeksiyonu / non-string alanlar
+      // toLocaleUpperCase'in calistigindaki TypeError'i baska bir model'e
+      // dusurur — guvenlik degil veri-temizligi katmani.
+      const safeStr = (v, max) => (typeof v === 'string' ? v : '').slice(0, max);
+      const parsed = items
+        .filter(p => p && typeof p === 'object' && !Array.isArray(p))
+        .map(p => ({
+          operator: safeStr(p.operator, 100).toLocaleUpperCase('tr-TR'),
+          cagri_isareti: safeStr(p.cagri_isareti, 20).toUpperCase(),
+          qth: safeStr(p.qth, 100),
+          hakkinda: safeStr(p.hakkinda, 500),
+        }));
       return c.json({ ok: true, parsed, model: Object.keys(MODELS).find(k => MODELS[k] === model) || 'unknown' });
     } catch (err) {
       console.error(`NL model ${model}:`, err);
