@@ -239,7 +239,7 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
           fm.article_section, bodyMd, fmYaml, fm.published_at, fm.published_at, c.get('userId')
         ).run();
         row = await c.env.DB.prepare('SELECT * FROM articles WHERE slug = ?').bind(slug).first();
-      } else if (!['draft', 'published'].includes(row.status)) {
+      } else if (!['draft', 'published', 'archived'].includes(row.status)) {
         throw Object.assign(new Error(`Bu durumdan yayinlanamaz: ${row.status}`), { status: 400 });
       }
 
