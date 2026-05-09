@@ -82,6 +82,33 @@ const PUBLIC_PATHS = [
 ];
 const PUBLIC_PREFIXES = ['/verify/', '/sifre-sifirla/'];
 
+// Cookie refresh: subdomain'ler arasi paylasilan .amator.tr scope'una
+// gecis. Var olan host-only cookie'ler dosyalar.amator.tr'a gonderilmiyor.
+// Her dogrulanmis request'te:
+//   1) host-only sessionu sil (Set-Cookie ... Max-Age=0, Domain yok)
+//   2) Domain=.amator.tr ile yeniden setle (varsa COOKIE_DOMAIN env)
+// Kullanici tek bir sayfa yenilemesinden sonra dogru scope'lu cookie'ye
+// kavusur, dosyalar.amator.tr otomatik calismaya baslar.
+const REFRESH_COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || null;
+
+function refreshCookieScope(c, token) {
+  if (!REFRESH_COOKIE_DOMAIN) return;
+  // Host-only versiyonu sil — Domain attribute'su olmayan cookie'ler
+  // host-only kabul edilir, bu Set-Cookie host'a gore yorumlanir.
+  c.header('Set-Cookie', 'session=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Strict', { append: true });
+  // Yeni domain-scoped cookie
+  const parts = [
+    `session=${token}`,
+    `Max-Age=${7 * 86400}`,
+    `Domain=${REFRESH_COOKIE_DOMAIN}`,
+    'Path=/',
+    'Secure',
+    'HttpOnly',
+    'SameSite=Strict',
+  ];
+  c.header('Set-Cookie', parts.join('; '), { append: true });
+}
+
 export function authMiddleware(getCookieFn) {
   return async (c, next) => {
     // CORS preflight: tarayicilar OPTIONS isteklerinde credentials yollamaz;
@@ -100,6 +127,9 @@ export function authMiddleware(getCookieFn) {
 
     c.set('userId', session.userId);
     c.set('role', session.role);
+
+    // Cookie scope'u domain-wide degilse otomatik refresh.
+    refreshCookieScope(c, token);
     return next();
   };
 }
