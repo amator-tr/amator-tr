@@ -70,6 +70,17 @@ app.get('/robots.txt', (c) => {
 // edilmeli ki link/script tag yuklenirken redirect dongusune girmesin.
 const EASYMDE_JS = readFileSync(resolve(REPO_ROOT, 'node_modules/easymde/dist/easymde.min.js'), 'utf-8');
 const EASYMDE_CSS = readFileSync(resolve(REPO_ROOT, 'node_modules/easymde/dist/easymde.min.css'), 'utf-8');
+const FA_CSS = readFileSync(resolve(REPO_ROOT, 'node_modules/font-awesome/css/font-awesome.min.css'), 'utf-8');
+const FA_FONTS_DIR = resolve(REPO_ROOT, 'node_modules/font-awesome/fonts');
+const FA_MIME = {
+  '.woff2': 'font/woff2',
+  '.woff': 'font/woff',
+  '.ttf': 'font/ttf',
+  '.eot': 'application/vnd.ms-fontobject',
+  '.svg': 'image/svg+xml',
+  '.otf': 'font/otf',
+};
+
 app.get('/admin/assets/easymde.js', (c) => {
   c.header('Content-Type', 'application/javascript; charset=UTF-8');
   c.header('Cache-Control', 'public, max-age=31536000, immutable');
@@ -79,6 +90,21 @@ app.get('/admin/assets/easymde.css', (c) => {
   c.header('Content-Type', 'text/css; charset=UTF-8');
   c.header('Cache-Control', 'public, max-age=31536000, immutable');
   return c.body(EASYMDE_CSS);
+});
+app.get('/admin/assets/fa/css/font-awesome.min.css', (c) => {
+  c.header('Content-Type', 'text/css; charset=UTF-8');
+  c.header('Cache-Control', 'public, max-age=31536000, immutable');
+  return c.body(FA_CSS);
+});
+app.get('/admin/assets/fa/fonts/:file', (c) => {
+  const file = c.req.param('file');
+  if (!/^[a-zA-Z0-9._-]+$/.test(file)) return c.text('bad path', 400);
+  let buf;
+  try { buf = readFileSync(resolve(FA_FONTS_DIR, file)); } catch { return c.text('not found', 404); }
+  const ext = file.slice(file.lastIndexOf('.'));
+  c.header('Content-Type', FA_MIME[ext] || 'application/octet-stream');
+  c.header('Cache-Control', 'public, max-age=31536000, immutable');
+  return c.body(buf);
 });
 
 app.route('/', statsPublicRoutes);

@@ -5,6 +5,7 @@ return`<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="vi
 <link rel="icon" type="image/png" sizes="32x32" href="https://amator.tr/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="https://amator.tr/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="https://amator.tr/apple-touch-icon.png">
+<link rel="stylesheet" href="/admin/assets/fa/css/font-awesome.min.css">
 <link rel="stylesheet" href="/admin/assets/easymde.css">
 <script src="/admin/assets/easymde.js" defer></script>
 <script>(function(){var t=localStorage.getItem('theme');if(t==='cengiz'){t='vanta-black';localStorage.setItem('theme',t)}if(!t||t==='auto'){t=window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'}document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('fontSize')||'md';document.documentElement.setAttribute('data-size',s)})()</script>
