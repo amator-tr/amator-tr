@@ -151,6 +151,18 @@ input[type=file]{display:none}
 </div>
 </div>
 
+<div class="pw-modal" id="riskyModal">
+<div class="pw-box" style="max-width:440px">
+<h3 style="color:var(--y)">⚠ Riskli uzanti</h3>
+<p id="riskyMsg" style="margin-bottom:14px"></p>
+<p style="font-size:11px;color:var(--t3);margin-bottom:14px">Yine de yuklersen "diger" klasorune gidecek; magic-byte kontrolu atlanir. Sadece guvendigin kaynaklardan yukle.</p>
+<div class="pw-btns" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">
+<button class="pw-cancel" id="rkCancel" type="button">Iptal</button>
+<button class="pw-save" id="rkConfirm" type="button" style="background:var(--y);color:#000">Yine de yukle</button>
+</div>
+</div>
+</div>
+
 <script>
 function $(s){return document.querySelector(s)}
 function $$(s){return document.querySelectorAll(s)}
@@ -194,18 +206,18 @@ function mkQueueItem(f){
   return div;
 }
 
-function uploadFile(f, onConflict){
+function uploadFile(f, onConflict, force){
   var item=mkQueueItem(f);
   if(f.size > CHUNK_THRESHOLD){
-    doChunkedUpload(f, item, onConflict);
+    doChunkedUpload(f, item, onConflict, force);
   } else {
-    doUpload(f, item, onConflict);
+    doUpload(f, item, onConflict, force);
   }
 }
 
 // Buyuk dosya: client-side splitting + chunked upload (CF 100MB bypass).
 // init -> chunk*N (raw body) -> finalize.
-function doChunkedUpload(f, item, onConflict){
+function doChunkedUpload(f, item, onConflict, force){
   var bar=item.querySelector('.qbar > div');
   var status=item.querySelector('.q-status');
   bar.style.width='0%';bar.style.background='var(--p)';
@@ -216,6 +228,7 @@ function doChunkedUpload(f, item, onConflict){
   // 1) init
   var initBody={filename:f.name,total_size:f.size};
   if(onConflict)initBody.on_conflict=onConflict;
+  if(force)initBody.force=true;
 
   fetch('/api/dosyalar/upload/init',{
     method:'POST',credentials:'include',
@@ -226,11 +239,16 @@ function doChunkedUpload(f, item, onConflict){
       if(o.status===409 && o.j.exists){
         status.textContent='CAKISMA';bar.style.width='100%';bar.style.background='var(--y)';
         askConflict(f, o.j, function(choice){
-          if(choice==='cancel'){
-            item.classList.add('q-err');status.textContent='IPTAL';
-          } else {
-            doChunkedUpload(f, item, choice);
-          }
+          if(choice==='cancel'){item.classList.add('q-err');status.textContent='IPTAL'}
+          else{doChunkedUpload(f, item, choice, force)}
+        });
+        return;
+      }
+      if(o.status===400 && o.j.risky_unknown_ext){
+        status.textContent='RISKLI UZANTI';bar.style.width='100%';bar.style.background='var(--y)';
+        askRisky(f, o.j, function(ok){
+          if(!ok){item.classList.add('q-err');status.textContent='IPTAL'}
+          else{doChunkedUpload(f, item, onConflict, true)}
         });
         return;
       }
@@ -334,7 +352,7 @@ function finalizeChunked(f, item, uploadId, onConflict){
     });
 }
 
-function doUpload(f, item, onConflict){
+function doUpload(f, item, onConflict, force){
   var bar=item.querySelector('.qbar > div');
   var status=item.querySelector('.q-status');
   bar.style.width='0%';bar.style.background='var(--p)';
@@ -344,7 +362,10 @@ function doUpload(f, item, onConflict){
   Array.prototype.forEach.call(item.querySelectorAll('.q-result'),function(n){n.remove()});
 
   var fd=new FormData();fd.append('file',f);
-  var url='/api/dosyalar/upload'+(onConflict?'?on_conflict='+encodeURIComponent(onConflict):'');
+  var qs=[];
+  if(onConflict)qs.push('on_conflict='+encodeURIComponent(onConflict));
+  if(force)qs.push('force=true');
+  var url='/api/dosyalar/upload'+(qs.length?'?'+qs.join('&'):'');
   var xhr=new XMLHttpRequest();
   xhr.open('POST',url,true);
   xhr.withCredentials=true;
@@ -366,14 +387,16 @@ function doUpload(f, item, onConflict){
       item.appendChild(r);
       loadList();
     } else if(xhr.status===409 && json.exists){
-      // Cakisma — kullaniciya sor
       status.textContent='CAKISMA';bar.style.width='100%';bar.style.background='var(--y)';
       askConflict(f, json, function(choice){
-        if(choice==='cancel'){
-          item.classList.add('q-err');status.textContent='IPTAL';
-        } else {
-          doUpload(f, item, choice);
-        }
+        if(choice==='cancel'){item.classList.add('q-err');status.textContent='IPTAL'}
+        else{doUpload(f, item, choice, force)}
+      });
+    } else if(xhr.status===400 && json.risky_unknown_ext){
+      status.textContent='RISKLI UZANTI';bar.style.width='100%';bar.style.background='var(--y)';
+      askRisky(f, json, function(ok){
+        if(!ok){item.classList.add('q-err');status.textContent='IPTAL'}
+        else{doUpload(f, item, onConflict, true)}
       });
     } else {
       item.classList.add('q-err');status.textContent='HATA';bar.style.width='100%';bar.style.background='var(--r)';
@@ -406,6 +429,24 @@ function closeConflict(choice){
 $('#ckCancel').addEventListener('click',function(){closeConflict('cancel')});
 $('#ckRename').addEventListener('click',function(){closeConflict('rename')});
 $('#ckOverwrite').addEventListener('click',function(){closeConflict('overwrite')});
+
+var pendingRisky=null;
+function askRisky(file, info, callback){
+  pendingRisky={callback:callback};
+  $('#riskyMsg').innerHTML='<strong>'+escHTML(file.name)+'</strong><br>'+
+    'Uzanti: <code style="font-size:11px;background:var(--s3);padding:2px 6px;border-radius:3px">.'+escHTML(info.ext||'?')+'</code><br><br>'+
+    'Bu uzanti dosyalar.amator.tr allowlist\\'inde yok. Magic-byte kontrolu uzantiya gore yapilamaz, dosya icerigi dogrulanamaz.';
+  $('#riskyModal').classList.add('open');
+}
+function closeRisky(ok){
+  $('#riskyModal').classList.remove('open');
+  if(pendingRisky && pendingRisky.callback){
+    var cb=pendingRisky.callback;pendingRisky=null;
+    cb(ok);
+  }
+}
+$('#rkCancel').addEventListener('click',function(){closeRisky(false)});
+$('#rkConfirm').addEventListener('click',function(){closeRisky(true)});
 
 function loadList(){
   var cat=$('#catFilter').value;var q=$('#search').value.trim();

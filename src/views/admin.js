@@ -591,32 +591,33 @@ function initMDE(){
     imageMaxSize:100*1024*1024,
     imageAccept:'image/png,image/jpeg,image/webp,image/gif',
     imageUploadFunction:function(file,onSuccess,onError){
-      function send(onConflict){
+      function send(onConflict, force){
         var fd=new FormData();fd.append('file',file);
-        var url='https://dosyalar.amator.tr/api/dosyalar/upload'+(onConflict?'?on_conflict='+encodeURIComponent(onConflict):'');
+        var qs=[];
+        if(onConflict)qs.push('on_conflict='+encodeURIComponent(onConflict));
+        if(force)qs.push('force=true');
+        var url='https://dosyalar.amator.tr/api/dosyalar/upload'+(qs.length?'?'+qs.join('&'):'');
         return fetch(url,{method:'POST',credentials:'include',body:fd})
           .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})});
       }
-      send().then(function(o){
+      function handle(o){
         if(o.status>=200&&o.status<300&&o.j&&o.j.url){return onSuccess(o.j.url)}
         if(o.status===409&&o.j&&o.j.exists){
           var msg=o.j.original_name+' adli gorsel var.\\n\\n'+
             'OK = Yeniden adlandir ('+(o.j.suggested_name||'?')+')\\n'+
             'Cancel = Mevcut URL\\'i kullan ('+o.j.existing_url+')';
-          var rename=window.confirm(msg);
-          if(rename){
-            return send('rename').then(function(o2){
-              if(o2.status>=200&&o2.status<300&&o2.j.url){onSuccess(o2.j.url)}
-              else{onError((o2.j&&o2.j.error)||('HTTP '+o2.status))}
-            });
-          } else {
-            // Mevcut URL'i kullan (re-upload yapmadan)
-            onSuccess(o.j.existing_url);
+          if(window.confirm(msg)){return send('rename').then(handle)}
+          return onSuccess(o.j.existing_url);
+        }
+        if(o.status===400&&o.j&&o.j.risky_unknown_ext){
+          if(window.confirm('.'+o.j.ext+' uzantisi listede yok — riskli olabilir.\\n\\nYine de yuklemek ister misiniz?')){
+            return send(undefined, true).then(handle);
           }
-          return;
+          return onError('Iptal: riskli uzanti');
         }
         onError((o.j&&o.j.error)||('HTTP '+o.status));
-      }).catch(function(e){onError(e.message||'agsiz')});
+      }
+      send().then(handle).catch(function(e){onError(e.message||'agsiz')});
     },
     toolbar:['bold','italic','strikethrough','heading','|','quote','unordered-list','ordered-list','|','link','image','upload-image','code','table','horizontal-rule','|','preview','side-by-side','fullscreen','|','guide']
   });

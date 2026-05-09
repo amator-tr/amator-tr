@@ -161,6 +161,7 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
 
   const onConflictRaw = (c.req.query('on_conflict') || 'error').toLowerCase();
   const onConflict = ['error', 'rename', 'overwrite'].includes(onConflictRaw) ? onConflictRaw : 'error';
+  const force = c.req.query('force') === 'true';
 
   let body;
   try {
@@ -180,21 +181,27 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
   if (!ext) {
     return c.json({ error: 'Uzanti yok — yasak' }, 400);
   }
-  if (!isAllowed(ext)) {
-    return c.json({ error: `'.${ext}' kabul edilmiyor` }, 400);
+  const extKnown = isAllowed(ext);
+  if (!extKnown && !force) {
+    return c.json({
+      error: `'.${ext}' uzantisi listede yok — riskli olabilir`,
+      risky_unknown_ext: true,
+      ext,
+    }, 400);
   }
 
   const ab = await file.arrayBuffer();
   const buf = Buffer.from(ab);
   if (buf.length === 0) return c.json({ error: 'Dosya bos' }, 400);
 
-  // Magic-byte detect
+  // Magic-byte detect (allowlist'tekiler icin uyum zorunlu;
+  // force ile gelen unknown ext'lerde skip — admin'in inisiyatifi).
   let detected = null;
   try {
     detected = await fileTypeFromBuffer(buf);
   } catch { detected = null; }
 
-  if (!magicMatchesExt(ext, detected)) {
+  if (extKnown && !magicMatchesExt(ext, detected)) {
     await logActivity(c.env.DB, userId, 'upload_rejected_magic_mismatch',
       `${file.name}: ext=${ext} detected=${detected?.mime || 'null'}`);
     return c.json({
@@ -203,7 +210,7 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
     }, 400);
   }
 
-  const category = categoryFor(ext);
+  const category = extKnown ? categoryFor(ext) : 'diger';
   const desiredName = lenientName(file.name);
   const categoryDir = path.join(DOSYALAR_ROOT, category);
   const desiredPath = path.join(categoryDir, desiredName);
@@ -311,10 +318,19 @@ uploads.post('/api/dosyalar/upload/init', adminMiddleware(), async (c) => {
   if (!Number.isInteger(totalSize) || totalSize <= 0) return c.json({ error: 'total_size gecersiz' }, 400);
   if (totalSize > MAX_TOTAL_SIZE) return c.json({ error: `Max ${MAX_TOTAL_SIZE / (1024 * 1024 * 1024)} GB` }, 413);
 
+  const force = body.force === true || body.force === 'true';
   const ext = getExt(filename);
-  if (!ext || !isAllowed(ext)) return c.json({ error: `'.${ext}' kabul edilmiyor` }, 400);
+  if (!ext) return c.json({ error: 'Uzanti yok' }, 400);
+  const extKnown = isAllowed(ext);
+  if (!extKnown && !force) {
+    return c.json({
+      error: `'.${ext}' uzantisi listede yok — riskli olabilir`,
+      risky_unknown_ext: true,
+      ext,
+    }, 400);
+  }
 
-  const category = categoryFor(ext);
+  const category = extKnown ? categoryFor(ext) : 'diger';
   const desiredName = lenientName(filename);
   const categoryDir = path.join(DOSYALAR_ROOT, category);
   const desiredPath = path.join(categoryDir, desiredName);
@@ -339,7 +355,7 @@ uploads.post('/api/dosyalar/upload/init', adminMiddleware(), async (c) => {
   await fs.writeFile(tempPath, '');
 
   uploadSessions.set(uploadId, {
-    userId, filename, totalSize, ext, category, desiredName, desiredPath,
+    userId, filename, totalSize, ext, extKnown, category, desiredName, desiredPath,
     onConflict, received: 0, expires: Date.now() + SESSION_TTL_MS,
   });
 
@@ -391,27 +407,29 @@ uploads.post('/api/dosyalar/upload/finalize', adminMiddleware(), async (c) => {
     return c.json({ error: 'Eksik chunk', received: session.received, expected: session.totalSize }, 400);
   }
 
-  // Magic-byte: ilk 16KB
+  // Magic-byte: ilk 16KB (force=true unknown ext'lerde skip)
   let detected = null;
-  try {
-    const fh = await fs.open(tempPath, 'r');
-    const head = Buffer.alloc(16384);
-    const { bytesRead } = await fh.read(head, 0, 16384, 0);
-    await fh.close();
-    detected = await fileTypeFromBuffer(head.subarray(0, bytesRead));
-  } catch (err) {
-    return c.json({ error: 'Magic-byte okuma hatasi: ' + err.message }, 500);
-  }
+  if (session.extKnown) {
+    try {
+      const fh = await fs.open(tempPath, 'r');
+      const head = Buffer.alloc(16384);
+      const { bytesRead } = await fh.read(head, 0, 16384, 0);
+      await fh.close();
+      detected = await fileTypeFromBuffer(head.subarray(0, bytesRead));
+    } catch (err) {
+      return c.json({ error: 'Magic-byte okuma hatasi: ' + err.message }, 500);
+    }
 
-  if (!magicMatchesExt(session.ext, detected)) {
-    await fs.unlink(tempPath).catch(() => {});
-    uploadSessions.delete(uploadId);
-    await logActivity(c.env.DB, userId, 'upload_chunked_rejected_magic',
-      `${session.filename}: ext=${session.ext} detected=${detected?.mime || 'null'}`);
-    return c.json({
-      error: 'Dosya icerigi uzantisiyla uyusmuyor',
-      details: { ext: session.ext, detected: detected?.mime || null },
-    }, 400);
+    if (!magicMatchesExt(session.ext, detected)) {
+      await fs.unlink(tempPath).catch(() => {});
+      uploadSessions.delete(uploadId);
+      await logActivity(c.env.DB, userId, 'upload_chunked_rejected_magic',
+        `${session.filename}: ext=${session.ext} detected=${detected?.mime || 'null'}`);
+      return c.json({
+        error: 'Dosya icerigi uzantisiyla uyusmuyor',
+        details: { ext: session.ext, detected: detected?.mime || null },
+      }, 400);
+    }
   }
 
   // Final isim — conflict re-check (race condition icin)
