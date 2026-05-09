@@ -84,39 +84,60 @@ export function magicMatchesExt(ext, detected) {
   return allow.mime.includes(detected.mime);
 }
 
-// Filename sanitize: NFKC normalize + ASCII-only ([a-zA-Z0-9._-]) + max len.
-// ../ trick'leri ve unicode homoglyphs elenir.
-export function sanitizeFilename(original) {
+// Lenient filename normalize: orijinal ismi mumkun oldugunca koru.
+// Unicode (Turkce karakterler, emoji, CJK), bosluk, parantez, kesme isareti,
+// vb. korunur. Sadece path-traversal ve control char tehlikeleri temizlenir.
+//
+// Kaldirilan karakterler:
+//   - / ve \  → basename only (path traversal)
+//   - \x00-\x1f, \x7f (control chars + DEL) → strip (terminal/header injection)
+//   - .. dizileri → tek nokta (relative path traversal)
+//   - bas/son nokta + bosluk → kirpilir (hidden file + Windows quirks)
+//
+// Korunan karakterler:
+//   - a-z A-Z 0-9 (ASCII alfanumeric)
+//   - Unicode harfler (Türkçe ç ğ ı ö ş ü, vb.)
+//   - bosluk, ( ) [ ] { } & + , ; = ~ ! @ # $ % - _ . '
+//   - URL'de browser tarafi auto-encode eder (boslugu %20 gibi)
+export function lenientName(original) {
   if (typeof original !== 'string') return 'file';
-  let s = original.normalize('NFKC');
-  // Sadece basename
+  let s = original.normalize('NFC');
+  // Basename only
   const slash = Math.max(s.lastIndexOf('/'), s.lastIndexOf('\\'));
   if (slash >= 0) s = s.slice(slash + 1);
-  // Tehlikeli karakterleri _ ile degistir
-  s = s.replace(/[^a-zA-Z0-9._-]/g, '_');
-  // Bas/son tireleri/noktalari at
-  s = s.replace(/^[._-]+|[._-]+$/g, '');
-  // Cift uzanti normalize: arada nokta varsa son uzantiyi koru, kalanlari _ yap
-  // (basit: nokta sayisini 1'e indir — son uzanti haric)
-  const lastDot = s.lastIndexOf('.');
-  if (lastDot > 0) {
-    const base = s.slice(0, lastDot).replace(/\./g, '_');
-    const ext = s.slice(lastDot);
-    s = base + ext;
-  }
+  // Control chars + DEL elenir
+  s = s.replace(/[\x00-\x1f\x7f]/g, '');
+  // .. dizileri (relative traversal) -> tek nokta
+  s = s.replace(/\.{2,}/g, '.');
+  // Bas/son nokta ve bosluk
+  s = s.replace(/^[.\s]+|[.\s]+$/g, '');
   if (!s) s = 'file';
+  // Filesystem limit (255), URL pratiklik icin 200'de kes — uzantiyi koru
   if (s.length > MAX_FILENAME_LEN) {
-    const lastDot2 = s.lastIndexOf('.');
-    if (lastDot2 > 0) {
-      const ext = s.slice(lastDot2);
-      const base = s.slice(0, lastDot2);
-      const room = MAX_FILENAME_LEN - ext.length;
-      s = base.slice(0, Math.max(1, room)) + ext;
+    const lastDot = s.lastIndexOf('.');
+    if (lastDot > 0 && s.length - lastDot <= 16) {
+      const ext = s.slice(lastDot);
+      s = s.slice(0, MAX_FILENAME_LEN - ext.length) + ext;
     } else {
       s = s.slice(0, MAX_FILENAME_LEN);
     }
   }
   return s;
+}
+
+// Yeni-bir-isim onerisi: 'foo.png' var ise 'foo (2).png' den baslayarak
+// disk'te bos isim bulana kadar dener (max 999).
+export function suggestUniqueName(name, exists) {
+  // exists: (candidate) => boolean (sync fs check disaridan)
+  if (!exists(name)) return name;
+  const lastDot = name.lastIndexOf('.');
+  const base = lastDot > 0 ? name.slice(0, lastDot) : name;
+  const ext = lastDot > 0 ? name.slice(lastDot) : '';
+  for (let i = 2; i < 1000; i++) {
+    const candidate = `${base} (${i})${ext}`;
+    if (!exists(candidate)) return candidate;
+  }
+  return null; // 999 deneme tukendi
 }
 
 export const CATEGORIES = ['img', 'pdf', 'video', 'audio', 'arsiv', 'exe', 'doc', 'diger'];

@@ -20,7 +20,7 @@ import { adminMiddleware, hashPassword, timingSafeEqualHex, CURRENT_ITERATIONS, 
 import { logActivity } from '../helpers.js';
 import { safeWrite, safeUnlink, repoPath } from '../articles/files.js';
 import {
-  getExt, isAllowed, categoryFor, magicMatchesExt, sanitizeFilename, CATEGORIES
+  getExt, isAllowed, categoryFor, magicMatchesExt, lenientName, suggestUniqueName, CATEGORIES
 } from '../uploads/categorize.js';
 
 const REPO_ROOT = path.resolve(process.env.REPO_ROOT || process.cwd());
@@ -93,7 +93,7 @@ function rateLimit(userId) {
 }
 
 function publicUrl(category, filename) {
-  return `${PUBLIC_BASE}/${category}/${filename}`;
+  return `${PUBLIC_BASE}/${category}/${encodeURIComponent(filename)}`;
 }
 
 // --- routes ---------------------------------------------------------------
@@ -122,12 +122,19 @@ uploads.get('/api/dosyalar/list', adminMiddleware(), async (c) => {
   return c.json({ items, total_size: total?.total || 0, total_count: total?.n || 0 });
 });
 
-// Upload — multipart/form-data, single file alani: 'file'
+// Upload — multipart/form-data, single file alani: 'file'.
+// Query: ?on_conflict=error|rename|overwrite (default: error)
+//   - error: ayni isimde dosya varsa 409 + suggested_name + existing_url
+//   - rename: server uniq isim uretir (ornegin "foo (2).png")
+//   - overwrite: ayni path'e yazar, eski DB row'u replace eder
 uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
   const userId = c.get('userId');
   if (!rateLimit(userId)) {
     return c.json({ error: 'Cok fazla yukleme — bir dakika bekleyin' }, 429);
   }
+
+  const onConflictRaw = (c.req.query('on_conflict') || 'error').toLowerCase();
+  const onConflict = ['error', 'rename', 'overwrite'].includes(onConflictRaw) ? onConflictRaw : 'error';
 
   let body;
   try {
@@ -171,10 +178,37 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
   }
 
   const category = categoryFor(ext);
-  const sanitized = sanitizeFilename(file.name);
-  const prefix = crypto.randomBytes(8).toString('hex');
-  const finalName = `${prefix}-${sanitized}`;
-  const storedPath = path.join(DOSYALAR_ROOT, category, finalName);
+  const desiredName = lenientName(file.name);
+  const categoryDir = path.join(DOSYALAR_ROOT, category);
+  const desiredPath = path.join(categoryDir, desiredName);
+
+  // Cakisma cozumu
+  let finalName = desiredName;
+  let storedPath = desiredPath;
+  let willOverwrite = false;
+
+  if (existsSync(desiredPath)) {
+    if (onConflict === 'error') {
+      const suggested = suggestUniqueName(desiredName, n => existsSync(path.join(categoryDir, n)));
+      return c.json({
+        error: 'Bu isimde dosya zaten var',
+        exists: true,
+        original_name: file.name,
+        category,
+        existing_url: publicUrl(category, desiredName),
+        suggested_name: suggested,
+      }, 409);
+    } else if (onConflict === 'rename') {
+      const suggested = suggestUniqueName(desiredName, n => existsSync(path.join(categoryDir, n)));
+      if (!suggested) {
+        return c.json({ error: 'Uygun benzersiz isim bulunamadi (999 deneme)' }, 409);
+      }
+      finalName = suggested;
+      storedPath = path.join(categoryDir, finalName);
+    } else if (onConflict === 'overwrite') {
+      willOverwrite = true;
+    }
+  }
 
   // Yaz (safeWrite ALLOWED_ROOTS'ta data/dosyalar bekleyecek)
   try {
@@ -187,26 +221,40 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
   const mime = detected?.mime || 'application/octet-stream';
 
   try {
-    await c.env.DB.prepare(`
-      INSERT INTO uploads (original_name, stored_path, category, mime, size, sha256, uploaded_by)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).bind(file.name, storedPath, category, mime, buf.length, sha256, userId).run();
+    if (willOverwrite) {
+      // Mevcut DB row'unu guncelle
+      await c.env.DB.prepare(`
+        UPDATE uploads SET original_name = ?, mime = ?, size = ?, sha256 = ?, uploaded_by = ?, uploaded_at = datetime('now')
+        WHERE stored_path = ?
+      `).bind(file.name, mime, buf.length, sha256, userId, storedPath).run();
+    } else {
+      await c.env.DB.prepare(`
+        INSERT INTO uploads (original_name, stored_path, category, mime, size, sha256, uploaded_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).bind(file.name, storedPath, category, mime, buf.length, sha256, userId).run();
+    }
   } catch (err) {
-    // DB hatasi: dosyayi sil ki orphan olmasin
-    try { await safeUnlink(storedPath); } catch {}
-    return c.json({ error: 'DB INSERT hatasi: ' + err.message }, 500);
+    // DB hatasi: yeni yazilan dosyayi sil ki orphan olmasin (overwrite degilse)
+    if (!willOverwrite) {
+      try { await safeUnlink(storedPath); } catch {}
+    }
+    return c.json({ error: 'DB hatasi: ' + err.message }, 500);
   }
 
-  await logActivity(c.env.DB, userId, 'upload_file', `${category}/${finalName} (${buf.length}B)`);
+  await logActivity(c.env.DB, userId, willOverwrite ? 'upload_overwrite' : 'upload_file',
+    `${category}/${finalName} (${buf.length}B)`);
 
   return c.json({
     ok: true,
     url: publicUrl(category, finalName),
     original_name: file.name,
+    stored_name: finalName,
     size: buf.length,
     sha256,
     category,
     mime,
+    overwrote: willOverwrite,
+    renamed: finalName !== desiredName,
   });
 });
 

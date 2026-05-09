@@ -591,11 +591,32 @@ function initMDE(){
     imageMaxSize:100*1024*1024,
     imageAccept:'image/png,image/jpeg,image/webp,image/gif',
     imageUploadFunction:function(file,onSuccess,onError){
-      var fd=new FormData();fd.append('file',file);
-      fetch('https://dosyalar.amator.tr/api/dosyalar/upload',{method:'POST',credentials:'include',body:fd})
-        .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
-        .then(function(o){if(o.status>=200&&o.status<300&&o.j&&o.j.url){onSuccess(o.j.url)}else{onError((o.j&&o.j.error)||('HTTP '+o.status))}})
-        .catch(function(e){onError(e.message||'agsiz')});
+      function send(onConflict){
+        var fd=new FormData();fd.append('file',file);
+        var url='https://dosyalar.amator.tr/api/dosyalar/upload'+(onConflict?'?on_conflict='+encodeURIComponent(onConflict):'');
+        return fetch(url,{method:'POST',credentials:'include',body:fd})
+          .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})});
+      }
+      send().then(function(o){
+        if(o.status>=200&&o.status<300&&o.j&&o.j.url){return onSuccess(o.j.url)}
+        if(o.status===409&&o.j&&o.j.exists){
+          var msg=o.j.original_name+' adli gorsel var.\\n\\n'+
+            'OK = Yeniden adlandir ('+(o.j.suggested_name||'?')+')\\n'+
+            'Cancel = Mevcut URL\\'i kullan ('+o.j.existing_url+')';
+          var rename=window.confirm(msg);
+          if(rename){
+            return send('rename').then(function(o2){
+              if(o2.status>=200&&o2.status<300&&o2.j.url){onSuccess(o2.j.url)}
+              else{onError((o2.j&&o2.j.error)||('HTTP '+o2.status))}
+            });
+          } else {
+            // Mevcut URL'i kullan (re-upload yapmadan)
+            onSuccess(o.j.existing_url);
+          }
+          return;
+        }
+        onError((o.j&&o.j.error)||('HTTP '+o.status));
+      }).catch(function(e){onError(e.message||'agsiz')});
     },
     toolbar:['bold','italic','strikethrough','heading','|','quote','unordered-list','ordered-list','|','link','image','upload-image','code','table','horizontal-rule','|','preview','side-by-side','fullscreen','|','guide']
   });

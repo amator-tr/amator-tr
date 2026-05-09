@@ -139,6 +139,18 @@ input[type=file]{display:none}
 </div>
 </div>
 
+<div class="pw-modal" id="conflictModal">
+<div class="pw-box" style="max-width:440px">
+<h3>Bu isimde dosya zaten var</h3>
+<p id="conflictMsg" style="margin-bottom:14px"></p>
+<div class="pw-btns" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">
+<button class="pw-cancel" id="ckCancel" type="button">Iptal</button>
+<button class="pw-save" id="ckRename" type="button" style="background:var(--p)">Yeniden adlandir</button>
+<button class="pw-save" id="ckOverwrite" type="button" style="background:var(--y);color:#000">Uzerine yaz</button>
+</div>
+</div>
+</div>
+
 <script>
 function $(s){return document.querySelector(s)}
 function $$(s){return document.querySelectorAll(s)}
@@ -179,20 +191,30 @@ function mkQueueItem(f){
   return div;
 }
 
-function uploadFile(f){
+function uploadFile(f, onConflict){
   var item=mkQueueItem(f);
+  doUpload(f, item, onConflict);
+}
+
+function doUpload(f, item, onConflict){
   var bar=item.querySelector('.qbar > div');
   var status=item.querySelector('.q-status');
+  bar.style.width='0%';bar.style.background='var(--p)';
   status.textContent='YUKLENIYOR';
+  item.classList.remove('q-err','q-ok');
+  // Eski result kutucuklari temizle
+  Array.prototype.forEach.call(item.querySelectorAll('.q-result'),function(n){n.remove()});
+
   var fd=new FormData();fd.append('file',f);
+  var url='/api/dosyalar/upload'+(onConflict?'?on_conflict='+encodeURIComponent(onConflict):'');
   var xhr=new XMLHttpRequest();
-  xhr.open('POST','/api/dosyalar/upload',true);
+  xhr.open('POST',url,true);
   xhr.withCredentials=true;
   xhr.upload.onprogress=function(e){if(e.lengthComputable){bar.style.width=Math.round(e.loaded/e.total*100)+'%'}};
   xhr.onload=function(){
     var json={};try{json=JSON.parse(xhr.responseText||'{}')}catch(e){}
     if(xhr.status>=200 && xhr.status<300 && json.ok){
-      item.classList.add('q-ok');status.textContent='OK';bar.style.width='100%';
+      item.classList.add('q-ok');status.textContent=json.overwrote?'YAZILDI':(json.renamed?'AD DEGISTI':'OK');bar.style.width='100%';
       var r=document.createElement('div');r.className='q-result';
       var c=document.createElement('code');c.textContent=json.url;
       var copy=document.createElement('button');copy.className='copy-btn';copy.textContent='URL kopyala';
@@ -200,11 +222,21 @@ function uploadFile(f){
       var copyMd=null;
       if(json.category==='img'){
         copyMd=document.createElement('button');copyMd.className='copy-btn';copyMd.textContent='Markdown kopyala';
-        copyMd.addEventListener('click',function(){navigator.clipboard.writeText('!['+f.name+']('+json.url+')');toast('Markdown kopyalandi','ok')});
+        copyMd.addEventListener('click',function(){navigator.clipboard.writeText('!['+(json.stored_name||f.name)+']('+json.url+')');toast('Markdown kopyalandi','ok')});
       }
       r.appendChild(c);r.appendChild(copy);if(copyMd)r.appendChild(copyMd);
       item.appendChild(r);
       loadList();
+    } else if(xhr.status===409 && json.exists){
+      // Cakisma — kullaniciya sor
+      status.textContent='CAKISMA';bar.style.width='100%';bar.style.background='var(--y)';
+      askConflict(f, json, function(choice){
+        if(choice==='cancel'){
+          item.classList.add('q-err');status.textContent='IPTAL';
+        } else {
+          doUpload(f, item, choice);
+        }
+      });
     } else {
       item.classList.add('q-err');status.textContent='HATA';bar.style.width='100%';bar.style.background='var(--r)';
       var r=document.createElement('div');r.className='q-result';r.style.fontSize='11px';r.style.color='var(--r)';
@@ -215,6 +247,27 @@ function uploadFile(f){
   xhr.onerror=function(){item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)'};
   xhr.send(fd);
 }
+
+var pendingConflict=null;
+function askConflict(file, info, callback){
+  pendingConflict={callback:callback};
+  $('#conflictMsg').innerHTML='<strong>'+escHTML(info.original_name)+'</strong><br>'+
+    'Mevcut: <code style="font-size:11px;background:var(--s3);padding:2px 6px;border-radius:3px">'+escHTML(info.existing_url)+'</code><br><br>'+
+    '<strong>Yeniden adlandir</strong>: dosya <code>'+escHTML(info.suggested_name||'?')+'</code> olarak kaydedilir.<br>'+
+    '<strong>Uzerine yaz</strong>: mevcut dosya silinip yenisi konur (geri alinamaz).<br>'+
+    '<strong>Iptal</strong>: yukleme atlanir.';
+  $('#conflictModal').classList.add('open');
+}
+function closeConflict(choice){
+  $('#conflictModal').classList.remove('open');
+  if(pendingConflict && pendingConflict.callback){
+    var cb=pendingConflict.callback;pendingConflict=null;
+    cb(choice);
+  }
+}
+$('#ckCancel').addEventListener('click',function(){closeConflict('cancel')});
+$('#ckRename').addEventListener('click',function(){closeConflict('rename')});
+$('#ckOverwrite').addEventListener('click',function(){closeConflict('overwrite')});
 
 function loadList(){
   var cat=$('#catFilter').value;var q=$('#search').value.trim();
