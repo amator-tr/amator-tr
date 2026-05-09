@@ -591,6 +591,10 @@ function initMDE(){
     imageMaxSize:100*1024*1024,
     imageAccept:'image/png,image/jpeg,image/webp,image/gif',
     imageUploadFunction:function(file,onSuccess,onError){
+      // Cakismada SESSIZ auto-rename + toast uyari. Promise zinciri icinde
+      // window.confirm() user-gesture context'i kaybediyordu, browser'lar
+      // bloklayinca gorsel sessizce kayboluyordu. Auto-rename + toast cozum.
+      var didRename=false;
       function send(onConflict, force){
         var fd=new FormData();fd.append('file',file);
         var qs=[];
@@ -601,13 +605,16 @@ function initMDE(){
           .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})});
       }
       function handle(o){
-        if(o.status>=200&&o.status<300&&o.j&&o.j.url){return onSuccess(o.j.url)}
+        if(o.status>=200&&o.status<300&&o.j&&o.j.url){
+          if(didRename){
+            try{toast('Ayni isimde gorsel vardi — yeni ad: '+o.j.stored_name, true)}catch(e){}
+          }
+          return onSuccess(o.j.url);
+        }
         if(o.status===409&&o.j&&o.j.exists){
-          var msg=o.j.original_name+' adli gorsel var.\\n\\n'+
-            'OK = Yeniden adlandir ('+(o.j.suggested_name||'?')+')\\n'+
-            'Cancel = Mevcut URL\\'i kullan ('+o.j.existing_url+')';
-          if(window.confirm(msg)){return send('rename').then(handle)}
-          return onSuccess(o.j.existing_url);
+          // Otomatik rename + bayrak (success'te toast goster)
+          didRename=true;
+          return send('rename').then(handle);
         }
         if(o.status===400&&o.j&&o.j.risky_unknown_ext){
           if(window.confirm('.'+o.j.ext+' uzantisi listede yok — riskli olabilir.\\n\\nYine de yuklemek ister misiniz?')){
