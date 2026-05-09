@@ -62,6 +62,7 @@ function articleFiles(slug) {
 
 function commitFilesForPublish(slug) {
   const f = articleFiles(slug);
+  // .build-cache.json .gitignore'da; commit'e dahil edilmez.
   return [
     f.md,
     f.og,
@@ -69,7 +70,6 @@ function commitFilesForPublish(slug) {
     f.sitemap,
     f.feed,
     f.validSlugs,
-    f.buildCache,
   ];
 }
 

@@ -13,6 +13,16 @@
   <url><loc>https://amator.tr/hakkinda</loc><lastmod>2026-05-09</lastmod><priority>0.5</priority></url>
   <url><loc>https://amator.tr/iletisim</loc><lastmod>2026-05-09</lastmod><priority>0.3</priority></url>
   <url>
+    <loc>https://amator.tr/tutorials/aaa</loc>
+    <lastmod>2026-05-09</lastmod>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://amator.tr/og/aaa.png</image:loc>
+      <image:title>Amöter Telsizci Gerekli Üyelik Portalları</image:title>
+      <image:caption>kayit</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://amator.tr/tutorials/afet-acil-durum-haberlesmesi</loc>
     <lastmod>2026-04-26</lastmod>
     <priority>0.7</priority>
