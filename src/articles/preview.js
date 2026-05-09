@@ -27,7 +27,12 @@ export function sanitize(html) {
     allowedTags: ALLOWED_TAGS,
     allowedAttributes: ALLOWED_ATTRS,
     allowedSchemes: ['http', 'https', 'mailto'],
-    allowedSchemesByTag: { img: ['http', 'https', 'data'] },
+    // data: URI img'den kaldirildi: data:image/svg+xml,<svg onload=...>
+    // sanitize-html'de scheme bazinda izin verilirken mediatype kontrol
+    // edilmez, dolayisiyla SVG (JS yurutebilen) gectiginde XSS olur.
+    // Mevcut content/'te base64 image kullanimi yok; ileride ihtiyac
+    // olursa specific mediatype regex ile re-enable edilebilir.
+    allowedSchemesByTag: { img: ['http', 'https'] },
     disallowedTagsMode: 'discard',
     enforceHtmlBoundary: true,
   });
