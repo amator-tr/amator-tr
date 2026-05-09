@@ -16,12 +16,18 @@ services:
       # SSH deploy key (chmod 600 host'ta). Yoksa container yuklenir ama
       # publish push'unda gecersiz key hatasi gorur — admin akisi calismaz.
       - ${DEPLOY_KEY_PATH:-/dev/null}:/root/.ssh/deploy_key:ro
+      # Persistent known_hosts: TOFU + accept-new ile MITM savunmasi.
+      # Ilk push'ta github.com host key'i yazilir, sonraki push'lar dogrulanir.
+      - ssh_known_hosts:/root/.ssh
     environment:
       GIT_AUTHOR_NAME: ${GIT_AUTHOR_NAME:-Admin Publish}
       GIT_AUTHOR_EMAIL: ${GIT_AUTHOR_EMAIL:-admin@amator.tr}
       GIT_COMMITTER_NAME: ${GIT_AUTHOR_NAME:-Admin Publish}
       GIT_COMMITTER_EMAIL: ${GIT_AUTHOR_EMAIL:-admin@amator.tr}
-      GIT_SSH_COMMAND: "ssh -i /root/.ssh/deploy_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      # accept-new: bilinmeyen host key'ini known_hosts'a YAZ + kabul et,
+      # sonraki bir uyusmazlikta REDDET. =no farki: =no unknown'i da kabul
+      # eder ve hicbir kontrol yapmaz (MITM'e acik).
+      GIT_SSH_COMMAND: "ssh -i /root/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/root/.ssh/known_hosts"
       REPO_ROOT: /app
     ports:
       - "4541:3000"
@@ -66,3 +72,6 @@ services:
     entrypoint: ["node", "scripts/backup.js"]
     profiles:
       - tools
+
+volumes:
+  ssh_known_hosts:
