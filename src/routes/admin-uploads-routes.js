@@ -14,7 +14,8 @@
 import { Hono } from 'hono';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { existsSync } from 'node:fs';
+import { existsSync, createReadStream } from 'node:fs';
+import fs from 'node:fs/promises';
 import { fileTypeFromBuffer } from 'file-type';
 import { adminMiddleware, hashPassword, timingSafeEqualHex, CURRENT_ITERATIONS, LEGACY_ITERATIONS } from '../auth.js';
 import { logActivity } from '../helpers.js';
@@ -95,6 +96,31 @@ function rateLimit(userId) {
 function publicUrl(category, filename) {
   return `${PUBLIC_BASE}/${category}/${encodeURIComponent(filename)}`;
 }
+
+// --- Chunked upload session store ----------------------------------------
+// Cloudflare 100 MB body limit asilamaz. Buyuk dosyalar icin client-side
+// splitting: init -> chunk*N -> finalize. Her chunk <=90 MB.
+//
+// Session: 1 saat TTL. Ayni admin'in baska session'lari concurrent olabilir
+// (her birinin upload_id'si farkli). 64-bit upload_id (32 hex char), brute-force
+// + auth (cookie + admin role) icin yeterli.
+const TMP_DIR = path.join(DOSYALAR_ROOT, '.tmp');
+const CHUNK_SIZE = 90 * 1024 * 1024;
+const MAX_TOTAL_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB hard cap
+const SESSION_TTL_MS = 3600_000; // 1 saat
+const uploadSessions = new Map(); // upload_id -> { userId, filename, totalSize, ext, category, desiredName, desiredPath, onConflict, received, expires }
+
+function cleanupExpiredSessions() {
+  const now = Date.now();
+  for (const [id, s] of uploadSessions) {
+    if (s.expires < now) {
+      uploadSessions.delete(id);
+      const tempPath = path.join(TMP_DIR, id + '.part');
+      fs.unlink(tempPath).catch(() => {});
+    }
+  }
+}
+setInterval(cleanupExpiredSessions, 5 * 60_000).unref?.();
 
 // --- routes ---------------------------------------------------------------
 
@@ -255,6 +281,215 @@ uploads.post('/api/dosyalar/upload', adminMiddleware(), async (c) => {
     mime,
     overwrote: willOverwrite,
     renamed: finalName !== desiredName,
+  });
+});
+
+// --- Chunked upload (>90 MB / Cloudflare 100 MB bypass) ------------------
+// Akis:
+//   1) POST /upload/init  — JSON {filename, total_size, on_conflict}
+//      → 200 {upload_id, chunk_size}, 409 {exists,...} on_conflict=error ise
+//   2) POST /upload/chunk — raw body (octet-stream). Headers: X-Upload-Id,
+//      X-Chunk-Index, X-Total-Chunks. Server append-only — chunk'lar sirayla
+//      gelmeli (UI sirayla gonderir). Boyut kontrolu cumulative.
+//   3) POST /upload/finalize — JSON {upload_id}
+//      → magic-byte check (ilk 16KB), conflict re-check, atomik rename, sha256,
+//        DB INSERT/UPDATE.
+
+uploads.post('/api/dosyalar/upload/init', adminMiddleware(), async (c) => {
+  const userId = c.get('userId');
+  if (!rateLimit(userId)) return c.json({ error: 'Rate limit' }, 429);
+
+  let body;
+  try { body = await c.req.json(); } catch { return c.json({ error: 'JSON parse hatasi' }, 400); }
+
+  const filename = String(body.filename || '');
+  const totalSize = Number(body.total_size);
+  const onConflictRaw = (body.on_conflict || 'error').toLowerCase();
+  const onConflict = ['error', 'rename', 'overwrite'].includes(onConflictRaw) ? onConflictRaw : 'error';
+
+  if (!filename) return c.json({ error: 'filename gerekli' }, 400);
+  if (!Number.isInteger(totalSize) || totalSize <= 0) return c.json({ error: 'total_size gecersiz' }, 400);
+  if (totalSize > MAX_TOTAL_SIZE) return c.json({ error: `Max ${MAX_TOTAL_SIZE / (1024 * 1024 * 1024)} GB` }, 413);
+
+  const ext = getExt(filename);
+  if (!ext || !isAllowed(ext)) return c.json({ error: `'.${ext}' kabul edilmiyor` }, 400);
+
+  const category = categoryFor(ext);
+  const desiredName = lenientName(filename);
+  const categoryDir = path.join(DOSYALAR_ROOT, category);
+  const desiredPath = path.join(categoryDir, desiredName);
+
+  // Conflict pre-check (chunked upload baslamadan once 409 vermek hizli)
+  if (existsSync(desiredPath) && onConflict === 'error') {
+    const suggested = suggestUniqueName(desiredName, n => existsSync(path.join(categoryDir, n)));
+    return c.json({
+      error: 'Bu isimde dosya zaten var',
+      exists: true,
+      original_name: filename,
+      category,
+      existing_url: publicUrl(category, desiredName),
+      suggested_name: suggested,
+    }, 409);
+  }
+
+  const uploadId = crypto.randomBytes(16).toString('hex');
+  const tempPath = path.join(TMP_DIR, uploadId + '.part');
+
+  await fs.mkdir(TMP_DIR, { recursive: true });
+  await fs.writeFile(tempPath, '');
+
+  uploadSessions.set(uploadId, {
+    userId, filename, totalSize, ext, category, desiredName, desiredPath,
+    onConflict, received: 0, expires: Date.now() + SESSION_TTL_MS,
+  });
+
+  await logActivity(c.env.DB, userId, 'upload_init', `${filename} (${totalSize}B, ${uploadId.slice(0, 8)})`);
+
+  return c.json({ upload_id: uploadId, chunk_size: CHUNK_SIZE });
+});
+
+uploads.post('/api/dosyalar/upload/chunk', adminMiddleware(), async (c) => {
+  const uploadId = c.req.header('X-Upload-Id') || '';
+  const session = uploadSessions.get(uploadId);
+  if (!session) return c.json({ error: 'upload_id gecersiz' }, 404);
+  if (session.userId !== c.get('userId')) return c.json({ error: 'Yetkisiz' }, 403);
+  if (session.expires < Date.now()) {
+    uploadSessions.delete(uploadId);
+    fs.unlink(path.join(TMP_DIR, uploadId + '.part')).catch(() => {});
+    return c.json({ error: 'Session TTL bitti' }, 410);
+  }
+
+  const ab = await c.req.arrayBuffer();
+  const buf = Buffer.from(ab);
+  if (buf.length === 0) return c.json({ error: 'Bos chunk' }, 400);
+  if (buf.length > CHUNK_SIZE + 1024) return c.json({ error: 'Chunk cok buyuk' }, 413);
+  if (session.received + buf.length > session.totalSize) {
+    return c.json({ error: 'Toplam boyut asildi', received: session.received, total: session.totalSize }, 400);
+  }
+
+  const tempPath = path.join(TMP_DIR, uploadId + '.part');
+  await fs.appendFile(tempPath, buf);
+  session.received += buf.length;
+  session.expires = Date.now() + SESSION_TTL_MS; // refresh TTL on activity
+
+  return c.json({ ok: true, received: session.received, total: session.totalSize });
+});
+
+uploads.post('/api/dosyalar/upload/finalize', adminMiddleware(), async (c) => {
+  const userId = c.get('userId');
+  let body;
+  try { body = await c.req.json(); } catch { return c.json({ error: 'JSON parse hatasi' }, 400); }
+
+  const uploadId = String(body.upload_id || '');
+  const session = uploadSessions.get(uploadId);
+  if (!session) return c.json({ error: 'upload_id gecersiz' }, 404);
+  if (session.userId !== userId) return c.json({ error: 'Yetkisiz' }, 403);
+
+  const tempPath = path.join(TMP_DIR, uploadId + '.part');
+
+  if (session.received !== session.totalSize) {
+    return c.json({ error: 'Eksik chunk', received: session.received, expected: session.totalSize }, 400);
+  }
+
+  // Magic-byte: ilk 16KB
+  let detected = null;
+  try {
+    const fh = await fs.open(tempPath, 'r');
+    const head = Buffer.alloc(16384);
+    const { bytesRead } = await fh.read(head, 0, 16384, 0);
+    await fh.close();
+    detected = await fileTypeFromBuffer(head.subarray(0, bytesRead));
+  } catch (err) {
+    return c.json({ error: 'Magic-byte okuma hatasi: ' + err.message }, 500);
+  }
+
+  if (!magicMatchesExt(session.ext, detected)) {
+    await fs.unlink(tempPath).catch(() => {});
+    uploadSessions.delete(uploadId);
+    await logActivity(c.env.DB, userId, 'upload_chunked_rejected_magic',
+      `${session.filename}: ext=${session.ext} detected=${detected?.mime || 'null'}`);
+    return c.json({
+      error: 'Dosya icerigi uzantisiyla uyusmuyor',
+      details: { ext: session.ext, detected: detected?.mime || null },
+    }, 400);
+  }
+
+  // Final isim — conflict re-check (race condition icin)
+  const categoryDir = path.join(DOSYALAR_ROOT, session.category);
+  let finalName = session.desiredName;
+  let finalPath = session.desiredPath;
+  let willOverwrite = false;
+
+  if (existsSync(finalPath)) {
+    if (session.onConflict === 'rename') {
+      const suggested = suggestUniqueName(session.desiredName, n => existsSync(path.join(categoryDir, n)));
+      if (!suggested) {
+        await fs.unlink(tempPath).catch(() => {});
+        uploadSessions.delete(uploadId);
+        return c.json({ error: 'Uniq isim bulunamadi (999 deneme)' }, 409);
+      }
+      finalName = suggested;
+      finalPath = path.join(categoryDir, finalName);
+    } else if (session.onConflict === 'overwrite') {
+      willOverwrite = true;
+    } else {
+      await fs.unlink(tempPath).catch(() => {});
+      uploadSessions.delete(uploadId);
+      return c.json({ error: 'Race: dosya finalize sirasinda olustu' }, 409);
+    }
+  }
+
+  // Atomik move (ayni filesystem icinde rename)
+  try {
+    await fs.mkdir(categoryDir, { recursive: true });
+    await fs.rename(tempPath, finalPath);
+  } catch (err) {
+    return c.json({ error: 'Rename hatasi: ' + err.message }, 500);
+  }
+
+  // sha256 stream
+  const hash = crypto.createHash('sha256');
+  await new Promise((resolve, reject) => {
+    const rs = createReadStream(finalPath);
+    rs.on('data', (chunk) => hash.update(chunk));
+    rs.on('end', resolve);
+    rs.on('error', reject);
+  });
+  const sha256 = hash.digest('hex');
+
+  const mime = detected?.mime || 'application/octet-stream';
+
+  try {
+    if (willOverwrite) {
+      await c.env.DB.prepare(`
+        UPDATE uploads SET original_name = ?, mime = ?, size = ?, sha256 = ?, uploaded_by = ?, uploaded_at = datetime('now')
+        WHERE stored_path = ?
+      `).bind(session.filename, mime, session.totalSize, sha256, userId, finalPath).run();
+    } else {
+      await c.env.DB.prepare(`
+        INSERT INTO uploads (original_name, stored_path, category, mime, size, sha256, uploaded_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).bind(session.filename, finalPath, session.category, mime, session.totalSize, sha256, userId).run();
+    }
+  } catch (err) {
+    return c.json({ error: 'DB hatasi: ' + err.message }, 500);
+  }
+
+  uploadSessions.delete(uploadId);
+  await logActivity(c.env.DB, userId, willOverwrite ? 'upload_chunked_overwrite' : 'upload_chunked',
+    `${session.category}/${finalName} (${session.totalSize}B)`);
+
+  return c.json({
+    ok: true,
+    url: publicUrl(session.category, finalName),
+    original_name: session.filename,
+    stored_name: finalName,
+    size: session.totalSize,
+    sha256,
+    category: session.category,
+    mime,
+    overwrote: willOverwrite,
+    renamed: finalName !== session.desiredName,
   });
 });
 

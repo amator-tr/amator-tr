@@ -102,7 +102,7 @@ input[type=file]{display:none}
 <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Dosya secmek icin tikla veya surukle">
 <div class="dropzone-icon">⬆</div>
 <div class="dropzone-text">Dosyalari surukle/birak veya tiklayip sec</div>
-<div class="dropzone-hint">Maks 100 MB / dosya · img, pdf, video, audio, arsiv, exe, doc, txt</div>
+<div class="dropzone-hint">Cloudflare 100 MB ustu icin otomatik chunked upload (5 GB'a kadar)</div>
 </div>
 <input type="file" id="fileInput" multiple>
 <div class="queue" id="queue"></div>
@@ -170,12 +170,15 @@ dropzone.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key==='
 dropzone.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files)handleFiles(e.dataTransfer.files)});
 fileInput.addEventListener('change',function(){handleFiles(fileInput.files);fileInput.value=''});
 
+var CHUNK_THRESHOLD = 90 * 1024 * 1024; // 90 MB - CF 100MB sinirinin biraz altinda
+var MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB
+
 function handleFiles(files){
   Array.from(files).forEach(function(f){
-    if(f.size > 100 * 1024 * 1024){
+    if(f.size > MAX_FILE_SIZE){
       var item=mkQueueItem(f);
       item.classList.add('q-err');
-      item.querySelector('.q-status').textContent='> 100MB';
+      item.querySelector('.q-status').textContent='> 5GB';
       return;
     }
     uploadFile(f);
@@ -193,7 +196,142 @@ function mkQueueItem(f){
 
 function uploadFile(f, onConflict){
   var item=mkQueueItem(f);
-  doUpload(f, item, onConflict);
+  if(f.size > CHUNK_THRESHOLD){
+    doChunkedUpload(f, item, onConflict);
+  } else {
+    doUpload(f, item, onConflict);
+  }
+}
+
+// Buyuk dosya: client-side splitting + chunked upload (CF 100MB bypass).
+// init -> chunk*N (raw body) -> finalize.
+function doChunkedUpload(f, item, onConflict){
+  var bar=item.querySelector('.qbar > div');
+  var status=item.querySelector('.q-status');
+  bar.style.width='0%';bar.style.background='var(--p)';
+  status.textContent='HAZIRLANIYOR';
+  item.classList.remove('q-err','q-ok');
+  Array.prototype.forEach.call(item.querySelectorAll('.q-result'),function(n){n.remove()});
+
+  // 1) init
+  var initBody={filename:f.name,total_size:f.size};
+  if(onConflict)initBody.on_conflict=onConflict;
+
+  fetch('/api/dosyalar/upload/init',{
+    method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(initBody)
+  }).then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
+    .then(function(o){
+      if(o.status===409 && o.j.exists){
+        status.textContent='CAKISMA';bar.style.width='100%';bar.style.background='var(--y)';
+        askConflict(f, o.j, function(choice){
+          if(choice==='cancel'){
+            item.classList.add('q-err');status.textContent='IPTAL';
+          } else {
+            doChunkedUpload(f, item, choice);
+          }
+        });
+        return;
+      }
+      if(o.status<200||o.status>=300||!o.j.upload_id){
+        item.classList.add('q-err');status.textContent='INIT HATA';bar.style.background='var(--r)';
+        var r=document.createElement('div');r.className='q-result';r.style.fontSize='11px';r.style.color='var(--r)';
+        r.textContent=o.j.error||('HTTP '+o.status);
+        item.appendChild(r);
+        return;
+      }
+      var uploadId=o.j.upload_id;
+      var chunkSize=o.j.chunk_size||CHUNK_THRESHOLD;
+      var totalChunks=Math.ceil(f.size/chunkSize);
+      sendChunks(f, item, uploadId, chunkSize, totalChunks, 0, onConflict);
+    })
+    .catch(function(e){
+      item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)';
+      var r=document.createElement('div');r.className='q-result';r.style.fontSize='11px';r.style.color='var(--r)';
+      r.textContent='init: '+(e.message||'agsiz');
+      item.appendChild(r);
+    });
+}
+
+function sendChunks(f, item, uploadId, chunkSize, totalChunks, idx, onConflict){
+  var bar=item.querySelector('.qbar > div');
+  var status=item.querySelector('.q-status');
+
+  if(idx>=totalChunks){
+    status.textContent='BIRLESTIRILIYOR';
+    finalizeChunked(f, item, uploadId, onConflict);
+    return;
+  }
+
+  var start=idx*chunkSize;
+  var end=Math.min(start+chunkSize, f.size);
+  var blob=f.slice(start,end);
+  status.textContent='YUKLENIYOR ('+(idx+1)+'/'+totalChunks+')';
+
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/dosyalar/upload/chunk',true);
+  xhr.withCredentials=true;
+  xhr.setRequestHeader('Content-Type','application/octet-stream');
+  xhr.setRequestHeader('X-Upload-Id',uploadId);
+  xhr.setRequestHeader('X-Chunk-Index',String(idx));
+  xhr.setRequestHeader('X-Total-Chunks',String(totalChunks));
+  xhr.upload.onprogress=function(e){
+    if(e.lengthComputable){
+      var totalDone=start+e.loaded;
+      bar.style.width=Math.round(totalDone/f.size*100)+'%';
+    }
+  };
+  xhr.onload=function(){
+    var json={};try{json=JSON.parse(xhr.responseText||'{}')}catch(e){}
+    if(xhr.status>=200 && xhr.status<300 && json.ok){
+      sendChunks(f, item, uploadId, chunkSize, totalChunks, idx+1, onConflict);
+    } else {
+      item.classList.add('q-err');status.textContent='CHUNK HATA';bar.style.background='var(--r)';
+      var r=document.createElement('div');r.className='q-result';r.style.fontSize='11px';r.style.color='var(--r)';
+      r.textContent='chunk '+(idx+1)+': '+(json.error||('HTTP '+xhr.status));
+      item.appendChild(r);
+    }
+  };
+  xhr.onerror=function(){item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)'};
+  xhr.send(blob);
+}
+
+function finalizeChunked(f, item, uploadId, onConflict){
+  var bar=item.querySelector('.qbar > div');
+  var status=item.querySelector('.q-status');
+
+  fetch('/api/dosyalar/upload/finalize',{
+    method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({upload_id:uploadId})
+  }).then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
+    .then(function(o){
+      if(o.status>=200 && o.status<300 && o.j.ok){
+        item.classList.add('q-ok');status.textContent=o.j.overwrote?'YAZILDI':(o.j.renamed?'AD DEGISTI':'OK');
+        bar.style.width='100%';
+        var r=document.createElement('div');r.className='q-result';
+        var c=document.createElement('code');c.textContent=o.j.url;
+        var copy=document.createElement('button');copy.className='copy-btn';copy.textContent='URL kopyala';
+        copy.addEventListener('click',function(){navigator.clipboard.writeText(o.j.url);toast('URL kopyalandi','ok')});
+        r.appendChild(c);r.appendChild(copy);
+        if(o.j.category==='img'){
+          var copyMd=document.createElement('button');copyMd.className='copy-btn';copyMd.textContent='Markdown kopyala';
+          copyMd.addEventListener('click',function(){navigator.clipboard.writeText('!['+(o.j.stored_name||f.name)+']('+o.j.url+')');toast('Markdown kopyalandi','ok')});
+          r.appendChild(copyMd);
+        }
+        item.appendChild(r);
+        loadList();
+      } else {
+        item.classList.add('q-err');status.textContent='FINAL HATA';bar.style.background='var(--r)';
+        var r=document.createElement('div');r.className='q-result';r.style.fontSize='11px';r.style.color='var(--r)';
+        r.textContent=o.j.error||('HTTP '+o.status);
+        item.appendChild(r);
+      }
+    })
+    .catch(function(e){
+      item.classList.add('q-err');status.textContent='AGSIZ';bar.style.background='var(--r)';
+    });
 }
 
 function doUpload(f, item, onConflict){
