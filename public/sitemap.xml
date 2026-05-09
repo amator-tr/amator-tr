@@ -833,6 +833,16 @@
     </image:image>
   </url>
   <url>
+    <loc>https://amator.tr/tutorials/test</loc>
+    <lastmod>2026-05-09</lastmod>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://amator.tr/og/test.png</image:loc>
+      <image:title>test</image:title>
+      <image:caption>test</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://amator.tr/tutorials/toprak-dalgalari-haberlesme</loc>
     <lastmod>2026-04-26</lastmod>
     <priority>0.7</priority>

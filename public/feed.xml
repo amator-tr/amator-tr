@@ -7,6 +7,13 @@
     <description>Türkiye amatör telsiz topluluğu için tutorial'lar, kılavuzlar ve röle araçları.</description>
     <language>tr-TR</language>
     <item>
+      <title>test</title>
+      <link>https://amator.tr/tutorials/test</link>
+      <guid isPermaLink="true">https://amator.tr/tutorials/test</guid>
+      <pubDate>Sat, 09 May 2026 00:00:00 GMT</pubDate>
+      <description>test</description>
+    </item>
+    <item>
       <title>Afet ve Acil Durum Haberleşmesi (EmComm) — Amatör Radyonun En Kritik Görevi</title>
       <link>https://amator.tr/tutorials/afet-acil-durum-haberlesmesi</link>
       <guid isPermaLink="true">https://amator.tr/tutorials/afet-acil-durum-haberlesmesi</guid>
