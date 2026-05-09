@@ -330,6 +330,21 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
   }
 });
 
+// Sil — sadece draft/archived. Published once unpublish edilmeli (git history
+// commit edilmis, dogrudan silmek yanlis).
+articles.delete('/api/admin/articles/:slug', adminMiddleware(), async (c) => {
+  const slug = c.req.param('slug');
+  if (validateSlug(slug)) return c.json({ error: 'Gecersiz slug' }, 400);
+  const row = await c.env.DB.prepare('SELECT id, status FROM articles WHERE slug = ?').bind(slug).first();
+  if (!row) return c.json({ error: 'Makale bulunamadi' }, 404);
+  if (row.status === 'published') {
+    return c.json({ error: 'Yayindaki makale silinemez. Once "Yayindan kaldir" yapilmali.' }, 400);
+  }
+  await c.env.DB.prepare('DELETE FROM articles WHERE id = ?').bind(row.id).run();
+  await logActivity(c.env.DB, c.get('userId'), 'delete_article', `${slug} (${row.status})`);
+  return c.json({ ok: true, slug });
+});
+
 // Yayindan kaldir — re-auth gerekli
 articles.post('/api/admin/articles/:slug/unpublish', adminMiddleware(), async (c) => {
   const slug = c.req.param('slug');

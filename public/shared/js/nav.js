@@ -16,6 +16,22 @@
     gi.textContent = 'window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","' + GA_ID + '");';
     document.head.appendChild(gi);
   }
+
+  // Favicon inject — varsa atla
+  function ensureLink(rel, href, sizes, type) {
+    var sel = 'link[rel="' + rel + '"]' + (sizes ? '[sizes="' + sizes + '"]' : '');
+    if (document.querySelector(sel)) return;
+    var l = document.createElement('link');
+    l.rel = rel;
+    l.href = href;
+    if (sizes) l.sizes = sizes;
+    if (type) l.type = type;
+    document.head.appendChild(l);
+  }
+  ensureLink('icon', '/favicon-32x32.png', '32x32', 'image/png');
+  ensureLink('icon', '/favicon-16x16.png', '16x16', 'image/png');
+  ensureLink('apple-touch-icon', '/apple-touch-icon.png');
+  ensureLink('manifest', '/manifest.webmanifest');
   var TOOLS = [
     { href: '/araclar/anten-hesaplayici/', label: 'Anten Hesaplayıcı' },
     { href: '/araclar/bant-plani/', label: 'Bant Planı' },
@@ -86,7 +102,19 @@
     var brand = document.createElement('a');
     brand.href = '/';
     brand.className = 'site-nav-brand';
-    brand.textContent = 'amator.tr';
+    brand.setAttribute('aria-label', 'amator.tr ana sayfa');
+    var logoImg = document.createElement('img');
+    logoImg.src = '/icons/logo.webp';
+    logoImg.alt = '';
+    logoImg.width = 28;
+    logoImg.height = 28;
+    logoImg.className = 'site-nav-logo';
+    logoImg.loading = 'eager';
+    logoImg.decoding = 'async';
+    brand.appendChild(logoImg);
+    var brandText = document.createElement('span');
+    brandText.textContent = 'amator.tr';
+    brand.appendChild(brandText);
     inner.appendChild(brand);
 
     var ul = mk('ul', 'site-nav-links');

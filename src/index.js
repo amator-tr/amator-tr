@@ -1,6 +1,12 @@
 import { Hono } from 'hono';
 import { getCookie } from 'hono/cookie';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { authMiddleware } from './auth.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = resolve(__dirname, '..');
 import statsPublicRoutes from './routes/stats-public-routes.js';
 import roleExportRoutes from './routes/role-export-routes.js';
 import authRoutes from './routes/auth-routes.js';
@@ -60,6 +66,21 @@ app.get('/robots.txt', (c) => {
   return c.body('User-agent: *\nDisallow: /\n');
 });
 
+// EasyMDE bundle — admin makale editorunde kullaniliyor. Auth oncesi servis
+// edilmeli ki link/script tag yuklenirken redirect dongusune girmesin.
+const EASYMDE_JS = readFileSync(resolve(REPO_ROOT, 'node_modules/easymde/dist/easymde.min.js'), 'utf-8');
+const EASYMDE_CSS = readFileSync(resolve(REPO_ROOT, 'node_modules/easymde/dist/easymde.min.css'), 'utf-8');
+app.get('/admin/assets/easymde.js', (c) => {
+  c.header('Content-Type', 'application/javascript; charset=UTF-8');
+  c.header('Cache-Control', 'public, max-age=31536000, immutable');
+  return c.body(EASYMDE_JS);
+});
+app.get('/admin/assets/easymde.css', (c) => {
+  c.header('Content-Type', 'text/css; charset=UTF-8');
+  c.header('Cache-Control', 'public, max-age=31536000, immutable');
+  return c.body(EASYMDE_CSS);
+});
+
 app.route('/', statsPublicRoutes);
 app.route('/', roleExportRoutes);
 
@@ -75,16 +96,19 @@ app.route('/', statsRoutes);
 
 app.get('/manifest.json', (c) => {
   return c.json({
-    name: 'Radyo Rehberi',
-    short_name: 'RadyoRehberi',
-    description: 'Amator Telsiz Operatorleri Portali',
+    name: 'amator.tr — Çağrı Defteri',
+    short_name: 'Çağrı Defteri',
+    description: 'Amatör Telsiz Operatörleri Portali',
     start_url: '/',
     display: 'standalone',
-    background_color: '#06080f',
-    theme_color: '#8b5cf6',
+    background_color: '#0a0a0a',
+    theme_color: '#e94560',
+    lang: 'tr',
     icons: [
-      { src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%238b5cf6"/><text x="50" y="68" text-anchor="middle" font-size="50" fill="white">📡</text></svg>', sizes: '512x512', type: 'image/svg+xml' }
-    ]
+      { src: 'https://amator.tr/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: 'https://amator.tr/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+      { src: 'https://amator.tr/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   });
 });
 

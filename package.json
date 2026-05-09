@@ -13,19 +13,21 @@
     "check-anchors": "node scripts/check-anchor-stability.mjs"
   },
   "dependencies": {
-    "hono": "^4.12.10",
     "@hono/node-server": "^1.13.0",
+    "@resvg/resvg-js": "^2.6.2",
     "better-sqlite3": "^11.7.0",
+    "easymde": "^2.18.0",
+    "gray-matter": "^4.0.3",
+    "hono": "^4.12.10",
     "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
-    "gray-matter": "^4.0.3",
-    "sanitize-html": "^2.13.1",
-    "@resvg/resvg-js": "^2.6.2"
+    "sanitize-html": "^2.13.1"
   },
   "devDependencies": {
+    "cheerio": "1.0.0-rc.12",
+    "sharp": "^0.34.5",
     "turndown": "^7.2.0",
     "turndown-plugin-gfm": "^1.0.2",
-    "cheerio": "1.0.0-rc.12",
     "yaml": "^2.6.1"
   }
 }

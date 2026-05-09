@@ -1,7 +1,12 @@
 function e(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 
 export function adminPage({user}){
-return`<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin - Radyo Rehberi</title>
+return`<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — amator.tr</title>
+<link rel="icon" type="image/png" sizes="32x32" href="https://amator.tr/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://amator.tr/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://amator.tr/apple-touch-icon.png">
+<link rel="stylesheet" href="/admin/assets/easymde.css">
+<script src="/admin/assets/easymde.js" defer></script>
 <script>(function(){var t=localStorage.getItem('theme');if(t==='cengiz'){t='vanta-black';localStorage.setItem('theme',t)}if(!t||t==='auto'){t=window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'}document.documentElement.setAttribute('data-theme',t);var s=localStorage.getItem('fontSize')||'md';document.documentElement.setAttribute('data-size',s)})()</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -49,6 +54,20 @@ tr:hover td{background:var(--s2)}
 .badge-published{background:var(--gg);color:var(--g)}
 .badge-draft{background:var(--yg);color:var(--y)}
 .badge-archived{background:rgba(156,163,175,.15);color:var(--t3)}
+/* EasyMDE: koyu temayla uyumlu hale getir */
+.editor-toolbar{background:var(--s2)!important;border-color:var(--b1)!important;border-radius:8px 8px 0 0!important}
+.editor-toolbar a{color:var(--t2)!important}
+.editor-toolbar a:hover, .editor-toolbar a.active{background:var(--s1)!important;border-color:var(--b1)!important}
+.CodeMirror{background:var(--s2)!important;color:var(--t1)!important;border-color:var(--b1)!important;font-family:ui-monospace,Menlo,monospace!important;font-size:14px!important;line-height:1.6!important}
+.CodeMirror-cursor{border-left-color:var(--p)!important}
+.editor-statusbar{color:var(--t3)!important;background:var(--s2)!important;border-top:1px solid var(--b1)!important;padding:6px 10px!important}
+.editor-preview, .editor-preview-side{background:var(--s2)!important;border-color:var(--b1)!important;color:var(--t1)!important;padding:16px!important;line-height:1.6}
+.editor-preview h1, .editor-preview h2, .editor-preview h3{color:var(--t1)}
+.editor-preview pre, .editor-preview code{background:var(--s1)!important;color:var(--t1)!important}
+.editor-preview blockquote{border-left:3px solid var(--p);color:var(--t2)}
+.CodeMirror-fullscreen, .editor-toolbar.fullscreen{z-index:9999!important}
+.CodeMirror-fullscreen{background:var(--s2)!important}
+.editor-toolbar.fullscreen{background:var(--s2)!important}
 .act-btn{padding:4px 10px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--b1);background:var(--s2);color:var(--t2);transition:.15s}
 .act-btn:hover{border-color:var(--b2);background:var(--s3)}
 .act-btn-r{color:var(--r);border-color:rgba(239,68,68,.15)}
@@ -220,6 +239,7 @@ tr:hover td{background:var(--s2)}
 <button class="act-btn" id="artSaveDraftBtn">Taslak Kaydet</button>
 <button class="act-btn act-btn-g" id="artPublishBtn">Yayinla</button>
 <button class="act-btn" id="artUnpublishBtn" style="color:var(--y);border-color:rgba(251,191,36,.15);display:none">Yayindan Kaldir</button>
+<button class="act-btn act-btn-r" id="artDeleteBtn" style="display:none">Sil</button>
 </div>
 <div id="artStatus" style="margin-top:12px;font-size:12px;color:var(--t3)"></div>
 </div>
@@ -537,6 +557,26 @@ document.getElementById('annAdd').addEventListener('click',function(){
 /* ARTICLES */
 var artCurrentSlug=null;
 var artCurrentRow=null;
+var artMDE=null;  /* EasyMDE instance */
+
+function destroyMDE(){
+  if(artMDE){try{artMDE.toTextArea()}catch(e){}artMDE=null}
+}
+function initMDE(){
+  destroyMDE();
+  if(typeof EasyMDE==='undefined')return;
+  artMDE=new EasyMDE({
+    element:document.getElementById('artBody'),
+    spellChecker:false,
+    autoDownloadFontAwesome:false,
+    autosave:{enabled:false},
+    status:['lines','words','cursor'],
+    sideBySideFullscreen:true,
+    minHeight:'400px',
+    placeholder:'# Baslik\\n\\nMarkdown govdesi...',
+    toolbar:['bold','italic','strikethrough','heading','|','quote','unordered-list','ordered-list','|','link','image','code','table','horizontal-rule','|','preview','side-by-side','fullscreen','|','guide']
+  });
+}
 
 function loadArticles(){
   document.getElementById('artListView').style.display='';
@@ -556,9 +596,24 @@ function loadArticles(){
       tr.appendChild(htmlTd(st));
       tr.appendChild(textTd(a.published_at||'-'));
       tr.appendChild(textTd(toIST(a.updated_at||a.created_at),'mono'));
+      var actsTd=document.createElement('td');
+      actsTd.style.whiteSpace='nowrap';
       var editBtn=createEl('button',{className:'act-btn'},'Duzenle');
       editBtn.addEventListener('click',function(){openArticleEditor(a.slug)});
-      tr.appendChild(htmlTd(editBtn));
+      actsTd.appendChild(editBtn);
+      if(a.status!=='published'){
+        var delBtn=createEl('button',{className:'act-btn act-btn-r',style:'margin-left:6px'},'Sil');
+        delBtn.addEventListener('click',function(){
+          if(!confirm('"'+a.slug+'" silinecek. Devam?'))return;
+          fetch('/api/admin/articles/'+encodeURIComponent(a.slug),{method:'DELETE'})
+            .then(function(r){return r.json()}).then(function(d){
+              if(d.error){toast(d.error,false);return}
+              toast('Silindi',true);loadArticles();
+            });
+        });
+        actsTd.appendChild(delBtn);
+      }
+      tr.appendChild(actsTd);
       body.appendChild(tr);
     });
   });
@@ -580,6 +635,7 @@ function openArticleEditor(slug){
 }
 
 function showEditView(a){
+  destroyMDE();
   document.getElementById('artListView').style.display='none';
   document.getElementById('artEditView').style.display='';
   document.getElementById('artEditTitle').textContent=a?('Duzenle: '+a.slug):'Yeni Makale';
@@ -592,8 +648,10 @@ function showEditView(a){
   document.getElementById('artPublishedAt').value=a?(a.published_at||''):new Date().toISOString().slice(0,10);
   document.getElementById('artBody').value=a?(a.markdown_source||''):'';
   document.getElementById('artUnpublishBtn').style.display=(a&&a.status==='published')?'':'none';
+  document.getElementById('artDeleteBtn').style.display=(a&&a.status!=='published')?'':'none';
   document.getElementById('artPreviewCard').style.display='none';
   document.getElementById('artStatus').textContent='';
+  initMDE();
 }
 
 function collectFields(){
@@ -604,14 +662,26 @@ function collectFields(){
     keywords:document.getElementById('artKeywords').value.split(',').map(function(s){return s.trim()}).filter(Boolean),
     article_section:document.getElementById('artSection').value.trim(),
     published_at:document.getElementById('artPublishedAt').value,
-    body:document.getElementById('artBody').value,
+    body:artMDE?artMDE.value():document.getElementById('artBody').value,
   };
 }
 
 document.getElementById('artStatusFilter').addEventListener('change',loadArticles);
 document.getElementById('artSearch').addEventListener('input',function(){clearTimeout(window._artT);window._artT=setTimeout(loadArticles,250)});
 document.getElementById('artNewBtn').addEventListener('click',function(){openArticleEditor(null)});
-document.getElementById('artBackBtn').addEventListener('click',loadArticles);
+document.getElementById('artBackBtn').addEventListener('click',function(){destroyMDE();loadArticles()});
+
+document.getElementById('artDeleteBtn').addEventListener('click',function(){
+  if(!artCurrentSlug)return;
+  if(!confirm('"'+artCurrentSlug+'" silinecek. Geri alinamaz. Devam?'))return;
+  fetch('/api/admin/articles/'+encodeURIComponent(artCurrentSlug),{method:'DELETE'})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.error){toast(d.error,false);return}
+      toast('Silindi',true);
+      destroyMDE();
+      loadArticles();
+    });
+});
 
 document.getElementById('artPreviewBtn').addEventListener('click',function(){
   var f=collectFields();
