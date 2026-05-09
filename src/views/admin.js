@@ -644,11 +644,16 @@ document.getElementById('artSaveDraftBtn').addEventListener('click',function(){
 });
 
 document.getElementById('artPublishBtn').addEventListener('click',function(){
-  if(!artCurrentSlug){toast('Once taslak kaydet',false);return}
-  if(!confirm('"'+artCurrentSlug+'" yayinlanacak. Git commit + push tetiklenecek. Devam?'))return;
   var f=collectFields();
+  if(!f.slug){toast('Slug gerekli',false);return}
+  if(!f.title||!f.description){toast('Baslik ve aciklama gerekli',false);return}
+  if(!f.body||!f.body.trim()){toast('Markdown govde bos',false);return}
+  if(!f.keywords||!f.keywords.length){toast('En az 1 anahtar kelime gerekli',false);return}
+  if(!f.article_section){toast('Bolum (article_section) gerekli',false);return}
+  if(!f.published_at){toast('Yayin tarihi gerekli',false);return}
+  if(!confirm('"'+f.slug+'" yayinlanacak. Git commit + push tetiklenecek. Devam?'))return;
   document.getElementById('artStatus').textContent='Yayinlaniyor (build + git push)...';
-  fetch('/api/admin/articles/'+encodeURIComponent(artCurrentSlug)+'/publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({faq:null})})
+  fetch('/api/admin/articles/'+encodeURIComponent(f.slug)+'/publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(f)})
     .then(function(r){return r.json()}).then(function(d){
       if(d.error){
         var msg=d.error;
@@ -661,6 +666,8 @@ document.getElementById('artPublishBtn').addEventListener('click',function(){
       toast('Yayinlandi: '+d.url,true);
       document.getElementById('artStatus').textContent='Yayinlandi · commit '+(d.commit?d.commit.slice(0,7):'?')+' · '+d.url;
       document.getElementById('artUnpublishBtn').style.display='';
+      artCurrentSlug=f.slug;
+      document.getElementById('artSlug').disabled=true;
     }).catch(function(e){toast('Istek basarisiz',false);document.getElementById('artStatus').textContent='HATA: '+e.message});
 });
 

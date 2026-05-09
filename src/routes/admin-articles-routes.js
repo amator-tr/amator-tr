@@ -196,35 +196,55 @@ articles.post('/api/admin/articles/preview', adminMiddleware(), async (c) => {
   return c.json({ html, wordCount, readMinutes, warnings });
 });
 
-// Yayinla
+// Yayinla — form alanlarini kabul eder, gerekirse draft olusturur, sonra yayinlar.
+// Boylece "once Save Draft" tek tikla ortadan kalkar.
 articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) => {
   const slug = c.req.param('slug');
   if (validateSlug(slug)) return c.json({ error: 'Gecersiz slug' }, 400);
+
+  const reqBody = await c.req.json().catch(() => ({}));
+  const fm = {
+    title: String(reqBody.title || '').trim(),
+    description: String(reqBody.description || '').trim(),
+    keywords: Array.isArray(reqBody.keywords) ? reqBody.keywords.map(s => String(s).trim()).filter(Boolean) : [],
+    article_section: String(reqBody.article_section || '').trim(),
+    published_at: String(reqBody.published_at || '').trim(),
+  };
+  if (reqBody.faq && Array.isArray(reqBody.faq) && reqBody.faq.length) fm.faq = reqBody.faq;
+  const bodyMd = String(reqBody.body || '');
+
+  const errors = validateFrontmatter(fm);
+  if (errors.length) return c.json({ error: 'Frontmatter hatali', details: errors }, 400);
+  if (!bodyMd.trim()) return c.json({ error: 'Markdown govde bos' }, 400);
 
   const user = await c.env.DB.prepare('SELECT username FROM users WHERE id = ?').bind(c.get('userId')).first();
   const username = user?.username || 'admin';
 
   try {
     const result = await withPublishLock(async () => {
-      const row = await c.env.DB.prepare('SELECT * FROM articles WHERE slug = ?').bind(slug).first();
-      if (!row) throw Object.assign(new Error('Makale bulunamadi'), { status: 404 });
-      if (!['draft', 'published'].includes(row.status)) {
+      // Upsert: row yoksa draft olarak ac
+      let row = await c.env.DB.prepare('SELECT * FROM articles WHERE slug = ?').bind(slug).first();
+      const fmYaml = frontmatterYaml(fm);
+
+      if (!row) {
+        if (existsSync(repoPath('content', 'tutorials', `${slug}.md`))) {
+          throw Object.assign(new Error("Slug filesystem'de mevcut"), { status: 409 });
+        }
+        await c.env.DB.prepare(`
+          INSERT INTO articles (slug, title, description, keywords, article_section, status,
+                                markdown_source, frontmatter_yaml, published_at, updated_at, created_by)
+          VALUES (?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?, ?)
+        `).bind(
+          slug, fm.title, fm.description, fm.keywords.join(', '),
+          fm.article_section, bodyMd, fmYaml, fm.published_at, fm.published_at, c.get('userId')
+        ).run();
+        row = await c.env.DB.prepare('SELECT * FROM articles WHERE slug = ?').bind(slug).first();
+      } else if (!['draft', 'published'].includes(row.status)) {
         throw Object.assign(new Error(`Bu durumdan yayinlanamaz: ${row.status}`), { status: 400 });
       }
-      if (!row.markdown_source || !row.markdown_source.trim()) {
-        throw Object.assign(new Error('Markdown govde bos — once kaynak ekleyin'), { status: 400 });
-      }
-
-      const reqBody = await c.req.json().catch(() => ({}));
-      const fm = buildFrontmatter(row, reqBody);
-      const errors = validateFrontmatter(fm);
-      if (errors.length) throw Object.assign(new Error('Frontmatter hatali'), { status: 400, details: errors });
 
       const f = articleFiles(slug);
-      const filesBefore = {
-        md: existsSync(f.md) ? await safeRead(f.md) : null,
-        og: existsSync(f.og) ? null : null, // PNG binary; rollback'te yeniden uretilir
-      };
+      const filesBefore = { md: existsSync(f.md) ? await safeRead(f.md) : null };
       const headBefore = await gitHeadSha();
 
       // Snapshot prior DB state
@@ -232,49 +252,54 @@ articles.post('/api/admin/articles/:slug/publish', adminMiddleware(), async (c) 
         'INSERT INTO article_versions (article_id, markdown_source, frontmatter_yaml, created_by) VALUES (?, ?, ?, ?)'
       ).bind(row.id, row.markdown_source, row.frontmatter_yaml, c.get('userId')).run();
 
-      const fmYaml = frontmatterYaml(fm);
+      // Form degerlerini DB'ye yansit (build oncesi — .md ile DB tutarli olsun)
+      await c.env.DB.prepare(`
+        UPDATE articles SET title = ?, description = ?, keywords = ?, article_section = ?,
+          markdown_source = ?, frontmatter_yaml = ?, published_at = ?, updated_at = datetime('now')
+        WHERE id = ?
+      `).bind(
+        fm.title, fm.description, fm.keywords.join(', '),
+        fm.article_section, bodyMd, fmYaml, fm.published_at, row.id
+      ).run();
 
       // 1) .md dosyasini yaz
-      const mdContent = buildMarkdownFile({ frontmatter: fm, body: row.markdown_source });
+      const mdContent = buildMarkdownFile({ frontmatter: fm, body: bodyMd });
       await safeWrite(f.md, mdContent);
 
-      // 2) OG gorseli — yoksa uret
+      // 2) OG yoksa uret
       if (!existsSync(f.og)) {
         const png = generateOgImagePng({ title: fm.title, slug });
         await safeWrite(f.og, png);
       }
 
-      // 3) Pipeline calistir
+      // 3) Pipeline
       const build = await runBuild();
       if (!build.ok) {
-        // rollback file
         if (filesBefore.md !== null) await safeWrite(f.md, filesBefore.md);
         else await safeUnlink(f.md);
         throw Object.assign(new Error('Build basarisiz'), { status: 500, details: { stderr: build.stderr, stdout: build.stdout } });
       }
 
-      // 4) Git: add + commit + push
+      // 4) Git
       try {
         await gitAdd(commitFilesForPublish(slug));
         await gitCommit({ message: `publish: ${slug} by ${username}` });
         await gitPush();
       } catch (err) {
-        // rollback: prior md geri yaz, build tekrar, git reset
         if (filesBefore.md !== null) await safeWrite(f.md, filesBefore.md);
         else await safeUnlink(f.md);
-        await runBuild({ force: false });
+        await runBuild();
         try { await gitResetHard(headBefore); } catch {}
         throw Object.assign(new Error('Git push basarisiz'), { status: 500, details: { stderr: err.stderr || err.message } });
       }
 
-      // 5) DB UPDATE
+      // 5) status='published'
       await c.env.DB.prepare(`
         UPDATE articles SET status = 'published',
-          frontmatter_yaml = ?,
           published_at = COALESCE(published_at, ?),
           updated_at = datetime('now')
         WHERE id = ?
-      `).bind(fmYaml, fm.published_at, row.id).run();
+      `).bind(fm.published_at, row.id).run();
 
       const headAfter = await gitHeadSha();
       return { ok: true, slug, url: `https://amator.tr/tutorials/${slug}`, commit: headAfter };
