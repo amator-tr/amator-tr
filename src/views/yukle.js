@@ -40,6 +40,12 @@ input[type=file]{display:none}
 .q-item .qstats{font-size:11px;color:var(--t3);margin-top:6px;font-family:'JetBrains Mono',monospace;display:flex;gap:10px;flex-wrap:wrap}
 .q-item .qstats span{white-space:nowrap}
 .q-item .qstats .qstat-eta{color:var(--p2)}
+.fitem .ftop{display:flex;gap:10px;align-items:center}
+.fitem .fcheck{flex-shrink:0}
+.fitem .fcheck input{cursor:pointer;accent-color:var(--p)}
+.bulk-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--pg);border:1px solid var(--p);border-radius:8px;margin-bottom:10px;font-size:13px}
+.bulk-bar.hidden{display:none}
+.bulk-bar .b-count{flex:1;font-weight:600;color:var(--p)}
 .q-item.q-ok{border-color:rgba(45,212,191,.3)}
 .q-item.q-err{border-color:rgba(239,68,68,.3)}
 .q-status{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
@@ -129,6 +135,14 @@ input[type=file]{display:none}
 <option value="diger">diger — Diger</option>
 </select>
 <button class="tbtn" id="reloadBtn" type="button">Yenile</button>
+<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);cursor:pointer;margin-left:auto">
+  <input type="checkbox" id="selectAll" style="cursor:pointer;accent-color:var(--p)"> Tumunu sec
+</label>
+</div>
+<div class="bulk-bar hidden" id="bulkBar">
+<span class="b-count" id="bulkCount">0 secili</span>
+<button class="act-btn act-btn-r" id="bulkDelBtn" type="button">Secilenleri sil</button>
+<button class="act-btn" id="bulkClearBtn" type="button">Secimi temizle</button>
 </div>
 <div class="list" id="filesList"></div>
 </div>
@@ -164,6 +178,22 @@ input[type=file]{display:none}
 <div class="pw-btns" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">
 <button class="pw-cancel" id="rkCancel" type="button">Iptal</button>
 <button class="pw-save" id="rkConfirm" type="button" style="background:var(--y);color:#000">Yine de yukle</button>
+</div>
+</div>
+</div>
+
+<div class="pw-modal" id="renameModal">
+<div class="pw-box" style="max-width:520px">
+<h3>Yeniden adlandir</h3>
+<p style="font-size:12px;color:var(--t3);margin-bottom:8px">Mevcut: <code id="renOldName" style="background:var(--s3);padding:2px 6px;border-radius:3px;font-size:11px"></code></p>
+<input type="text" id="renInput" placeholder="yeni-isim.uzanti" style="width:100%;padding:10px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;outline:none;margin-bottom:10px;font-family:'JetBrains Mono',monospace">
+<div id="renRefsBox" style="font-size:11px;color:var(--t3);margin-bottom:10px">Referanslar yukleniyor...</div>
+<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t1);margin-bottom:14px;cursor:pointer">
+  <input type="checkbox" id="renUpdateRefs" checked> Tum referanslari guncelle (markdown'lardaki URL'leri yenile + build + git push)
+</label>
+<div class="pw-btns">
+<button class="pw-cancel" id="renCancel" type="button">Iptal</button>
+<button class="pw-save" id="renConfirm" type="button" style="background:var(--p)">Yeniden adlandir</button>
 </div>
 </div>
 </div>
@@ -618,6 +648,77 @@ function closeBulkRisky(decision){
 $('#brkCancel').addEventListener('click',function(){closeBulkRisky('cancel')});
 $('#brkConfirm').addEventListener('click',function(){closeBulkRisky('all')});
 
+var pendingRename=null;
+function openRename(item){
+  pendingRename=item;
+  // Mevcut isim stored_path'in basename'i — backend zaten original_name dondu
+  var currentName=item.stored_path?item.stored_path.split('/').pop():item.original_name;
+  $('#renOldName').textContent=currentName;
+  $('#renInput').value=currentName;
+  $('#renUpdateRefs').checked=true;
+  $('#renRefsBox').innerHTML='Referanslar yukleniyor...';
+  $('#renRefsBox').style.color='var(--t3)';
+  $('#renConfirm').disabled=false;
+  $('#renameModal').classList.add('open');
+  $('#renInput').focus();
+  $('#renInput').setSelectionRange(0, currentName.lastIndexOf('.')>0?currentName.lastIndexOf('.'):currentName.length);
+
+  // Refs scan
+  fetch('/api/dosyalar/'+item.id+'/refs',{credentials:'include'})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d.error){$('#renRefsBox').innerHTML='<span style="color:var(--r)">Refs hatasi: '+escHTML(d.error)+'</span>';return}
+      if(d.total_hits===0){
+        $('#renRefsBox').innerHTML='<span style="color:var(--g)">Bu dosya hicbir yerde referans edilmiyor — guvenle yeniden adlandirabilirsin.</span>';
+        return;
+      }
+      var html='<strong style="color:var(--y)">'+d.total_hits+' referans bulundu</strong>:<br>';
+      var lines=[];
+      (d.md_refs||[]).forEach(function(r){
+        lines.push('• '+escHTML(r.dir)+'/'+escHTML(r.slug)+'.md ('+r.hits.length+' kez)');
+      });
+      (d.db_refs||[]).forEach(function(r){
+        lines.push('• DB '+escHTML(r.kind||'?')+' "'+escHTML(r.slug)+'" ('+r.status+', '+r.hits.length+' kez)');
+      });
+      html+='<div style="max-height:120px;overflow:auto;background:var(--s2);border:1px solid var(--b1);border-radius:6px;padding:8px;margin-top:6px;font-family:JetBrains Mono,monospace">'+lines.join('<br>')+'</div>';
+      $('#renRefsBox').innerHTML=html;
+    })
+    .catch(function(e){$('#renRefsBox').innerHTML='<span style="color:var(--r)">Refs hatasi: '+escHTML(e.message)+'</span>'});
+}
+function closeRename(){$('#renameModal').classList.remove('open');pendingRename=null}
+$('#renCancel').addEventListener('click',closeRename);
+$('#renConfirm').addEventListener('click',function(){
+  if(!pendingRename)return;
+  var newName=$('#renInput').value.trim();
+  if(!newName){toast('Yeni isim bos olamaz','err');return}
+  var updateRefs=$('#renUpdateRefs').checked;
+  $('#renConfirm').disabled=true;$('#renConfirm').textContent='Calisiyor...';
+  fetch('/api/dosyalar/'+pendingRename.id+'/rename',{
+    method:'POST',credentials:'include',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({new_name:newName,update_refs:updateRefs})
+  }).then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
+    .then(function(o){
+      $('#renConfirm').disabled=false;$('#renConfirm').textContent='Yeniden adlandir';
+      if(o.status>=200&&o.status<300&&o.j.ok){
+        var msg='Adlandirildi';
+        if(o.j.md_updated||o.j.db_updated){
+          msg+=' · md='+o.j.md_updated+', db='+o.j.db_updated;
+          if(o.j.commit)msg+=' · commit '+o.j.commit.slice(0,7);
+        }
+        toast(msg,'ok');
+        closeRename();
+        loadList();
+      } else {
+        toast(o.j.error||'Hata','err');
+      }
+    })
+    .catch(function(e){
+      $('#renConfirm').disabled=false;$('#renConfirm').textContent='Yeniden adlandir';
+      toast(e.message||'agsiz','err');
+    });
+});
+
 function loadList(){
   var cat=$('#catFilter').value;var q=$('#search').value.trim();
   var url='/api/dosyalar/list'+(cat||q?'?':'')+(cat?'category='+encodeURIComponent(cat):'')+(cat&&q?'&':'')+(q?'q='+encodeURIComponent(q):'');
@@ -631,22 +732,27 @@ function loadList(){
       if(it.category==='img')icon='🖼';else if(it.category==='pdf')icon='📕';else if(it.category==='video')icon='🎬';else if(it.category==='audio')icon='🎵';else if(it.category==='arsiv')icon='📦';else if(it.category==='exe')icon='⚙';else if(it.category==='doc')icon='📝';
       var thumb='<div class="fthumb">'+icon+'</div>';
       if(it.category==='img'){thumb='<div class="fthumb"><img loading="lazy" src="'+escHTML(it.url)+'" alt=""></div>'}
-      div.innerHTML=thumb+'<div class="fmeta"></div>';
+      div.innerHTML='<div class="fcheck"><input type="checkbox" data-id="'+it.id+'"></div>'+thumb+'<div class="fmeta"></div>';
       var meta=div.querySelector('.fmeta');
+      var chk=div.querySelector('.fcheck input');
+      chk.addEventListener('change',function(){updateBulkBar()});
       var nm=document.createElement('div');nm.className='fname';nm.textContent=it.original_name;
       var sub=document.createElement('div');sub.className='fsub';
       sub.innerHTML='<span class="fcat">'+escHTML(it.category)+'</span> · '+fmtSize(it.size)+' · '+fmtDate(it.uploaded_at);
       meta.appendChild(nm);meta.appendChild(sub);
       var top=document.createElement('div');top.className='ftop';
-      top.appendChild(div.firstChild);top.appendChild(div.firstChild);
+      // 3 elemani sirayla top'a tasi: fcheck, fthumb, fmeta
+      top.appendChild(div.firstChild);top.appendChild(div.firstChild);top.appendChild(div.firstChild);
       div.insertBefore(top,div.firstChild);
       var actions=document.createElement('div');actions.className='factions';
       var bCopy=document.createElement('button');bCopy.className='act-btn act-btn-p';bCopy.textContent='URL';
       bCopy.addEventListener('click',function(){navigator.clipboard.writeText(it.url);toast('URL kopyalandi','ok')});
       var bOpen=document.createElement('a');bOpen.className='act-btn';bOpen.textContent='Ac';bOpen.href=it.url;bOpen.target='_blank';bOpen.rel='noopener';
+      var bRen=document.createElement('button');bRen.className='act-btn';bRen.textContent='Ad';
+      bRen.addEventListener('click',function(){openRename(it)});
       var bDel=document.createElement('button');bDel.className='act-btn act-btn-r';bDel.textContent='Sil';
       bDel.addEventListener('click',function(){confirmDelete(it)});
-      actions.appendChild(bCopy);actions.appendChild(bOpen);actions.appendChild(bDel);
+      actions.appendChild(bCopy);actions.appendChild(bOpen);actions.appendChild(bRen);actions.appendChild(bDel);
       if(it.category==='img'){
         var bMd=document.createElement('button');bMd.className='act-btn';bMd.textContent='MD';
         bMd.addEventListener('click',function(){navigator.clipboard.writeText('!['+it.original_name+']('+it.url+')');toast('Markdown kopyalandi','ok')});
@@ -660,10 +766,30 @@ function loadList(){
 
 var pendingDelete=null;
 function confirmDelete(it){pendingDelete=it;$('#pwInput').value='';$('#pwModal').classList.add('open');$('#pwInput').focus()}
-$('#pwCancel').addEventListener('click',function(){$('#pwModal').classList.remove('open');pendingDelete=null});
+$('#pwCancel').addEventListener('click',function(){$('#pwModal').classList.remove('open');$('#pwModal').querySelector('h3').textContent='Dosyayi sil';pendingDelete=null;bulkDeleteIds=null});
 $('#pwConfirm').addEventListener('click',function(){
-  if(!pendingDelete)return;
   var pw=$('#pwInput').value;if(!pw){toast('Sifre gerekli','err');return}
+  // Bulk delete oncelikli
+  if(bulkDeleteIds && bulkDeleteIds.length){
+    var ids=bulkDeleteIds;
+    fetch('/api/dosyalar/bulk-delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw,ids:ids})})
+      .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
+      .then(function(o){
+        if(o.status>=200&&o.status<300&&o.j.ok){
+          var msg=o.j.deleted+' dosya silindi';
+          if(o.j.failed&&o.j.failed.length)msg+=' ('+o.j.failed.length+' hata)';
+          toast(msg,'ok');
+          $('#pwModal').classList.remove('open');
+          $('#pwModal').querySelector('h3').textContent='Dosyayi sil';
+          bulkDeleteIds=null;
+          loadList();
+        } else {
+          toast(o.j.error||'Bulk silme basarisiz','err');
+        }
+      });
+    return;
+  }
+  if(!pendingDelete)return;
   fetch('/api/dosyalar/'+pendingDelete.id,{method:'DELETE',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
     .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
     .then(function(o){
@@ -675,6 +801,38 @@ $('#pwConfirm').addEventListener('click',function(){
 $('#search').addEventListener('input',function(){clearTimeout(window._sT);window._sT=setTimeout(loadList,250)});
 $('#catFilter').addEventListener('change',loadList);
 $('#reloadBtn').addEventListener('click',loadList);
+
+function getSelectedIds(){
+  return Array.prototype.map.call($$('#filesList .fcheck input:checked'),function(i){return parseInt(i.dataset.id,10)}).filter(function(n){return n>0});
+}
+function updateBulkBar(){
+  var ids=getSelectedIds();
+  var bar=$('#bulkBar');
+  if(ids.length===0){bar.classList.add('hidden');$('#selectAll').checked=false;return}
+  bar.classList.remove('hidden');
+  $('#bulkCount').textContent=ids.length+' secili';
+}
+$('#selectAll').addEventListener('change',function(){
+  var checked=this.checked;
+  Array.prototype.forEach.call($$('#filesList .fcheck input'),function(i){i.checked=checked});
+  updateBulkBar();
+});
+$('#bulkClearBtn').addEventListener('click',function(){
+  Array.prototype.forEach.call($$('#filesList .fcheck input'),function(i){i.checked=false});
+  $('#selectAll').checked=false;
+  updateBulkBar();
+});
+$('#bulkDelBtn').addEventListener('click',function(){
+  var ids=getSelectedIds();
+  if(!ids.length)return;
+  bulkDeleteIds=ids;
+  $('#pwInput').value='';$('#pwModal').classList.add('open');
+  $('#pwModal').querySelector('h3').textContent=ids.length+' dosyayi sil';
+  $('#pwInput').focus();
+});
+
+var bulkDeleteIds=null;
+// pwConfirm hem tek-sil hem bulk-sil icin kullanilir
 loadList();
 </script>
 </body></html>`;

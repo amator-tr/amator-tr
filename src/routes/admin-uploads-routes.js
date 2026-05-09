@@ -19,7 +19,10 @@ import fs from 'node:fs/promises';
 import { fileTypeFromBuffer } from 'file-type';
 import { adminMiddleware, hashPassword, timingSafeEqualHex, CURRENT_ITERATIONS, LEGACY_ITERATIONS } from '../auth.js';
 import { logActivity } from '../helpers.js';
-import { safeWrite, safeUnlink, repoPath } from '../articles/files.js';
+import { safeWrite, safeUnlink, safeRead, repoPath } from '../articles/files.js';
+import { withPublishLock, PublishBusyError } from '../articles/lock.js';
+import { gitAdd, gitCommit, gitPush, gitHeadSha, gitResetHard, gitRestoreStaged } from '../articles/git.js';
+import { runBuild } from '../articles/build.js';
 import {
   getExt, isAllowed, categoryFor, magicMatchesExt, lenientName, suggestUniqueName, CATEGORIES
 } from '../uploads/categorize.js';
@@ -483,6 +486,284 @@ uploads.post('/api/dosyalar/upload/finalize', adminMiddleware(), async (c) => {
     overwrote: willOverwrite,
     renamed: finalName !== session.desiredName,
   });
+});
+
+// --- Refs scan + rename (referans bulma + auto-refactor) ----------------
+// Dosyanin public URL'i (encoded + decoded) site icindeki markdown
+// kaynaklarinda nerede geciyor — bulup listele veya rename'de otomatik
+// referans guncelle.
+
+const CONTENT_TUTORIALS = path.join(REPO_ROOT, 'content', 'tutorials');
+const CONTENT_PAGES = path.join(REPO_ROOT, 'content', 'pages');
+
+function urlVariantsFor(category, filename) {
+  // Hem encoded hem decoded form aranir — markdown'da iki sekilde de
+  // gecebilir (EasyMDE encoded yazar, manuel kopyala-yapistir decoded).
+  const enc = `${PUBLIC_BASE}/${category}/${encodeURIComponent(filename)}`;
+  const dec = `${PUBLIC_BASE}/${category}/${filename}`;
+  return [enc, dec];
+}
+
+async function scanMdRefs(dir, variants) {
+  if (!existsSync(dir)) return [];
+  const files = await fs.readdir(dir);
+  const out = [];
+  for (const f of files) {
+    if (!f.endsWith('.md')) continue;
+    const full = path.join(dir, f);
+    let content;
+    try { content = await fs.readFile(full, 'utf8'); } catch { continue; }
+    const hits = [];
+    for (const v of variants) {
+      let idx = 0;
+      while ((idx = content.indexOf(v, idx)) >= 0) {
+        // Snippet — onunde 30, arkasinda 30 char
+        const start = Math.max(0, idx - 30);
+        const end = Math.min(content.length, idx + v.length + 30);
+        hits.push({ snippet: content.slice(start, end).replace(/\s+/g, ' ').trim() });
+        idx += v.length;
+      }
+    }
+    if (hits.length) {
+      out.push({ type: 'md', dir: path.basename(dir), file: f, slug: f.replace(/\.md$/, ''), hits, full });
+    }
+  }
+  return out;
+}
+
+async function scanDbRefs(envDB, variants) {
+  const rows = await envDB.prepare('SELECT id, slug, type, status, markdown_source FROM articles').all();
+  const out = [];
+  for (const r of (rows.results || [])) {
+    const ms = r.markdown_source || '';
+    const hits = [];
+    for (const v of variants) {
+      let idx = 0;
+      while ((idx = ms.indexOf(v, idx)) >= 0) {
+        const start = Math.max(0, idx - 30);
+        const end = Math.min(ms.length, idx + v.length + 30);
+        hits.push({ snippet: ms.slice(start, end).replace(/\s+/g, ' ').trim() });
+        idx += v.length;
+      }
+    }
+    if (hits.length) {
+      out.push({ type: 'db', slug: r.slug, kind: r.type, status: r.status, hits });
+    }
+  }
+  return out;
+}
+
+uploads.get('/api/dosyalar/:id/refs', adminMiddleware(), async (c) => {
+  const id = parseInt(c.req.param('id'), 10);
+  if (!Number.isInteger(id) || id <= 0) return c.json({ error: 'Gecersiz id' }, 400);
+
+  const row = await c.env.DB.prepare('SELECT category, stored_path FROM uploads WHERE id = ?').bind(id).first();
+  if (!row) return c.json({ error: 'Dosya bulunamadi' }, 404);
+
+  const filename = path.basename(row.stored_path);
+  const variants = urlVariantsFor(row.category, filename);
+
+  const mdTutorials = await scanMdRefs(CONTENT_TUTORIALS, variants);
+  const mdPages = await scanMdRefs(CONTENT_PAGES, variants);
+  const dbRefs = await scanDbRefs(c.env.DB, variants);
+
+  const all = [...mdTutorials, ...mdPages];
+  const totalHits = all.reduce((s, r) => s + r.hits.length, 0) + dbRefs.reduce((s, r) => s + r.hits.length, 0);
+
+  return c.json({
+    file_url: variants[0],
+    md_refs: all.map(r => ({ type: 'md', dir: r.dir, slug: r.slug, file: r.file, hits: r.hits })),
+    db_refs: dbRefs,
+    total_hits: totalHits,
+  });
+});
+
+// Rename — opsiyonel auto-refactor
+uploads.post('/api/dosyalar/:id/rename', adminMiddleware(), async (c) => {
+  const id = parseInt(c.req.param('id'), 10);
+  if (!Number.isInteger(id) || id <= 0) return c.json({ error: 'Gecersiz id' }, 400);
+
+  let body;
+  try { body = await c.req.json(); } catch { return c.json({ error: 'JSON parse' }, 400); }
+  const newNameRaw = String(body.new_name || '').trim();
+  const updateRefs = !!body.update_refs;
+  if (!newNameRaw) return c.json({ error: 'new_name gerekli' }, 400);
+
+  const userId = c.get('userId');
+  const row = await c.env.DB.prepare('SELECT id, original_name, stored_path, category FROM uploads WHERE id = ?').bind(id).first();
+  if (!row) return c.json({ error: 'Dosya bulunamadi' }, 404);
+
+  const oldFilename = path.basename(row.stored_path);
+  const oldExt = getExt(oldFilename);
+  const sanitizedNew = lenientName(newNameRaw);
+  const newExt = getExt(sanitizedNew);
+
+  if (!sanitizedNew) return c.json({ error: 'Gecersiz yeni isim' }, 400);
+  if (newExt !== oldExt) {
+    return c.json({ error: `Uzanti degisemez (.${oldExt} -> .${newExt})` }, 400);
+  }
+  if (sanitizedNew === oldFilename) {
+    return c.json({ error: 'Yeni isim mevcut isimle ayni' }, 400);
+  }
+
+  const categoryDir = path.join(DOSYALAR_ROOT, row.category);
+  const newPath = path.join(categoryDir, sanitizedNew);
+  if (existsSync(newPath)) {
+    return c.json({ error: 'Bu isimde dosya zaten var', target_exists: true }, 409);
+  }
+
+  const oldVariants = urlVariantsFor(row.category, oldFilename);
+  const newVariants = urlVariantsFor(row.category, sanitizedNew);
+  const newPublicUrl = newVariants[0];
+
+  try {
+    const result = await withPublishLock(async () => {
+      const headBefore = await gitHeadSha();
+      const touchedMd = []; // {full, oldContent} — rollback icin
+
+      // 1) Disk rename
+      await fs.rename(row.stored_path, newPath);
+
+      // 2) DB update (uploads tablosu)
+      await c.env.DB.prepare('UPDATE uploads SET stored_path = ?, original_name = ? WHERE id = ?')
+        .bind(newPath, sanitizedNew, id).run();
+
+      // 3) Refs guncelle (opsiyonel)
+      let mdUpdated = 0, dbUpdated = 0;
+      if (updateRefs) {
+        // Disk md dosyalari
+        for (const dir of [CONTENT_TUTORIALS, CONTENT_PAGES]) {
+          if (!existsSync(dir)) continue;
+          const files = await fs.readdir(dir);
+          for (const f of files) {
+            if (!f.endsWith('.md')) continue;
+            const full = path.join(dir, f);
+            let content;
+            try { content = await fs.readFile(full, 'utf8'); } catch { continue; }
+            let updated = content;
+            for (let i = 0; i < oldVariants.length; i++) {
+              updated = updated.split(oldVariants[i]).join(newVariants[i]);
+            }
+            if (updated !== content) {
+              touchedMd.push({ full, oldContent: content });
+              await safeWrite(full, updated);
+              mdUpdated++;
+            }
+          }
+        }
+
+        // DB articles.markdown_source
+        const drafts = await c.env.DB.prepare('SELECT id, markdown_source FROM articles').all();
+        for (const r of (drafts.results || [])) {
+          const ms = r.markdown_source || '';
+          let updated = ms;
+          for (let i = 0; i < oldVariants.length; i++) {
+            updated = updated.split(oldVariants[i]).join(newVariants[i]);
+          }
+          if (updated !== ms) {
+            await c.env.DB.prepare('UPDATE articles SET markdown_source = ?, updated_at = datetime(\'now\') WHERE id = ?')
+              .bind(updated, r.id).run();
+            dbUpdated++;
+          }
+        }
+      }
+
+      // 4) Build + commit + push (sadece md degisti ise)
+      let commit = null;
+      if (mdUpdated > 0) {
+        const build = await runBuild();
+        if (!build.ok) {
+          // Rollback md
+          for (const t of touchedMd) await safeWrite(t.full, t.oldContent);
+          await runBuild();
+          throw Object.assign(new Error('Build basarisiz'), { status: 500, details: { stderr: build.stderr } });
+        }
+        try {
+          const commitFiles = [
+            CONTENT_TUTORIALS,
+            CONTENT_PAGES,
+            repoPath('public', 'tutorials'),
+            repoPath('public', 'sitemap.xml'),
+            repoPath('public', 'feed.xml'),
+            repoPath('src', 'valid-slugs.js'),
+          ];
+          // pages icin public/<slug>/index.html'leri de stage et — basit yontem:
+          // CONTENT_PAGES'deki her slug icin public/<slug>/index.html
+          if (existsSync(CONTENT_PAGES)) {
+            const pageFiles = await fs.readdir(CONTENT_PAGES);
+            for (const f of pageFiles) {
+              if (f.endsWith('.md')) {
+                commitFiles.push(repoPath('public', f.replace(/\.md$/, '')));
+              }
+            }
+          }
+          await gitAdd(commitFiles);
+          await gitCommit({ message: `refs: rename ${oldFilename} → ${sanitizedNew} (${mdUpdated} dosya)` });
+          await gitPush();
+          commit = await gitHeadSha();
+        } catch (err) {
+          const rollback = [];
+          try { await gitRestoreStaged(); } catch (e) { rollback.push('unstage:' + e.message); }
+          for (const t of touchedMd) {
+            try { await safeWrite(t.full, t.oldContent); } catch (e) { rollback.push('md_restore:' + e.message); }
+          }
+          try { await runBuild(); } catch (e) { rollback.push('rebuild:' + e.message); }
+          try { await gitResetHard(headBefore); } catch (e) { rollback.push('reset:' + e.message); }
+          throw Object.assign(new Error('Git push basarisiz'), { status: 500, details: { stderr: err.stderr || err.message, rollback } });
+        }
+      }
+
+      return {
+        ok: true,
+        new_url: newPublicUrl,
+        new_name: sanitizedNew,
+        md_updated: mdUpdated,
+        db_updated: dbUpdated,
+        commit,
+      };
+    });
+
+    await logActivity(c.env.DB, userId, 'upload_rename',
+      `${oldFilename} → ${sanitizedNew} (md=${result.md_updated}, db=${result.db_updated})`);
+    return c.json(result);
+  } catch (err) {
+    if (err instanceof PublishBusyError) return c.json({ error: err.message }, 409);
+    const status = err.status || 500;
+    return c.json({ error: err.message, details: err.details }, status);
+  }
+});
+
+// Bulk delete — tek password reauth ile birden fazla ID
+uploads.post('/api/dosyalar/bulk-delete', adminMiddleware(), async (c) => {
+  const auth = await reauthAdmin(c);
+  if (!auth.ok) return c.json({ error: auth.err }, auth.status);
+
+  const ids = Array.isArray(auth.body.ids) ? auth.body.ids.map(n => parseInt(n, 10)).filter(n => Number.isInteger(n) && n > 0) : [];
+  if (!ids.length) return c.json({ error: 'ids bos' }, 400);
+
+  const placeholders = ids.map(() => '?').join(',');
+  const rows = await c.env.DB.prepare(
+    `SELECT id, stored_path, original_name, category FROM uploads WHERE id IN (${placeholders})`
+  ).bind(...ids).all();
+
+  const deleted = [];
+  const failed = [];
+  for (const r of (rows.results || [])) {
+    try {
+      if (existsSync(r.stored_path)) {
+        await safeUnlink(r.stored_path);
+      }
+      await c.env.DB.prepare('DELETE FROM uploads WHERE id = ?').bind(r.id).run();
+      deleted.push({ id: r.id, name: r.original_name });
+    } catch (err) {
+      failed.push({ id: r.id, name: r.original_name, error: err.message });
+    }
+  }
+
+  await logActivity(c.env.DB, c.get('userId'), 'upload_bulk_delete',
+    `${deleted.length} silindi, ${failed.length} hata`);
+
+  return c.json({ ok: true, deleted: deleted.length, failed, deletedItems: deleted });
 });
 
 // Delete — re-auth gerekli
