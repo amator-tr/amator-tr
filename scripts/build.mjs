@@ -31,6 +31,8 @@ const VALID_SLUGS_PATH = path.join(ROOT, 'src/valid-slugs.js');
 const SITEMAP_PATH = path.join(ROOT, 'public/sitemap.xml');
 const FEED_PATH = path.join(ROOT, 'public/feed.xml');
 const HUB_PATH = path.join(PUBLIC_TUTORIALS, 'index.html');
+const PUBLIC_INCLUDES = path.join(ROOT, 'public/_includes');
+const FOOTER_INCLUDE_PATH = path.join(PUBLIC_INCLUDES, 'footer.html');
 
 const SITE_URL = 'https://amator.tr';
 const AUTHOR_NAME = 'Kaan Dikeç';
@@ -451,6 +453,12 @@ function main() {
   console.log(`[regen] feed.xml`);
   fs.writeFileSync(VALID_SLUGS_PATH, buildValidSlugs(articles));
   console.log(`[regen] src/valid-slugs.js`);
+
+  // SSI source: statik HTML sayfalari (index.html, hakkinda.html, vs.) bu dosyayi
+  // <!--#include virtual="/_includes/footer.html" --> ile cekiyor. Tek kaynak.
+  ensureDir(PUBLIC_INCLUDES);
+  fs.writeFileSync(FOOTER_INCLUDE_PATH, shell.footer);
+  console.log(`[regen] public/_includes/footer.html`);
 
   // Orphan sweep: HTML files for slugs that no longer have an MD source
   const knownSlugs = new Set(articles.map(a => a.slug));
