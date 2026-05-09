@@ -53,7 +53,14 @@ app.use('*', async (c, next) => {
   // Cross-origin isolation: opener / embedder relaxation ile clickjacking +
   // pop-up tab-nabbing savunmasi.
   c.header('Cross-Origin-Opener-Policy', 'same-origin');
-  c.header('Cross-Origin-Resource-Policy', 'same-origin');
+  // CORP: dosyalar.amator.tr cagri.amator.tr'dan EasyMDE upload + listing
+  // request'leri aliyor. 'same-origin' bunu reddederdi (CORS preflight gecse
+  // bile browser response'u dropluyordu — 'failed to fetch'). 'same-site'
+  // .amator.tr altindaki tum subdomain'lere izin verir, internet'ten gelen
+  // gercekten cross-site istekler hala blok.
+  const host = (c.req.header('host') || '').toLowerCase();
+  const corp = host.startsWith('dosyalar.') ? 'same-site' : 'same-origin';
+  c.header('Cross-Origin-Resource-Policy', corp);
 });
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
