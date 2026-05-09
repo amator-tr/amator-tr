@@ -587,7 +587,17 @@ function initMDE(){
     sideBySideFullscreen:true,
     minHeight:'400px',
     placeholder:'# Baslik\\n\\nMarkdown govdesi...',
-    toolbar:['bold','italic','strikethrough','heading','|','quote','unordered-list','ordered-list','|','link','image','code','table','horizontal-rule','|','preview','side-by-side','fullscreen','|','guide']
+    uploadImage:true,
+    imageMaxSize:100*1024*1024,
+    imageAccept:'image/png,image/jpeg,image/webp,image/gif',
+    imageUploadFunction:function(file,onSuccess,onError){
+      var fd=new FormData();fd.append('file',file);
+      fetch('https://dosyalar.amator.tr/api/dosyalar/upload',{method:'POST',credentials:'include',body:fd})
+        .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
+        .then(function(o){if(o.status>=200&&o.status<300&&o.j&&o.j.url){onSuccess(o.j.url)}else{onError((o.j&&o.j.error)||('HTTP '+o.status))}})
+        .catch(function(e){onError(e.message||'agsiz')});
+    },
+    toolbar:['bold','italic','strikethrough','heading','|','quote','unordered-list','ordered-list','|','link','image','upload-image','code','table','horizontal-rule','|','preview','side-by-side','fullscreen','|','guide']
   });
 }
 

@@ -78,11 +78,16 @@ const PUBLIC_PATHS = [
   '/auth/github', '/auth/github/callback',
   '/manifest.json', '/sw.js', '/robots.txt',
   '/verify-resend', '/sifre-sifirla',
+  '/yukle', // dosyalar.amator.tr — auth handler kendi rotasinda absolute redirect yapar
 ];
 const PUBLIC_PREFIXES = ['/verify/', '/sifre-sifirla/'];
 
 export function authMiddleware(getCookieFn) {
   return async (c, next) => {
+    // CORS preflight: tarayicilar OPTIONS isteklerinde credentials yollamaz;
+    // auth zorunlu kilmak preflight'i bozar. Gercek auth POST/GET/DELETE'te
+    // ayrica zaten kontrol ediliyor.
+    if (c.req.method === 'OPTIONS') return next();
     const p = c.req.path;
     if (PUBLIC_PATHS.includes(p)) return next();
     if (PUBLIC_PREFIXES.some((pre) => p.startsWith(pre))) return next();

@@ -13,6 +13,20 @@ import { sendVerificationEmail, sendPasswordResetEmail } from '../email.js';
 
 const auth = new Hono();
 
+// Cookie domain — prod'da `.amator.tr` (subdomain'ler arasi paylasim icin),
+// dev'de undefined birakilir (localhost'ta `.amator.tr` set edilemez).
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
+function cookieOpts(extra) {
+  const base = { httpOnly: true, secure: true, sameSite: 'Strict', path: '/' };
+  if (COOKIE_DOMAIN) base.domain = COOKIE_DOMAIN;
+  return Object.assign(base, extra || {});
+}
+function cookieClearOpts() {
+  const base = { path: '/' };
+  if (COOKIE_DOMAIN) base.domain = COOKIE_DOMAIN;
+  return base;
+}
+
 // --- Email verification helpers ---
 function genToken() {
   return [...crypto.getRandomValues(new Uint8Array(32))]
@@ -158,7 +172,7 @@ auth.post('/login', async (c) => {
   ]);
 
   const tok = await createSessionToken(c.env.SESSION_SECRET, user.id, user.role, user.token_version || 0);
-  setCookie(c, 'session', tok, { httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 7 * 86400 });
+  setCookie(c, 'session', tok, cookieOpts({ maxAge: 7 * 86400 }));
   return c.redirect('/');
 });
 
@@ -539,7 +553,7 @@ auth.post('/sifre-sifirla/:token', async (c) => {
 
 // --- Logout ---
 auth.get('/logout', (c) => {
-  deleteCookie(c, 'session', { path: '/' });
+  deleteCookie(c, 'session', cookieClearOpts());
   return c.redirect('/login');
 });
 
@@ -550,7 +564,7 @@ auth.get('/auth/github', (c) => {
   const origin = new URL(c.req.url).origin;
   const callbackUrl = `${origin}/auth/github/callback`;
   const state = [...new Uint8Array(crypto.getRandomValues(new Uint8Array(16)))].map(b => b.toString(16).padStart(2, '0')).join('');
-  setCookie(c, 'oauth_state', state, { httpOnly: true, secure: true, sameSite: 'Lax', path: '/', maxAge: 600 });
+  setCookie(c, 'oauth_state', state, cookieOpts({ sameSite: 'Lax', maxAge: 600 }));
   const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=read:user&state=${state}`;
   return c.redirect(url);
 });
@@ -561,7 +575,7 @@ auth.get('/auth/github/callback', async (c) => {
 
   const stateParam = c.req.query('state');
   const stateCookie = getCookie(c, 'oauth_state');
-  deleteCookie(c, 'oauth_state', { path: '/' });
+  deleteCookie(c, 'oauth_state', cookieClearOpts());
   if (!stateParam || !stateCookie || stateParam !== stateCookie) {
     return c.html(loginPage('Guvenlik dogrulamasi basarisiz. Tekrar deneyin.', '', c.env.TURNSTILE_SITE_KEY || ''));
   }
@@ -627,7 +641,7 @@ auth.get('/auth/github/callback', async (c) => {
     ]);
 
     const token = await createSessionToken(c.env.SESSION_SECRET, user.id, user.role, user.token_version || 0);
-    setCookie(c, 'session', token, { httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 7 * 86400 });
+    setCookie(c, 'session', token, cookieOpts({ maxAge: 7 * 86400 }));
     return c.redirect('/');
   } catch (err) {
     console.error('GitHub OAuth error:', err);
@@ -700,7 +714,7 @@ auth.post('/profil/sifre', async (c) => {
   const updatedUser = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
   // Mevcut cihaza yeni cookie ver — kullanici kendi oturumundan dusmesin.
   const newSessionTok = await createSessionToken(c.env.SESSION_SECRET, updatedUser.id, updatedUser.role, updatedUser.token_version || 0);
-  setCookie(c, 'session', newSessionTok, { httpOnly: true, secure: true, sameSite: 'Strict', path: '/', maxAge: 7 * 86400 });
+  setCookie(c, 'session', newSessionTok, cookieOpts({ maxAge: 7 * 86400 }));
   const updatedActs = await db.prepare('SELECT * FROM activity_log WHERE user_id = ? ORDER BY created_at DESC LIMIT 30').bind(userId).all();
   return c.html(profilePage({ user: updatedUser, activities: updatedActs.results, success: 'Sifre basariyla degistirildi. Diger cihazlardaki oturumlar sonlandirildi.', error: '' }));
 });

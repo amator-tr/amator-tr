@@ -14,6 +14,7 @@ const ALLOWED_ROOTS = [
   path.join(REPO_ROOT, 'public'),
   path.join(REPO_ROOT, 'src'),
   path.join(REPO_ROOT, 'scripts'),
+  path.join(REPO_ROOT, 'data', 'dosyalar'),
 ];
 
 function ensureAllowed(filePath) {
