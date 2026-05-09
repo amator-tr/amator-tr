@@ -35,15 +35,20 @@ export function timingSafeEqualHex(a, b) {
   return r === 0;
 }
 
-export async function createSessionToken(secret, userId, role) {
-  const payload = { userId, role, exp: Date.now() + 7 * 24 * 60 * 60 * 1000 };
+export async function createSessionToken(secret, userId, role, tokenVersion = 0) {
+  const payload = { userId, role, tv: tokenVersion, exp: Date.now() + 7 * 24 * 60 * 60 * 1000 };
   const data = btoa(JSON.stringify(payload));
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(data));
   return `${data}.${[...new Uint8Array(sig)].map(b => b.toString(16).padStart(2, '0')).join('')}`;
 }
 
-export async function verifySession(token, secret) {
+// db parametresi opsiyonel; verilirse `users.token_version` payload `tv`
+// ile karsilastirilir. Esit degilse session reddedilir — parola degisimi
+// veya admin reset sonrasi eski cookie'leri invalidate etmenin yolu.
+// Eski (tv'siz) cookie'ler geriye uyumluluk icin kabul edilir; dogal
+// expire ile silinirler.
+export async function verifySession(token, secret, db = null) {
   if (!token) return null;
   const parts = token.split('.');
   if (parts.length !== 2) return null;
@@ -54,6 +59,11 @@ export async function verifySession(token, secret) {
     if (!valid) return null;
     const payload = JSON.parse(atob(parts[0]));
     if (!payload.userId || payload.exp <= Date.now()) return null;
+    if (db && typeof payload.tv === 'number') {
+      const row = await db.prepare('SELECT token_version FROM users WHERE id = ?').bind(payload.userId).first();
+      if (!row) return null;
+      if ((row.token_version || 0) !== payload.tv) return null;
+    }
     return { userId: payload.userId, role: payload.role || 'user' };
   } catch { return null; }
 }
@@ -78,7 +88,8 @@ export function authMiddleware(getCookieFn) {
     if (PUBLIC_PREFIXES.some((pre) => p.startsWith(pre))) return next();
 
     const token = getCookieFn(c, 'session');
-    const session = await verifySession(token, c.env.SESSION_SECRET);
+    // db parametresi token_version revocation icin kullanilir.
+    const session = await verifySession(token, c.env.SESSION_SECRET, c.env.DB);
 
     if (!session) return c.redirect('/login');
 

@@ -52,7 +52,9 @@ admin.post('/api/admin/users/:id/role', adminMiddleware(), async (c) => {
       return c.json({ error: 'Son admin dusurulemez. Once baska bir admin atanmali.' }, 400);
     }
   }
-  await c.env.DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(newRole, targetId).run();
+  // token_version inkrement: rol degisen kullanicinin tum aktif sessionlari
+  // (yeni rol bilgisiyle) yeniden olusturulmali.
+  await c.env.DB.prepare('UPDATE users SET role = ?, token_version = token_version + 1 WHERE id = ?').bind(newRole, targetId).run();
   await logActivity(c.env.DB, c.get('userId'), 'rol_degistir', `User ${targetId} -> ${newRole}`);
   return c.json({ ok: true });
 });
@@ -125,7 +127,8 @@ admin.post('/api/admin/users/:id/reset-password', adminMiddleware(), async (c) =
   if (!validatePassword(newPw)) return c.json({ error: 'Sifre en az 8 karakter ve en az 1 rakam/ozel karakter icermeli' }, 400);
   const salt = generateSalt();
   const hash = await hashPassword(newPw, salt);
-  await c.env.DB.prepare('UPDATE users SET password_hash = ?, password_salt = ?, password_iterations = ? WHERE id = ?').bind(hash, salt, CURRENT_ITERATIONS, targetId).run();
+  // token_version inkrement: hedef kullanicinin tum aktif sessionlari geçersiz.
+  await c.env.DB.prepare('UPDATE users SET password_hash = ?, password_salt = ?, password_iterations = ?, token_version = token_version + 1 WHERE id = ?').bind(hash, salt, CURRENT_ITERATIONS, targetId).run();
   await logActivity(c.env.DB, c.get('userId'), 'admin_sifre_reset', `User ${targetId}`);
   return c.json({ ok: true });
 });
