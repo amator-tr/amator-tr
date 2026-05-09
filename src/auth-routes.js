@@ -20,6 +20,13 @@ function genToken() {
     .join('');
 }
 
+// DB'ye token plaintext yazmiyoruz — sızıntıda token yine kullanilamasin.
+// Kullanici emaildeki ham token'la geri donunce sha256(raw) ile DB lookup.
+async function hashToken(raw) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 function genCode() {
   // 8-haneli numerik kod (10000000-99999999) — brute-force ekonomisini 100x bozar
   const buf = new Uint32Array(1);
@@ -201,12 +208,13 @@ auth.post('/register', async (c) => {
   const salt = generateSalt();
   const hash = await hashPassword(password, salt);
   const verifyToken = genToken();
+  const verifyTokenHash = await hashToken(verifyToken);
   const verifyCode = genCode();
   const expires = expiresIn(24);
 
   await db.prepare(
     'INSERT INTO users (username, password_hash, password_salt, password_iterations, display_name, role, email, email_verified, verification_token, verification_code, token_expires_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)'
-  ).bind(username, hash, salt, CURRENT_ITERATIONS, display_name || username, 'user', email, 0, verifyToken, verifyCode, expires).run();
+  ).bind(username, hash, salt, CURRENT_ITERATIONS, display_name || username, 'user', email, 0, verifyTokenHash, verifyCode, expires).run();
 
   sendVerificationEmail(c.env, { to: email, displayName: display_name || username, token: verifyToken, code: verifyCode }).catch(e => console.error('email error:', e));
 
@@ -225,7 +233,8 @@ auth.get('/verify/:token', async (c) => {
   if (!/^[a-f0-9]{32,128}$/.test(token)) {
     return c.html(statusPage({ title: 'Geçersiz', heading: '❌ Geçersiz link', body: 'Bu link geçersiz veya bozuk.', kind: 'error' }));
   }
-  const user = await db.prepare('SELECT id, username, email, email_verified, token_expires_at FROM users WHERE verification_token = ?').bind(token).first();
+  const tokenHash = await hashToken(token);
+  const user = await db.prepare('SELECT id, username, email, email_verified, token_expires_at FROM users WHERE verification_token = ?').bind(tokenHash).first();
   if (!user) {
     return c.html(statusPage({ title: 'Geçersiz', heading: '❌ Link bulunamadı', body: 'Bu link geçersiz veya zaten kullanılmış.', kind: 'error' }));
   }
@@ -331,10 +340,11 @@ auth.post('/verify-resend', async (c) => {
   if (!user || user.email_verified === 1) return c.html(genericResp);
 
   const newToken = genToken();
+  const newTokenHash = await hashToken(newToken);
   const newCode = genCode();
   const expires = expiresIn(24);
   await db.prepare('UPDATE users SET verification_token = ?, verification_code = ?, token_expires_at = ? WHERE id = ?')
-    .bind(newToken, newCode, expires, user.id).run();
+    .bind(newTokenHash, newCode, expires, user.id).run();
 
   sendVerificationEmail(c.env, { to: email, displayName: user.display_name || user.username, token: newToken, code: newCode }).catch(e => console.error('email error:', e));
 
@@ -462,8 +472,9 @@ auth.post('/sifre-sifirla', async (c) => {
   if (!user) return c.html(genericResp);
 
   const token = genToken();
+  const tokenHash = await hashToken(token);
   const expires = expiresIn(1);
-  await db.prepare('UPDATE users SET password_reset_token = ?, password_reset_expires_at = ? WHERE id = ?').bind(token, expires, user.id).run();
+  await db.prepare('UPDATE users SET password_reset_token = ?, password_reset_expires_at = ? WHERE id = ?').bind(tokenHash, expires, user.id).run();
 
   sendPasswordResetEmail(c.env, { to: email, displayName: user.display_name || user.username, token }).catch(e => console.error('email error:', e));
 
@@ -476,7 +487,8 @@ auth.get('/sifre-sifirla/:token', async (c) => {
   if (!/^[a-f0-9]{32,128}$/.test(token)) {
     return c.html(statusPage({ title: 'Geçersiz', heading: '❌ Geçersiz link', body: 'Bu link geçersiz veya bozuk.', kind: 'error' }));
   }
-  const user = await db.prepare('SELECT id, password_reset_expires_at FROM users WHERE password_reset_token = ?').bind(token).first();
+  const tokenHash = await hashToken(token);
+  const user = await db.prepare('SELECT id, password_reset_expires_at FROM users WHERE password_reset_token = ?').bind(tokenHash).first();
   if (!user) {
     return c.html(statusPage({ title: 'Geçersiz', heading: '❌ Link bulunamadı', body: 'Bu link geçersiz veya zaten kullanılmış.', kind: 'error' }));
   }
@@ -506,7 +518,8 @@ auth.post('/sifre-sifirla/:token', async (c) => {
   if (password !== password2) {
     return c.html(statusPage({ title: 'Hata', heading: '❌ Şifreler eşleşmiyor', body: '<a href="javascript:history.back()" style="color:#a78bfa;">Geri dön</a>', kind: 'error' }));
   }
-  const user = await db.prepare('SELECT id, password_reset_expires_at FROM users WHERE password_reset_token = ?').bind(token).first();
+  const tokenHash = await hashToken(token);
+  const user = await db.prepare('SELECT id, password_reset_expires_at FROM users WHERE password_reset_token = ?').bind(tokenHash).first();
   if (!user || !user.password_reset_expires_at || new Date(user.password_reset_expires_at) < new Date()) {
     return c.html(statusPage({ title: 'Süresi doldu', heading: '⏰ Link süresi dolmuş', body: '<a href="/sifre-sifirla" style="color:#a78bfa;">Yeni link iste</a>.', kind: 'error' }));
   }
