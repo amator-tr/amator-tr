@@ -7,7 +7,4 @@ keywords:
 article_section: aaaa
 published_at: '2026-05-09'
 ---
-500 (Internal Server Error)
-(anonymous) @ admin:665
-admin:665  POST https://cagri.amator.tr/api/admin/articles/aaa/publish 500 (Internal Server Error)
-(anonymous) @ admin:665
+dehset purna
