@@ -97,6 +97,18 @@ function publicUrl(category, filename) {
 const TMP_DIR = path.join(DOSYALAR_ROOT, '.tmp');
 const CHUNK_SIZE = 90 * 1024 * 1024;
 const MAX_TOTAL_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB hard cap
+
+// Path traversal backstop. lenientName birinci savunma, bu ikinci.
+// fs.rename gibi safeWrite kullanmayan yerlerde cagrilir — sonuc DOSYALAR_ROOT
+// disinda ise hard fail. Bug-class koruma (lenientName'de gelecek bir regression
+// olursa).
+function assertInsideDosyalar(targetPath) {
+  const resolved = path.resolve(targetPath);
+  if (resolved !== DOSYALAR_ROOT && !resolved.startsWith(DOSYALAR_ROOT + path.sep)) {
+    throw new Error(`Path traversal blocked: ${resolved}`);
+  }
+  return resolved;
+}
 const SESSION_TTL_MS = 3600_000; // 1 saat
 const uploadSessions = new Map(); // upload_id -> { userId, filename, totalSize, ext, category, desiredName, desiredPath, onConflict, received, expires }
 
@@ -434,8 +446,10 @@ uploads.post('/api/dosyalar/upload/finalize', adminMiddleware(), async (c) => {
     }
   }
 
-  // Atomik move (ayni filesystem icinde rename)
+  // Atomik move (ayni filesystem icinde rename) + path-traversal backstop
   try {
+    assertInsideDosyalar(tempPath);
+    assertInsideDosyalar(finalPath);
     await fs.mkdir(categoryDir, { recursive: true });
     await fs.rename(tempPath, finalPath);
   } catch (err) {
@@ -621,7 +635,9 @@ uploads.post('/api/dosyalar/:id/rename', adminMiddleware(), async (c) => {
       const headBefore = await gitHeadSha();
       const touchedMd = []; // {full, oldContent} — rollback icin
 
-      // 1) Disk rename
+      // 1) Disk rename (path-traversal backstop)
+      assertInsideDosyalar(row.stored_path);
+      assertInsideDosyalar(newPath);
       await fs.rename(row.stored_path, newPath);
 
       // 2) DB update (uploads tablosu)
