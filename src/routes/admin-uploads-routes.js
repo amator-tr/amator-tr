@@ -749,10 +749,11 @@ uploads.post('/api/dosyalar/:id/rename', adminMiddleware(), async (c) => {
   }
 });
 
-// Bulk delete — tek password reauth ile birden fazla ID
+// Bulk delete — tek password reauth ile birden fazla ID + ref-warning
 uploads.post('/api/dosyalar/bulk-delete', adminMiddleware(), async (c) => {
   const auth = await reauthAdmin(c);
   if (!auth.ok) return c.json({ error: auth.err }, auth.status);
+  const force = !!auth.body.force;
 
   const ids = Array.isArray(auth.body.ids) ? auth.body.ids.map(n => parseInt(n, 10)).filter(n => Number.isInteger(n) && n > 0) : [];
   if (!ids.length) return c.json({ error: 'ids bos' }, 400);
@@ -761,6 +762,32 @@ uploads.post('/api/dosyalar/bulk-delete', adminMiddleware(), async (c) => {
   const rows = await c.env.DB.prepare(
     `SELECT id, stored_path, original_name, category FROM uploads WHERE id IN (${placeholders})`
   ).bind(...ids).all();
+
+  // Ref kontrolu (force=false ise)
+  if (!force) {
+    const inUse = [];
+    for (const r of (rows.results || [])) {
+      const refs = await countRefsForUpload(c.env.DB, r.category, r.stored_path);
+      if (refs.total > 0) {
+        inUse.push({
+          id: r.id,
+          name: r.original_name,
+          stored_name: path.basename(r.stored_path),
+          refs_total: refs.total,
+          places: refs.places,
+        });
+      }
+    }
+    if (inUse.length > 0) {
+      return c.json({
+        error: `${inUse.length} dosya site icinde kullaniliyor`,
+        in_use: true,
+        in_use_count: inUse.length,
+        total_selected: rows.results?.length || 0,
+        items: inUse,
+      }, 409);
+    }
+  }
 
   const deleted = [];
   const failed = [];
@@ -776,26 +803,55 @@ uploads.post('/api/dosyalar/bulk-delete', adminMiddleware(), async (c) => {
     }
   }
 
-  await logActivity(c.env.DB, c.get('userId'), 'upload_bulk_delete',
+  await logActivity(c.env.DB, c.get('userId'), force ? 'upload_bulk_delete_forced' : 'upload_bulk_delete',
     `${deleted.length} silindi, ${failed.length} hata`);
 
   return c.json({ ok: true, deleted: deleted.length, failed, deletedItems: deleted });
 });
 
-// Delete — re-auth gerekli
+// Helper: dosyanin kullanim referanslarini say (md + DB taslak markdown_source)
+async function countRefsForUpload(envDB, category, storedPath) {
+  const filename = path.basename(storedPath);
+  const variants = urlVariantsFor(category, filename);
+  const mdT = await scanMdRefs(CONTENT_TUTORIALS, variants);
+  const mdP = await scanMdRefs(CONTENT_PAGES, variants);
+  const dbR = await scanDbRefs(envDB, variants);
+  const total = mdT.reduce((s, r) => s + r.hits.length, 0)
+              + mdP.reduce((s, r) => s + r.hits.length, 0)
+              + dbR.reduce((s, r) => s + r.hits.length, 0);
+  // Kisa ozet (UI icin)
+  const places = [];
+  for (const r of [...mdT, ...mdP]) places.push(`${r.dir}/${r.slug}.md`);
+  for (const r of dbR) places.push(`taslak: ${r.slug} (${r.kind || '?'}, ${r.status})`);
+  return { total, places };
+}
+
+// Delete — re-auth gerekli + ref-warning
 uploads.delete('/api/dosyalar/:id', adminMiddleware(), async (c) => {
   const id = parseInt(c.req.param('id'), 10);
   if (!Number.isInteger(id) || id <= 0) return c.json({ error: 'Gecersiz id' }, 400);
 
   const auth = await reauthAdmin(c);
   if (!auth.ok) return c.json({ error: auth.err }, auth.status);
+  const force = !!auth.body.force;
 
   const row = await c.env.DB.prepare('SELECT stored_path, original_name, category FROM uploads WHERE id = ?').bind(id).first();
   if (!row) return c.json({ error: 'Dosya bulunamadi' }, 404);
 
-  // Path validate: stored_path data/dosyalar/ icinde mi? safeUnlink ALLOWED_ROOTS
-  // disinda yazima izin vermez ama yine basenamem'de sapma kontrolu icin
-  // existsSync sonrasi safeUnlink atomik silsin.
+  // Referans kontrolu (force=false ise)
+  if (!force) {
+    const refs = await countRefsForUpload(c.env.DB, row.category, row.stored_path);
+    if (refs.total > 0) {
+      return c.json({
+        error: 'Bu dosya site icinde kullaniliyor',
+        in_use: true,
+        refs_total: refs.total,
+        places: refs.places,
+        original_name: row.original_name,
+      }, 409);
+    }
+  }
+
   if (existsSync(row.stored_path)) {
     try { await safeUnlink(row.stored_path); }
     catch (err) {
@@ -803,7 +859,8 @@ uploads.delete('/api/dosyalar/:id', adminMiddleware(), async (c) => {
     }
   }
   await c.env.DB.prepare('DELETE FROM uploads WHERE id = ?').bind(id).run();
-  await logActivity(c.env.DB, c.get('userId'), 'upload_delete', `${row.category}/${path.basename(row.stored_path)}`);
+  await logActivity(c.env.DB, c.get('userId'), force ? 'upload_delete_forced' : 'upload_delete',
+    `${row.category}/${path.basename(row.stored_path)}`);
 
   return c.json({ ok: true });
 });

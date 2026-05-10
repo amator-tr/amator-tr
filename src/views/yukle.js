@@ -182,6 +182,19 @@ input[type=file]{display:none}
 </div>
 </div>
 
+<div class="pw-modal" id="inUseModal">
+<div class="pw-box" style="max-width:520px">
+<h3 style="color:var(--y)">⚠ Site icinde kullaniliyor</h3>
+<p id="inUseMsg" style="margin-bottom:8px"></p>
+<div id="inUseList" style="max-height:180px;overflow:auto;background:var(--s2);border:1px solid var(--b1);border-radius:6px;padding:8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2);margin-bottom:14px"></div>
+<p style="font-size:11px;color:var(--t3);margin-bottom:14px">Yine de silersen bu sayfa(lar)da broken link olur. "Yeniden adlandir + ref refactor" daha iyi tercih olabilir.</p>
+<div class="pw-btns" style="justify-content:flex-start;flex-wrap:wrap;gap:6px">
+<button class="pw-cancel" id="iuCancel" type="button">Iptal</button>
+<button class="pw-save" id="iuConfirm" type="button" style="background:var(--r);color:#fff">Yine de sil</button>
+</div>
+</div>
+</div>
+
 <div class="pw-modal" id="renameModal">
 <div class="pw-box" style="max-width:520px">
 <h3>Yeniden adlandir</h3>
@@ -777,35 +790,78 @@ function loadList(){
 var pendingDelete=null;
 function confirmDelete(it){pendingDelete=it;$('#pwInput').value='';$('#pwModal').classList.add('open');$('#pwInput').focus()}
 $('#pwCancel').addEventListener('click',function(){$('#pwModal').classList.remove('open');$('#pwModal').querySelector('h3').textContent='Dosyayi sil';pendingDelete=null;bulkDeleteIds=null});
-$('#pwConfirm').addEventListener('click',function(){
-  var pw=$('#pwInput').value;if(!pw){toast('Sifre gerekli','err');return}
-  // Bulk delete oncelikli
-  if(bulkDeleteIds && bulkDeleteIds.length){
-    var ids=bulkDeleteIds;
-    fetch('/api/dosyalar/bulk-delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw,ids:ids})})
-      .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
-      .then(function(o){
-        if(o.status>=200&&o.status<300&&o.j.ok){
-          var msg=o.j.deleted+' dosya silindi';
-          if(o.j.failed&&o.j.failed.length)msg+=' ('+o.j.failed.length+' hata)';
-          toast(msg,'ok');
-          $('#pwModal').classList.remove('open');
-          $('#pwModal').querySelector('h3').textContent='Dosyayi sil';
-          bulkDeleteIds=null;
-          loadList();
-        } else {
-          toast(o.j.error||'Bulk silme basarisiz','err');
-        }
-      });
-    return;
+var pendingPw=null;        // password'u in-use modal icin saklamak
+var pendingForceArgs=null;  // {kind:'single'|'bulk', payload}
+function performDelete(kind, password, force){
+  if(kind==='bulk'){
+    var ids=bulkDeleteIds||[];
+    if(!ids.length)return;
+    return fetch('/api/dosyalar/bulk-delete',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:password,ids:ids,force:!!force})})
+      .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})});
   }
   if(!pendingDelete)return;
-  fetch('/api/dosyalar/'+pendingDelete.id,{method:'DELETE',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
-    .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})})
-    .then(function(o){
-      if(o.status>=200&&o.status<300&&o.j.ok){toast('Silindi','ok');$('#pwModal').classList.remove('open');pendingDelete=null;loadList()}
-      else{toast(o.j.error||'Silme basarisiz','err')}
-    });
+  return fetch('/api/dosyalar/'+pendingDelete.id,{method:'DELETE',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:password,force:!!force})})
+    .then(function(r){return r.json().then(function(j){return{status:r.status,j:j}})});
+}
+function handleDeleteResp(o, kind){
+  if(o.status>=200&&o.status<300&&o.j.ok){
+    if(kind==='bulk'){
+      var msg=o.j.deleted+' dosya silindi';
+      if(o.j.failed&&o.j.failed.length)msg+=' ('+o.j.failed.length+' hata)';
+      toast(msg,'ok');
+    } else {
+      toast('Silindi','ok');
+    }
+    $('#pwModal').classList.remove('open');
+    $('#pwModal').querySelector('h3').textContent='Dosyayi sil';
+    pendingDelete=null;bulkDeleteIds=null;pendingPw=null;pendingForceArgs=null;
+    loadList();
+    return;
+  }
+  if(o.status===409 && o.j.in_use){
+    // Site icinde kullaniliyor — uyari modal ac
+    pendingPw=$('#pwInput').value;
+    pendingForceArgs={kind:kind};
+    $('#pwModal').classList.remove('open');
+    showInUseModal(o.j, kind);
+    return;
+  }
+  toast(o.j.error||'Silme basarisiz','err');
+}
+$('#pwConfirm').addEventListener('click',function(){
+  var pw=$('#pwInput').value;if(!pw){toast('Sifre gerekli','err');return}
+  var kind=(bulkDeleteIds && bulkDeleteIds.length)?'bulk':'single';
+  performDelete(kind, pw, false).then(function(o){handleDeleteResp(o, kind)});
+});
+
+function showInUseModal(info, kind){
+  var msg, listHtml='';
+  if(kind==='bulk'){
+    msg='<strong>'+info.in_use_count+' / '+info.total_selected+' dosya site icinde kullaniliyor.</strong>';
+    listHtml=(info.items||[]).map(function(it){
+      var places=(it.places||[]).slice(0,3).join(', ');
+      if((it.places||[]).length>3)places+=' ...';
+      return '<div style="margin-bottom:6px"><strong>'+escHTML(it.stored_name||it.name)+'</strong> ('+it.refs_total+' ref): '+escHTML(places)+'</div>';
+    }).join('');
+  } else {
+    msg='<strong>'+escHTML(info.original_name||'')+'</strong> '+info.refs_total+' yerde kullaniliyor:';
+    listHtml=(info.places||[]).map(function(p){return '• '+escHTML(p)}).join('<br>');
+  }
+  $('#inUseMsg').innerHTML=msg;
+  $('#inUseList').innerHTML=listHtml;
+  $('#inUseModal').classList.add('open');
+}
+$('#iuCancel').addEventListener('click',function(){
+  $('#inUseModal').classList.remove('open');
+  pendingDelete=null;bulkDeleteIds=null;pendingPw=null;pendingForceArgs=null;
+  $('#pwModal').querySelector('h3').textContent='Dosyayi sil';
+});
+$('#iuConfirm').addEventListener('click',function(){
+  if(!pendingForceArgs||!pendingPw){$('#inUseModal').classList.remove('open');return}
+  var kind=pendingForceArgs.kind;
+  var pw=pendingPw;
+  $('#inUseModal').classList.remove('open');
+  performDelete(kind, pw, true).then(function(o){handleDeleteResp(o, kind)});
 });
 
 $('#search').addEventListener('input',function(){clearTimeout(window._sT);window._sT=setTimeout(loadList,250)});
