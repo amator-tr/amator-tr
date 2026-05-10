@@ -736,9 +736,19 @@ function loadList(){
       var meta=div.querySelector('.fmeta');
       var chk=div.querySelector('.fcheck input');
       chk.addEventListener('change',function(){updateBulkBar()});
-      var nm=document.createElement('div');nm.className='fname';nm.textContent=it.original_name;
+      // Diskteki gercek isim (URL ile ayni). Cakismada server (2),(3) suffix
+      // ekliyor — orijinal isim degil bunu goster ki tek-isim-iki-dosya
+      // confusion olmasin.
+      var storedName=it.stored_path?it.stored_path.split('/').pop():it.original_name;
+      var nm=document.createElement('div');nm.className='fname';nm.textContent=storedName;
+      nm.title=storedName;
       var sub=document.createElement('div');sub.className='fsub';
-      sub.innerHTML='<span class="fcat">'+escHTML(it.category)+'</span> · '+fmtSize(it.size)+' · '+fmtDate(it.uploaded_at);
+      var subParts='<span class="fcat">'+escHTML(it.category)+'</span> · '+fmtSize(it.size)+' · '+fmtDate(it.uploaded_at);
+      // Yuklenirken farkli isimdeyse "yuklenen: X" ipucu
+      if(it.original_name && it.original_name!==storedName){
+        subParts+=' · <span style="color:var(--y)" title="Yuklenen orijinal isim">yüklenen: '+escHTML(it.original_name)+'</span>';
+      }
+      sub.innerHTML=subParts;
       meta.appendChild(nm);meta.appendChild(sub);
       var top=document.createElement('div');top.className='ftop';
       // 3 elemani sirayla top'a tasi: fcheck, fthumb, fmeta
