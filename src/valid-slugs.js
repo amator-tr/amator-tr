@@ -63,6 +63,7 @@ export const VALID_TUTORIAL_SLUGS = new Set([
   "q-kodlari-isletme-adabi",
   "qrp-dusuk-guc-operasyonu",
   "qrz-com-kullanim-rehberi",
+  "r1",
   "radyo-dalgalari-temeli",
   "random-wire-anten-9-1-unun",
   "rf-amplifier-siniflari",
