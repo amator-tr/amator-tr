@@ -223,6 +223,16 @@
     </image:image>
   </url>
   <url>
+    <loc>https://amator.tr/tutorials/d2</loc>
+    <lastmod>2026-05-11</lastmod>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://amator.tr/og/d2.png</image:loc>
+      <image:title>Kayıt olmanız gereken diğer önemli platformlar</image:title>
+      <image:caption>log (kayıt) tutma ve QSL (görüşme onayı) işlemleri için kayıt olmanız gereken diğer önemli platformlar</image:caption>
+    </image:image>
+  </url>
+  <url>
     <loc>https://amator.tr/tutorials/db-dbi-dbd-anten-kazanci</loc>
     <lastmod>2026-04-26</lastmod>
     <priority>0.7</priority>

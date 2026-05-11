@@ -22,6 +22,7 @@ export const VALID_TUTORIAL_SLUGS = new Set([
   "contesting-yarisma-rehberi",
   "ctcss-dcs-nedir",
   "cubesat-amator-uzay-gelecek",
+  "d2",
   "db-dbi-dbd-anten-kazanci",
   "derneklere-katilim-rehberi",
   "dikey-vertical-anten-detay",
