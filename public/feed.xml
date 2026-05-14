@@ -154,11 +154,11 @@
       <description>Vertical anten tasarımı + ground plane radyalleri, multi-band vertical (Hustler 6BTV, Hy-Gain AV-640), DX vertical, monoband çeyrek dalga vs 5/8 dalga, NEC simülasyon ipuçları.</description>
     </item>
     <item>
-      <title>DMR Brandmeister Network ve Talkgroup Sistemi — Türkiye TG214</title>
+      <title>DMR Brandmeister Network ve Talkgroup Sistemi — Türkiye TG286</title>
       <link>https://amator.tr/tutorials/dmr-brandmeister-talkgrouplar</link>
       <guid isPermaLink="true">https://amator.tr/tutorials/dmr-brandmeister-talkgrouplar</guid>
       <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
-      <description>DMR Brandmeister network nedir, talkgroup yapısı (TG214 Türkiye, TG223 İstanbul), TGIF, hotspot, Pi-Star kurulumu, Anytone D878UV codeplug. Internet köprüsü ile dünya çapında DMR.</description>
+      <description>DMR Brandmeister network nedir, talkgroup yapısı (TG286 Türkiye), TGIF, hotspot, Pi-Star kurulumu, Anytone D878UV codeplug. Internet köprüsü ile dünya çapında DMR.</description>
     </item>
     <item>
       <title>DSP (Dijital Sinyal İşleme) ve Modern Telsizcilik</title>

@@ -1,14 +1,14 @@
 ---
-title: DMR Brandmeister Network ve Talkgroup Sistemi — Türkiye TG214
+title: DMR Brandmeister Network ve Talkgroup Sistemi — Türkiye TG286
 description: >-
-  DMR Brandmeister network nedir, talkgroup yapısı (TG214 Türkiye, TG223
-  İstanbul), TGIF, hotspot, Pi-Star kurulumu, Anytone D878UV codeplug. Internet
-  köprüsü ile dünya çapında DMR.
+  DMR Brandmeister network nedir, talkgroup yapısı (TG286 Türkiye), TGIF,
+  hotspot, Pi-Star kurulumu, Anytone D878UV codeplug. Internet köprüsü ile dünya
+  çapında DMR.
 keywords:
   - DMR
   - Brandmeister
   - talkgroup
-  - TG214
+  - TG286
   - hotspot
   - Pi-Star
 article_section: DMR
