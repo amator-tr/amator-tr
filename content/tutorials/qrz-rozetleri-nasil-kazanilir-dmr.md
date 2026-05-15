@@ -58,4 +58,6 @@ TC19MAY gibi özel istasyonlar genellikle görüşme trafiği çok yoğun olduğ
 ## 🚀 El Telsizi ile Gelecek Planı
 
 * **Anten Güncellemesi:** El telsizinin üzerindeki lastik anten yerine, balkonunuza koyabileceğiniz basit bir "Diamond X-30" veya benzeri bir sabit anten alırsanız, yakındaki analog rölelere çok daha rahat ulaşırsınız.
-* **Hotspot:** Eğer evinizden DMR rölesine ulaşamıyorsanız, bir DMR Hotspot cihazı edinin. Bu sayede el telsiziniz
+* **Hotspot:** Eğer evinizden DMR rölesine ulaşamıyorsanız, bir DMR Hotspot cihazı edinin. Bu sayede el telsizinizle evdeki internetiniz üzerinden tüm dünyaya bağlanır ve o rozetleri çok daha hızlı toplarsınız.
+
+**Özetle:** Bugünden itibaren her gün TG 91 veya TG 286 gibi kanalları dinleyin, görüşme yapın ve mutlaka QRZ'ye kaydedin. Birkaç ay içinde profilinizde ilk ikonların belirdiğini göreceksiniz!
